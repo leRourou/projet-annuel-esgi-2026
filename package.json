@@ -11,9 +11,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "db:migrate": "tsx ./node_modules/typeorm/cli.js migration:run -d src/shared/infrastructure/database/data-source.ts",
-    "db:generate": "typeorm migration:generate -d src/shared/infrastructure/database/data-source.ts",
-    "db:revert": "typeorm migration:revert -d src/shared/infrastructure/database/data-source.ts"
+    "db:migrate": "docker compose --profile tools run --rm migrate npx tsx ./node_modules/typeorm/cli.js migration:run -d src/shared/infrastructure/database/data-source.ts",
+    "db:generate": "docker compose --profile tools run --rm migrate npx tsx ./node_modules/typeorm/cli.js migration:generate -d src/shared/infrastructure/database/data-source.ts",
+    "db:revert": "docker compose --profile tools run --rm migrate npx tsx ./node_modules/typeorm/cli.js migration:revert -d src/shared/infrastructure/database/data-source.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.36.3",
