@@ -1,5 +1,5 @@
-import { DomainError } from "@/shared/domain/errors/domain.error";
 import { ValueObject } from "@/shared/domain/base/value-object.base";
+import { DomainError } from "@/shared/domain/errors/domain.error";
 
 interface SeoMetadataProps {
   readonly metaTitle: string;
@@ -36,10 +36,7 @@ export class SeoMetadata extends ValueObject<SeoMetadataProps> {
       );
     }
     if (!SeoMetadata.SLUG_REGEX.test(params.slug)) {
-      throw new DomainError(
-        `"${params.slug}" is not a valid slug`,
-        "INVALID_SLUG",
-      );
+      throw new DomainError(`"${params.slug}" is not a valid slug`, "INVALID_SLUG");
     }
     return new SeoMetadata({
       metaTitle: params.metaTitle,

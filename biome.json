@@ -34,12 +34,6 @@
     }
   },
   "files": {
-    "ignore": [
-      "node_modules",
-      ".next",
-      "dist",
-      "coverage",
-      "playwright-report"
-    ]
+    "ignore": ["node_modules", ".next", "dist", "coverage", "playwright-report"]
   }
 }

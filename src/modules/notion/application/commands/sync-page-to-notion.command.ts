@@ -1,9 +1,9 @@
-import { z } from "zod";
+import type { ArticleRepositoryPort } from "@/modules/content/domain/ports/article.repository.port";
 import { DomainError } from "@/shared/domain/errors/domain.error";
 import { NotFoundError } from "@/shared/domain/errors/not-found.error";
 import { Result } from "@/shared/domain/types/result.type";
+import { z } from "zod";
 import type { NotionClientPort } from "../../domain/ports/notion-client.port";
-import type { ArticleRepositoryPort } from "@/modules/content/domain/ports/article.repository.port";
 
 export const SyncPageToNotionInputSchema = z.object({
   articleId: z.string().uuid(),
@@ -19,7 +19,9 @@ export class SyncPageToNotionCommand {
     private readonly articleRepository: ArticleRepositoryPort,
   ) {}
 
-  async execute(input: SyncPageToNotionInput): Promise<Result<{ notionPageId: string }, DomainError>> {
+  async execute(
+    input: SyncPageToNotionInput,
+  ): Promise<Result<{ notionPageId: string }, DomainError>> {
     try {
       const article = await this.articleRepository.findById(input.articleId);
       if (!article) {

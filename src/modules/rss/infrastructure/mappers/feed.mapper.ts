@@ -1,8 +1,8 @@
-import { Feed } from "../../domain/entities/feed.entity";
 import { FeedItem } from "../../domain/entities/feed-item.entity";
+import { Feed } from "../../domain/entities/feed.entity";
 import { FeedUrl } from "../../domain/value-objects/feed-url.vo";
-import type { FeedTypeormEntity } from "../entities/feed.typeorm-entity";
 import type { FeedItemTypeormEntity } from "../entities/feed-item.typeorm-entity";
+import type { FeedTypeormEntity } from "../entities/feed.typeorm-entity";
 
 export class FeedMapper {
   static feedToDomain(entity: FeedTypeormEntity): Feed {
@@ -10,6 +10,7 @@ export class FeedMapper {
       name: entity.name,
       url: FeedUrl.create(entity.url),
       ownerId: entity.ownerId,
+      agencyId: entity.agencyId ?? "",
       lastFetchedAt: entity.lastFetchedAt ?? undefined,
       createdAt: entity.createdAt,
     });
@@ -21,6 +22,7 @@ export class FeedMapper {
       name: feed.name,
       url: feed.url.value,
       ownerId: feed.ownerId,
+      agencyId: feed.agencyId || null,
       lastFetchedAt: feed.lastFetchedAt ?? null,
     };
   }

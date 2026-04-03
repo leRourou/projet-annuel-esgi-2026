@@ -1,7 +1,7 @@
 import { NotFoundError } from "@/shared/domain/errors/not-found.error";
 import { Result } from "@/shared/domain/types/result.type";
 import type { UserRepositoryPort } from "../../domain/ports/user.repository.port";
-import { toUserDto, type UserDto } from "../dto/user.dto";
+import { type UserDto, toUserDto } from "../dto/user.dto";
 
 export class GetUserByEmailQuery {
   constructor(private readonly userRepository: UserRepositoryPort) {}

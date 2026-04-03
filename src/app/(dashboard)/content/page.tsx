@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { listArticlesAction } from "@/actions/content.actions";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import Link from "next/link";
 
 function statusVariant(status: string) {
   if (status === "PUBLISHED") return "success" as const;
@@ -40,7 +40,9 @@ export default async function ContentPage() {
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <h2 className="text-sm font-medium truncate">{article.title}</h2>
-                      <p className="text-xs text-muted-foreground mt-0.5">{article.seoMetadata.slug}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {article.seoMetadata.slug}
+                      </p>
                     </div>
                     <Badge variant={statusVariant(article.status)} className="shrink-0">
                       {article.status}

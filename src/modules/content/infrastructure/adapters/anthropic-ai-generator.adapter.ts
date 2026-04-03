@@ -1,5 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
-import type { AiGeneratorPort, GenerateContentInput, GeneratedContent } from "../../domain/ports/ai-generator.port";
+import type {
+  AiGeneratorPort,
+  GenerateContentInput,
+  GeneratedContent,
+} from "../../domain/ports/ai-generator.port";
 
 function slugify(text: string): string {
   return text

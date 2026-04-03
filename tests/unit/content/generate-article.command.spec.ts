@@ -1,7 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { GenerateArticleCommand } from "@/modules/content/application/commands/generate-article.command";
+import type {
+  AiGeneratorPort,
+  GeneratedContent,
+} from "@/modules/content/domain/ports/ai-generator.port";
 import type { ArticleRepositoryPort } from "@/modules/content/domain/ports/article.repository.port";
-import type { AiGeneratorPort, GeneratedContent } from "@/modules/content/domain/ports/ai-generator.port";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mockGenerated: GeneratedContent = {
   title: "TypeScript Best Practices",
@@ -44,6 +47,7 @@ describe("GenerateArticleCommand", () => {
       keywords: ["typescript"],
       contentType: "ARTICLE",
       authorId: "550e8400-e29b-41d4-a716-446655440000",
+      agencyId: "550e8400-e29b-41d4-a716-446655440001",
     });
 
     expect(result.success).toBe(true);

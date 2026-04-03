@@ -1,8 +1,11 @@
-import type { DataSource, Repository } from "typeorm";
 import { paginate } from "@/shared/domain/types/pagination.type";
 import type { PaginatedResult, PaginationParams } from "@/shared/domain/types/pagination.type";
-import type { ArticleRepositoryPort, ArticleFilters } from "../../domain/ports/article.repository.port";
+import type { DataSource, Repository } from "typeorm";
 import type { Article } from "../../domain/entities/article.entity";
+import type {
+  ArticleFilters,
+  ArticleRepositoryPort,
+} from "../../domain/ports/article.repository.port";
 import { ArticleTypeormEntity } from "../entities/article.typeorm-entity";
 import { ArticleMapper } from "../mappers/article.mapper";
 
@@ -23,6 +26,8 @@ export class TypeormArticleRepository implements ArticleRepositoryPort {
     pagination: PaginationParams,
   ): Promise<PaginatedResult<Article>> {
     const qb = this.repo.createQueryBuilder("article");
+
+    qb.andWhere("article.agency_id = :agencyId", { agencyId: filters.agencyId });
 
     if (filters.authorId) {
       qb.andWhere("article.author_id = :authorId", { authorId: filters.authorId });

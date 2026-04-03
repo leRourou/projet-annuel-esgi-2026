@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { searchNotionPagesAction, importFromNotionAction } from "@/actions/notion.actions";
-import type { NotionPageDto } from "@/modules/notion/application/dto/notion-page.dto";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { importFromNotionAction, searchNotionPagesAction } from "@/actions/notion.actions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import type { NotionPageDto } from "@/modules/notion/application/dto/notion-page.dto";
+import { useState, useTransition } from "react";
 
 export default function NotionPage() {
   const [query, setQuery] = useState("");

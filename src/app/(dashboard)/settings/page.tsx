@@ -1,13 +1,14 @@
-import { auth } from "@/lib/auth";
-import { signIn } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { auth } from "@/lib/auth";
+import { signIn } from "@/lib/auth";
 
 export default async function SettingsPage() {
   const session = await auth();
-  const hasNotion = !!(session as typeof session & { notionAccessToken?: string })?.notionAccessToken;
+  const hasNotion = !!(session as typeof session & { notionAccessToken?: string })
+    ?.notionAccessToken;
 
   return (
     <div className="max-w-2xl">

@@ -3,6 +3,7 @@ import type { Article } from "../entities/article.entity";
 import type { ContentStatusValue } from "../value-objects/content-status.vo";
 
 export interface ArticleFilters {
+  agencyId: string;
   authorId?: string;
   status?: ContentStatusValue;
 }

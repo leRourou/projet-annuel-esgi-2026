@@ -1,12 +1,12 @@
 "use server";
 
 import { auth } from "@/lib/auth";
-import { buildContainer } from "@/shared/infrastructure/di/container";
-import { SyncPageToNotionInputSchema } from "@/modules/notion/application/commands/sync-page-to-notion.command";
-import { ImportFromNotionInputSchema } from "@/modules/notion/application/commands/import-from-notion.command";
-import { SearchNotionPagesInputSchema } from "@/modules/notion/application/queries/search-notion-pages.query";
-import type { NotionPageDto } from "@/modules/notion/application/dto/notion-page.dto";
 import type { ArticleDto } from "@/modules/content/application/dto/article.dto";
+import { ImportFromNotionInputSchema } from "@/modules/notion/application/commands/import-from-notion.command";
+import { SyncPageToNotionInputSchema } from "@/modules/notion/application/commands/sync-page-to-notion.command";
+import type { NotionPageDto } from "@/modules/notion/application/dto/notion-page.dto";
+import { SearchNotionPagesInputSchema } from "@/modules/notion/application/queries/search-notion-pages.query";
+import { buildContainer } from "@/shared/infrastructure/di/container";
 
 type ActionResult<T> = { data: T; error?: never } | { data?: never; error: string };
 
@@ -23,7 +23,10 @@ export async function syncToNotionAction(
   const notionToken = getNotionToken(session as typeof session & { notionAccessToken?: string });
   if (!notionToken) return { error: "Notion account not connected" };
 
-  const parsed = SyncPageToNotionInputSchema.safeParse({ ...(input as object), accessToken: notionToken });
+  const parsed = SyncPageToNotionInputSchema.safeParse({
+    ...(input as object),
+    accessToken: notionToken,
+  });
   if (!parsed.success) return { error: "Invalid input" };
 
   const container = await buildContainer();
@@ -32,23 +35,25 @@ export async function syncToNotionAction(
   return { data: result.value };
 }
 
-export async function importFromNotionAction(
-  input: unknown,
-): Promise<ActionResult<ArticleDto>> {
+export async function importFromNotionAction(input: unknown): Promise<ActionResult<ArticleDto>> {
   const session = await auth();
   if (!session?.user?.id) return { error: "Unauthorized" };
 
   const notionToken = getNotionToken(session as typeof session & { notionAccessToken?: string });
   if (!notionToken) return { error: "Notion account not connected" };
 
+  const container = await buildContainer();
+  const membership = await container.getUserMembership.execute(session.user.id);
+  if (!membership || membership.isPending) return { error: "No active agency membership" };
+
   const parsed = ImportFromNotionInputSchema.safeParse({
     ...(input as object),
     accessToken: notionToken,
     authorId: session.user.id,
+    agencyId: membership.agencyId,
   });
   if (!parsed.success) return { error: "Invalid input" };
 
-  const container = await buildContainer();
   const result = await container.importFromNotion.execute(parsed.data);
   if (!result.success) return { error: result.error.message };
   return { data: result.value };

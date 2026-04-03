@@ -8,6 +8,7 @@ export const GenerateArticleInputSchema = z.object({
   wordCount: z.number().int().min(100).max(5000).optional(),
   context: z.string().max(2000).optional(),
   authorId: z.string().uuid(),
+  agencyId: z.string().uuid(),
 });
 
 export type GenerateArticleInput = z.infer<typeof GenerateArticleInputSchema>;

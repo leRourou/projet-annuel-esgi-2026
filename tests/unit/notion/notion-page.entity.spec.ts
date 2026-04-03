@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
 import { NotionPage } from "@/modules/notion/domain/entities/notion-page.entity";
 import { NotionBlock } from "@/modules/notion/domain/value-objects/notion-block.vo";
+import { describe, expect, it } from "vitest";
 
 function makePage() {
   return NotionPage.create("page-1", {

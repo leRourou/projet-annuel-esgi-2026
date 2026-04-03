@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
 import { Email } from "@/modules/auth/domain/value-objects/email.vo";
 import { DomainError } from "@/shared/domain/errors/domain.error";
+import { describe, expect, it } from "vitest";
 
 describe("Email", () => {
   it("creates a valid email and normalises to lowercase", () => {

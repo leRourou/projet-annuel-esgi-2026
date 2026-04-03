@@ -1,8 +1,8 @@
 "use server";
 
-import { z } from "zod";
 import { signIn, signOut } from "@/lib/auth";
 import { buildContainer } from "@/shared/infrastructure/di/container";
+import { z } from "zod";
 
 const SignInInputSchema = z.object({
   email: z.string().email(),
@@ -35,7 +35,9 @@ const CreateUserInputSchema = z.object({
   name: z.string().min(1),
 });
 
-export async function createUserAction(input: unknown): Promise<{ error?: string; userId?: string }> {
+export async function createUserAction(
+  input: unknown,
+): Promise<{ error?: string; userId?: string }> {
   const parsed = CreateUserInputSchema.safeParse(input);
   if (!parsed.success) {
     return { error: "Invalid input" };

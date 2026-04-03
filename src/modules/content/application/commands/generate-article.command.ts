@@ -2,11 +2,11 @@ import { randomUUID } from "crypto";
 import { DomainError } from "@/shared/domain/errors/domain.error";
 import { Result } from "@/shared/domain/types/result.type";
 import { Article } from "../../domain/entities/article.entity";
+import type { AiGeneratorPort } from "../../domain/ports/ai-generator.port";
+import type { ArticleRepositoryPort } from "../../domain/ports/article.repository.port";
 import { ContentType } from "../../domain/value-objects/content-type.vo";
 import { SeoMetadata } from "../../domain/value-objects/seo-metadata.vo";
-import type { ArticleRepositoryPort } from "../../domain/ports/article.repository.port";
-import type { AiGeneratorPort } from "../../domain/ports/ai-generator.port";
-import { toArticleDto, type ArticleDto } from "../dto/article.dto";
+import { type ArticleDto, toArticleDto } from "../dto/article.dto";
 import type { GenerateArticleInput } from "../dto/generate-article.dto";
 
 export class GenerateArticleCommand {
@@ -39,6 +39,7 @@ export class GenerateArticleCommand {
         contentType: ContentType.create(input.contentType),
         seoMetadata,
         authorId: input.authorId,
+        agencyId: input.agencyId,
       });
 
       await this.articleRepository.save(article);

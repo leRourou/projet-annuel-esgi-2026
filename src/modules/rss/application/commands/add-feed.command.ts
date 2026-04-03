@@ -1,15 +1,16 @@
 import { randomUUID } from "crypto";
-import { z } from "zod";
 import { DomainError } from "@/shared/domain/errors/domain.error";
 import { Result } from "@/shared/domain/types/result.type";
+import { z } from "zod";
 import { Feed } from "../../domain/entities/feed.entity";
-import { FeedUrl } from "../../domain/value-objects/feed-url.vo";
 import type { FeedRepositoryPort } from "../../domain/ports/feed.repository.port";
+import { FeedUrl } from "../../domain/value-objects/feed-url.vo";
 
 export const AddFeedInputSchema = z.object({
   url: z.string().url(),
   name: z.string().min(1),
   ownerId: z.string().uuid(),
+  agencyId: z.string().uuid(),
 });
 
 export type AddFeedInput = z.infer<typeof AddFeedInputSchema>;
@@ -32,6 +33,7 @@ export class AddFeedCommand {
         name: input.name,
         url: feedUrl,
         ownerId: input.ownerId,
+        agencyId: input.agencyId,
       });
       await this.feedRepository.saveFeed(feed);
       return Result.ok({

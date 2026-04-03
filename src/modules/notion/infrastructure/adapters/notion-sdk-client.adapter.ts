@@ -1,6 +1,10 @@
 import { Client } from "@notionhq/client";
-import type { NotionClientPort, SearchNotionPagesInput, CreateNotionPageInput } from "../../domain/ports/notion-client.port";
 import type { NotionPage } from "../../domain/entities/notion-page.entity";
+import type {
+  CreateNotionPageInput,
+  NotionClientPort,
+  SearchNotionPagesInput,
+} from "../../domain/ports/notion-client.port";
 import { NotionPageMapper } from "../mappers/notion-page.mapper";
 
 export class NotionSdkClientAdapter implements NotionClientPort {

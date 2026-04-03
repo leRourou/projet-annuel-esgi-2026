@@ -1,6 +1,6 @@
 import { Article } from "../../domain/entities/article.entity";
-import { ContentType } from "../../domain/value-objects/content-type.vo";
 import { ContentStatus } from "../../domain/value-objects/content-status.vo";
+import { ContentType } from "../../domain/value-objects/content-type.vo";
 import { SeoMetadata } from "../../domain/value-objects/seo-metadata.vo";
 import type { ArticleTypeormEntity } from "../entities/article.typeorm-entity";
 
@@ -18,6 +18,7 @@ export class ArticleMapper {
         slug: entity.slug,
       }),
       authorId: entity.authorId,
+      agencyId: entity.agencyId ?? "",
       notionPageId: entity.notionPageId ?? undefined,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
@@ -36,6 +37,7 @@ export class ArticleMapper {
       keywords: [...article.seoMetadata.keywords],
       slug: article.seoMetadata.slug,
       authorId: article.authorId,
+      agencyId: article.agencyId || null,
       notionPageId: article.notionPageId ?? null,
     };
   }

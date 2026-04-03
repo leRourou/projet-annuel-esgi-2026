@@ -1,9 +1,9 @@
 import { AggregateRoot } from "@/shared/domain/base/aggregate-root.base";
 import { DomainError } from "@/shared/domain/errors/domain.error";
+import { ArticlePublishedEvent } from "../events/article-published.event";
 import { ContentStatus } from "../value-objects/content-status.vo";
 import type { ContentType } from "../value-objects/content-type.vo";
 import type { SeoMetadata } from "../value-objects/seo-metadata.vo";
-import { ArticlePublishedEvent } from "../events/article-published.event";
 
 export interface ArticleProps {
   title: string;
@@ -12,6 +12,7 @@ export interface ArticleProps {
   status: ContentStatus;
   seoMetadata: SeoMetadata;
   authorId: string;
+  agencyId: string;
   notionPageId?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -67,6 +68,10 @@ export class Article extends AggregateRoot<string> {
 
   get authorId(): string {
     return this.props.authorId;
+  }
+
+  get agencyId(): string {
+    return this.props.agencyId;
   }
 
   get notionPageId(): string | undefined {

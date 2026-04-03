@@ -1,7 +1,7 @@
 import { NotFoundError } from "@/shared/domain/errors/not-found.error";
 import { Result } from "@/shared/domain/types/result.type";
 import type { ArticleRepositoryPort } from "../../domain/ports/article.repository.port";
-import { toArticleDto, type ArticleDto } from "../dto/article.dto";
+import { type ArticleDto, toArticleDto } from "../dto/article.dto";
 
 export class GetArticleQuery {
   constructor(private readonly articleRepository: ArticleRepositoryPort) {}

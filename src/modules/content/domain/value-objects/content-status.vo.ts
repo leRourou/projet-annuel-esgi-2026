@@ -1,5 +1,5 @@
-import { DomainError } from "@/shared/domain/errors/domain.error";
 import { ValueObject } from "@/shared/domain/base/value-object.base";
+import { DomainError } from "@/shared/domain/errors/domain.error";
 
 export type ContentStatusValue = "DRAFT" | "REVIEW" | "PUBLISHED";
 
@@ -20,10 +20,7 @@ export class ContentStatus extends ValueObject<ContentStatusProps> {
 
   static create(value: string): ContentStatus {
     if (!ContentStatus.VALID.includes(value as ContentStatusValue)) {
-      throw new DomainError(
-        `"${value}" is not a valid content status`,
-        "INVALID_CONTENT_STATUS",
-      );
+      throw new DomainError(`"${value}" is not a valid content status`, "INVALID_CONTENT_STATUS");
     }
     return new ContentStatus({ value: value as ContentStatusValue });
   }

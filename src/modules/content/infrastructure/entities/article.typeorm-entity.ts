@@ -38,6 +38,9 @@ export class ArticleTypeormEntity {
   @Column({ name: "author_id" })
   authorId!: string;
 
+  @Column({ name: "agency_id", nullable: true })
+  agencyId!: string | null;
+
   @Column({ name: "notion_page_id", nullable: true })
   notionPageId!: string | null;
 

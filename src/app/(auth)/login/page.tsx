@@ -1,8 +1,8 @@
 import { signInWithEmail } from "@/actions/auth.actions";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function LoginPage() {
   return (
@@ -13,7 +13,12 @@ export default function LoginPage() {
           <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={async (formData: FormData) => { "use server"; await signInWithEmail(null, formData); }}>
+          <form
+            action={async (formData: FormData) => {
+              "use server";
+              await signInWithEmail(null, formData);
+            }}
+          >
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email address</Label>

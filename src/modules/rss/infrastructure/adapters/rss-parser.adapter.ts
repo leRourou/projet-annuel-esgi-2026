@@ -1,5 +1,5 @@
 import Parser from "rss-parser";
-import type { RssParserPort, ParsedFeed } from "../../domain/ports/rss-parser.port";
+import type { ParsedFeed, RssParserPort } from "../../domain/ports/rss-parser.port";
 
 const parser = new Parser();
 

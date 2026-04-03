@@ -1,5 +1,5 @@
-import { DomainError } from "@/shared/domain/errors/domain.error";
 import { ValueObject } from "@/shared/domain/base/value-object.base";
+import { DomainError } from "@/shared/domain/errors/domain.error";
 
 interface FeedUrlProps {
   readonly value: string;

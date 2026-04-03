@@ -1,9 +1,9 @@
-import { describe, it, expect } from "vitest";
 import { Article } from "@/modules/content/domain/entities/article.entity";
-import { ContentType } from "@/modules/content/domain/value-objects/content-type.vo";
 import { ContentStatus } from "@/modules/content/domain/value-objects/content-status.vo";
+import { ContentType } from "@/modules/content/domain/value-objects/content-type.vo";
 import { SeoMetadata } from "@/modules/content/domain/value-objects/seo-metadata.vo";
 import { DomainError } from "@/shared/domain/errors/domain.error";
+import { describe, expect, it } from "vitest";
 
 function makeSeo() {
   return SeoMetadata.create({
@@ -21,6 +21,7 @@ function makeArticle() {
     contentType: ContentType.ARTICLE,
     seoMetadata: makeSeo(),
     authorId: "user-1",
+    agencyId: "agency-1",
   });
 }
 
@@ -38,6 +39,7 @@ describe("Article", () => {
         contentType: ContentType.ARTICLE,
         seoMetadata: makeSeo(),
         authorId: "user-1",
+        agencyId: "agency-1",
       }),
     ).toThrow(DomainError);
   });

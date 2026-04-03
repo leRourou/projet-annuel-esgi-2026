@@ -5,6 +5,7 @@ export interface FeedProps {
   name: string;
   url: FeedUrl;
   ownerId: string;
+  agencyId: string;
   lastFetchedAt?: Date;
   createdAt: Date;
 }
@@ -38,6 +39,10 @@ export class Feed extends AggregateRoot<string> {
 
   get ownerId(): string {
     return this.props.ownerId;
+  }
+
+  get agencyId(): string {
+    return this.props.agencyId;
   }
 
   get lastFetchedAt(): Date | undefined {

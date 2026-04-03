@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
 import { FeedUrl } from "@/modules/rss/domain/value-objects/feed-url.vo";
 import { DomainError } from "@/shared/domain/errors/domain.error";
+import { describe, expect, it } from "vitest";
 
 describe("FeedUrl", () => {
   it("creates a valid https URL", () => {

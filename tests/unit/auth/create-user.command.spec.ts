@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { CreateUserCommand } from "@/modules/auth/application/commands/create-user.command";
 import type { UserRepositoryPort } from "@/modules/auth/domain/ports/user.repository.port";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 function makeRepo(): UserRepositoryPort {
   return {

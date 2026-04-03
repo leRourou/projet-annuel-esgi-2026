@@ -1,6 +1,6 @@
 import type { DataSource, Repository } from "typeorm";
-import type { UserRepositoryPort } from "../../domain/ports/user.repository.port";
 import type { User } from "../../domain/entities/user.entity";
+import type { UserRepositoryPort } from "../../domain/ports/user.repository.port";
 import { UserTypeormEntity } from "../entities/user.typeorm-entity";
 import { UserMapper } from "../mappers/user.mapper";
 

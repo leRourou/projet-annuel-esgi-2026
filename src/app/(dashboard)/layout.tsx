@@ -1,20 +1,28 @@
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { auth } from "@/lib/auth";
 import { signOutAction } from "@/actions/auth.actions";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { auth } from "@/lib/auth";
+import { buildContainer } from "@/shared/infrastructure/di/container";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
 const NAV_LINKS = [
   { href: "/content", label: "Content" },
   { href: "/notion", label: "Notion" },
   { href: "/rss", label: "RSS Feeds" },
+  { href: "/settings/members", label: "Members" },
   { href: "/settings", label: "Settings" },
 ];
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
-  if (!session?.user) redirect("/login");
+  if (!session?.user?.id) redirect("/login");
+
+  const container = await buildContainer();
+  const membership = await container.getUserMembership.execute(session.user.id);
+  if (!membership || membership.isPending) {
+    redirect("/onboarding");
+  }
 
   return (
     <div className="min-h-screen bg-muted/40 flex">
@@ -38,7 +46,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div className="px-3 py-4 space-y-1">
           <p className="text-xs text-muted-foreground px-3 mb-1 truncate">{session.user.email}</p>
           <form action={signOutAction}>
-            <Button variant="ghost" size="sm" type="submit" className="w-full justify-start text-muted-foreground">
+            <Button
+              variant="ghost"
+              size="sm"
+              type="submit"
+              className="w-full justify-start text-muted-foreground"
+            >
               Sign out
             </Button>
           </form>

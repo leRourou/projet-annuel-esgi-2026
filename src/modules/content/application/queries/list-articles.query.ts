@@ -1,9 +1,13 @@
-import { z } from "zod";
 import type { PaginatedResult } from "@/shared/domain/types/pagination.type";
-import type { ArticleRepositoryPort, ArticleFilters } from "../../domain/ports/article.repository.port";
-import { toArticleDto, type ArticleDto } from "../dto/article.dto";
+import { z } from "zod";
+import type {
+  ArticleFilters,
+  ArticleRepositoryPort,
+} from "../../domain/ports/article.repository.port";
+import { type ArticleDto, toArticleDto } from "../dto/article.dto";
 
 export const ListArticlesInputSchema = z.object({
+  agencyId: z.string().uuid(),
   authorId: z.string().uuid().optional(),
   status: z.enum(["DRAFT", "REVIEW", "PUBLISHED"]).optional(),
   page: z.number().int().min(1).default(1),
@@ -17,6 +21,7 @@ export class ListArticlesQuery {
 
   async execute(input: ListArticlesInput): Promise<PaginatedResult<ArticleDto>> {
     const filters: ArticleFilters = {
+      agencyId: input.agencyId,
       authorId: input.authorId,
       status: input.status,
     };

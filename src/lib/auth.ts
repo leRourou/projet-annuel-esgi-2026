@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
-import Resend from "next-auth/providers/resend";
 import NotionProvider from "next-auth/providers/notion";
+import Resend from "next-auth/providers/resend";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -24,8 +24,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async session({ session, token }) {
       if (token["notionAccessToken"]) {
-        (session as typeof session & { notionAccessToken?: string }).notionAccessToken =
-          token["notionAccessToken"] as string;
+        (session as typeof session & { notionAccessToken?: string }).notionAccessToken = token[
+          "notionAccessToken"
+        ] as string;
       }
       return session;
     },

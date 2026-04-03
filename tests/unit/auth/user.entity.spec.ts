@@ -1,8 +1,7 @@
-import { describe, it, expect } from "vitest";
 import { User } from "@/modules/auth/domain/entities/user.entity";
 import { Email } from "@/modules/auth/domain/value-objects/email.vo";
-import { UserRole } from "@/modules/auth/domain/value-objects/user-role.vo";
 import { DomainError } from "@/shared/domain/errors/domain.error";
+import { describe, expect, it } from "vitest";
 
 function makeUser(name = "Alice") {
   return User.create("user-1", { email: Email.create("alice@test.com"), name });

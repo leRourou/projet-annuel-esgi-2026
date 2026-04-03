@@ -1,10 +1,10 @@
-import { z } from "zod";
 import { DomainError } from "@/shared/domain/errors/domain.error";
 import { NotFoundError } from "@/shared/domain/errors/not-found.error";
 import { Result } from "@/shared/domain/types/result.type";
-import { SeoMetadata } from "../../domain/value-objects/seo-metadata.vo";
+import { z } from "zod";
 import type { ArticleRepositoryPort } from "../../domain/ports/article.repository.port";
-import { toArticleDto, type ArticleDto } from "../dto/article.dto";
+import { SeoMetadata } from "../../domain/value-objects/seo-metadata.vo";
+import { type ArticleDto, toArticleDto } from "../dto/article.dto";
 
 export const UpdateArticleInputSchema = z.object({
   id: z.string().uuid(),
@@ -32,9 +32,7 @@ export class UpdateArticleCommand {
         return Result.fail(new NotFoundError("Article", input.id));
       }
 
-      const seoMetadata = input.seoMetadata
-        ? SeoMetadata.create(input.seoMetadata)
-        : undefined;
+      const seoMetadata = input.seoMetadata ? SeoMetadata.create(input.seoMetadata) : undefined;
 
       article.update({ title: input.title, body: input.body, seoMetadata });
       await this.articleRepository.save(article);

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { FeedRepositoryPort } from "../../domain/ports/feed.repository.port";
-import { toFeedItemDto, type FeedItemDto } from "../dto/feed-item.dto";
+import { type FeedItemDto, toFeedItemDto } from "../dto/feed-item.dto";
 
 export const ListFeedItemsInputSchema = z.object({
   feedId: z.string(),

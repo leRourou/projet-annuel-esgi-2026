@@ -1,8 +1,8 @@
-import { notFound } from "next/navigation";
 import { getArticleAction, publishArticleAction } from "@/actions/content.actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { notFound } from "next/navigation";
 
 function statusVariant(status: string) {
   if (status === "PUBLISHED") return "success" as const;

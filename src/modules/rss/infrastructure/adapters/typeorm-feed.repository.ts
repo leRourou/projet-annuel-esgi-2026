@@ -1,9 +1,9 @@
 import type { DataSource, Repository } from "typeorm";
-import type { FeedRepositoryPort } from "../../domain/ports/feed.repository.port";
-import type { Feed } from "../../domain/entities/feed.entity";
 import type { FeedItem } from "../../domain/entities/feed-item.entity";
-import { FeedTypeormEntity } from "../entities/feed.typeorm-entity";
+import type { Feed } from "../../domain/entities/feed.entity";
+import type { FeedRepositoryPort } from "../../domain/ports/feed.repository.port";
 import { FeedItemTypeormEntity } from "../entities/feed-item.typeorm-entity";
+import { FeedTypeormEntity } from "../entities/feed.typeorm-entity";
 import { FeedMapper } from "../mappers/feed.mapper";
 
 export class TypeormFeedRepository implements FeedRepositoryPort {
@@ -22,6 +22,11 @@ export class TypeormFeedRepository implements FeedRepositoryPort {
 
   async findAllByOwner(ownerId: string): Promise<Feed[]> {
     const entities = await this.feedRepo.findBy({ ownerId });
+    return entities.map(FeedMapper.feedToDomain);
+  }
+
+  async findAllByAgency(agencyId: string): Promise<Feed[]> {
+    const entities = await this.feedRepo.findBy({ agencyId });
     return entities.map(FeedMapper.feedToDomain);
   }
 

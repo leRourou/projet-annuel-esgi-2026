@@ -1,18 +1,19 @@
-import { z } from "zod";
 import { randomUUID } from "crypto";
-import { DomainError } from "@/shared/domain/errors/domain.error";
-import { Result } from "@/shared/domain/types/result.type";
+import { type ArticleDto, toArticleDto } from "@/modules/content/application/dto/article.dto";
 import { Article } from "@/modules/content/domain/entities/article.entity";
+import type { ArticleRepositoryPort } from "@/modules/content/domain/ports/article.repository.port";
 import { ContentType } from "@/modules/content/domain/value-objects/content-type.vo";
 import { SeoMetadata } from "@/modules/content/domain/value-objects/seo-metadata.vo";
-import type { ArticleRepositoryPort } from "@/modules/content/domain/ports/article.repository.port";
+import { DomainError } from "@/shared/domain/errors/domain.error";
+import { Result } from "@/shared/domain/types/result.type";
+import { z } from "zod";
 import type { NotionClientPort } from "../../domain/ports/notion-client.port";
-import { toArticleDto, type ArticleDto } from "@/modules/content/application/dto/article.dto";
 
 export const ImportFromNotionInputSchema = z.object({
   pageId: z.string(),
   accessToken: z.string(),
   authorId: z.string().uuid(),
+  agencyId: z.string().uuid(),
 });
 
 export type ImportFromNotionInput = z.infer<typeof ImportFromNotionInputSchema>;
@@ -48,6 +49,7 @@ export class ImportFromNotionCommand {
         contentType: ContentType.ARTICLE,
         seoMetadata,
         authorId: input.authorId,
+        agencyId: input.agencyId,
         notionPageId: page.id,
       });
 

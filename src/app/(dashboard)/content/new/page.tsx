@@ -1,13 +1,11 @@
 "use client";
 
-import { useState, useActionState } from "react";
-import { useRouter } from "next/navigation";
 import { generateArticleAction } from "@/actions/content.actions";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -15,6 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useRouter } from "next/navigation";
+import { useActionState, useState } from "react";
 
 type State = { error?: string };
 
@@ -34,9 +34,7 @@ export default function NewContentPage() {
           .filter(Boolean),
         contentType: formData.get("contentType") as string,
         tone: (formData.get("tone") as string) || undefined,
-        wordCount: formData.get("wordCount")
-          ? Number(formData.get("wordCount"))
-          : undefined,
+        wordCount: formData.get("wordCount") ? Number(formData.get("wordCount")) : undefined,
       };
       const result = await generateArticleAction(input);
       if (result.error || !result.data) return { error: result.error ?? "Unknown error" };
@@ -102,11 +100,7 @@ export default function NewContentPage() {
 
             <div className="space-y-2">
               <Label htmlFor="tone">Tone</Label>
-              <Input
-                id="tone"
-                name="tone"
-                placeholder="e.g. professional, friendly, technical"
-              />
+              <Input id="tone" name="tone" placeholder="e.g. professional, friendly, technical" />
             </div>
 
             <div className="space-y-2">

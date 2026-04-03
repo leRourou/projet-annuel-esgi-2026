@@ -1,5 +1,5 @@
-import { Mail } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Mail } from "lucide-react";
 
 export default function VerifyPage() {
   return (

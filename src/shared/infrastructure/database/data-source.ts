@@ -1,11 +1,14 @@
 import "reflect-metadata";
-import { DataSource } from "typeorm";
-import { ArticleTypeormEntity } from "@/modules/content/infrastructure/entities/article.typeorm-entity";
+import { AgencyMemberTypeormEntity } from "@/modules/agency/infrastructure/entities/agency-member.typeorm-entity";
+import { AgencyTypeormEntity } from "@/modules/agency/infrastructure/entities/agency.typeorm-entity";
 import { UserTypeormEntity } from "@/modules/auth/infrastructure/entities/user.typeorm-entity";
-import { FeedTypeormEntity } from "@/modules/rss/infrastructure/entities/feed.typeorm-entity";
+import { ArticleTypeormEntity } from "@/modules/content/infrastructure/entities/article.typeorm-entity";
 import { FeedItemTypeormEntity } from "@/modules/rss/infrastructure/entities/feed-item.typeorm-entity";
+import { FeedTypeormEntity } from "@/modules/rss/infrastructure/entities/feed.typeorm-entity";
+import { DataSource } from "typeorm";
 
-const DATABASE_URL = process.env["DATABASE_URL"] ?? "postgresql://contentai:contentai_secret@localhost:5432/contentai_db";
+const DATABASE_URL = process.env["DATABASE_URL"] ??
+  "postgresql://contentai:contentai_secret@localhost:5432/contentai_db";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -17,6 +20,8 @@ export const AppDataSource = new DataSource({
     ArticleTypeormEntity,
     FeedTypeormEntity,
     FeedItemTypeormEntity,
+    AgencyTypeormEntity,
+    AgencyMemberTypeormEntity,
   ],
   migrations: ["src/shared/infrastructure/database/migrations/*.ts"],
   subscribers: [],

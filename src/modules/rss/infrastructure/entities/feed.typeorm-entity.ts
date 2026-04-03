@@ -1,9 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-} from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("feeds")
 export class FeedTypeormEntity {
@@ -18,6 +13,9 @@ export class FeedTypeormEntity {
 
   @Column({ name: "owner_id" })
   ownerId!: string;
+
+  @Column({ name: "agency_id", nullable: true })
+  agencyId!: string | null;
 
   @Column({ name: "last_fetched_at", nullable: true })
   lastFetchedAt!: Date | null;
