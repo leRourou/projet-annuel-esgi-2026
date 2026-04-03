@@ -1,0 +1,51 @@
+import type { DataSource, Repository } from "typeorm";
+import { paginate } from "@/shared/domain/types/pagination.type";
+import type { PaginatedResult, PaginationParams } from "@/shared/domain/types/pagination.type";
+import type { ArticleRepositoryPort, ArticleFilters } from "../../domain/ports/article.repository.port";
+import type { Article } from "../../domain/entities/article.entity";
+import { ArticleTypeormEntity } from "../entities/article.typeorm-entity";
+import { ArticleMapper } from "../mappers/article.mapper";
+
+export class TypeormArticleRepository implements ArticleRepositoryPort {
+  private readonly repo: Repository<ArticleTypeormEntity>;
+
+  constructor(dataSource: DataSource) {
+    this.repo = dataSource.getRepository(ArticleTypeormEntity);
+  }
+
+  async findById(id: string): Promise<Article | null> {
+    const entity = await this.repo.findOneBy({ id });
+    return entity ? ArticleMapper.toDomain(entity) : null;
+  }
+
+  async findAll(
+    filters: ArticleFilters,
+    pagination: PaginationParams,
+  ): Promise<PaginatedResult<Article>> {
+    const qb = this.repo.createQueryBuilder("article");
+
+    if (filters.authorId) {
+      qb.andWhere("article.author_id = :authorId", { authorId: filters.authorId });
+    }
+    if (filters.status) {
+      qb.andWhere("article.status = :status", { status: filters.status });
+    }
+
+    const [entities, total] = await qb
+      .skip((pagination.page - 1) * pagination.limit)
+      .take(pagination.limit)
+      .orderBy("article.created_at", "DESC")
+      .getManyAndCount();
+
+    return paginate(entities.map(ArticleMapper.toDomain), total, pagination);
+  }
+
+  async save(article: Article): Promise<void> {
+    const data = ArticleMapper.toPersistence(article);
+    await this.repo.save(data);
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.repo.delete({ id });
+  }
+}

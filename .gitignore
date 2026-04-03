@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js
+.next/
+out/
+
+# Production
+dist/
+build/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# TypeORM
+migrations/*.js
+
+# Testing
+coverage/
+playwright-report/
+test-results/
+
+# Misc
+.DS_Store
+*.pem
+.idea/
+.vscode/
+*.log
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Claude code
+CLAUDE.md
+.claude/
