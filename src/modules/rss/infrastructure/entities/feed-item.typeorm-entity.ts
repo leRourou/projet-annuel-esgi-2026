@@ -2,21 +2,21 @@ import { Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity("feed_items")
 export class FeedItemTypeormEntity {
-  @PrimaryColumn()
+  @PrimaryColumn({ type: "varchar" })
   id!: string;
 
-  @Column({ name: "feed_id" })
+  @Column({ type: "varchar", name: "feed_id" })
   feedId!: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   title!: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   link!: string;
 
   @Column("text")
   summary!: string;
 
-  @Column({ name: "published_at" })
+  @Column({ type: "timestamp", name: "published_at" })
   publishedAt!: Date;
 }

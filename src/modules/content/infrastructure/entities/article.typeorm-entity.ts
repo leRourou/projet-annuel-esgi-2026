@@ -11,42 +11,42 @@ export class ArticleTypeormEntity {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   title!: string;
 
   @Column("text")
   body!: string;
 
-  @Column({ name: "content_type" })
+  @Column({ type: "varchar", name: "content_type" })
   contentType!: string;
 
-  @Column({ default: "DRAFT" })
+  @Column({ type: "varchar", default: "DRAFT" })
   status!: string;
 
-  @Column({ name: "meta_title" })
+  @Column({ type: "varchar", name: "meta_title" })
   metaTitle!: string;
 
-  @Column({ name: "meta_description" })
+  @Column({ type: "varchar", name: "meta_description" })
   metaDescription!: string;
 
   @Column("simple-array")
   keywords!: string[];
 
-  @Column({ unique: true })
+  @Column({ type: "varchar", unique: true })
   slug!: string;
 
-  @Column({ name: "author_id" })
+  @Column({ type: "varchar", name: "author_id" })
   authorId!: string;
 
-  @Column({ name: "agency_id", nullable: true })
+  @Column({ type: "varchar", name: "agency_id", nullable: true })
   agencyId!: string | null;
 
-  @Column({ name: "notion_page_id", nullable: true })
+  @Column({ type: "varchar", name: "notion_page_id", nullable: true })
   notionPageId!: string | null;
 
-  @CreateDateColumn({ name: "created_at" })
+  @CreateDateColumn({ name: "created_at", type: "timestamp" })
   createdAt!: Date;
 
-  @UpdateDateColumn({ name: "updated_at" })
+  @UpdateDateColumn({ name: "updated_at", type: "timestamp" })
   updatedAt!: Date;
 }

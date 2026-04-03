@@ -11,21 +11,21 @@ export class UserTypeormEntity {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column({ unique: true })
+  @Column({ type: "varchar", unique: true })
   email!: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   name!: string;
 
-  @Column({ default: "MEMBER" })
+  @Column({ type: "varchar", default: "MEMBER" })
   role!: string;
 
-  @Column({ name: "notion_access_token", nullable: true })
+  @Column({ type: "varchar", name: "notion_access_token", nullable: true })
   notionAccessToken!: string | null;
 
-  @CreateDateColumn({ name: "created_at" })
+  @CreateDateColumn({ name: "created_at", type: "timestamp" })
   createdAt!: Date;
 
-  @UpdateDateColumn({ name: "updated_at" })
+  @UpdateDateColumn({ name: "updated_at", type: "timestamp" })
   updatedAt!: Date;
 }
