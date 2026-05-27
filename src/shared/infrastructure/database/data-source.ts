@@ -1,13 +1,21 @@
 import "reflect-metadata";
 import { AgencyMemberTypeormEntity } from "@/modules/agency/infrastructure/entities/agency-member.typeorm-entity";
 import { AgencyTypeormEntity } from "@/modules/agency/infrastructure/entities/agency.typeorm-entity";
+import { ThemeTypeormEntity } from "@/modules/agency/infrastructure/entities/theme.typeorm-entity";
+import { AccountTypeormEntity } from "@/modules/auth/infrastructure/entities/account.typeorm-entity";
 import { UserTypeormEntity } from "@/modules/auth/infrastructure/entities/user.typeorm-entity";
+import { VerificationTokenTypeormEntity } from "@/modules/auth/infrastructure/entities/verification-token.typeorm-entity";
 import { ArticleTypeormEntity } from "@/modules/content/infrastructure/entities/article.typeorm-entity";
 import { FeedItemTypeormEntity } from "@/modules/rss/infrastructure/entities/feed-item.typeorm-entity";
 import { FeedTypeormEntity } from "@/modules/rss/infrastructure/entities/feed.typeorm-entity";
+import { InitialSchema1743000000000 } from "@/shared/infrastructure/database/migrations/1743000000000-InitialSchema";
+import { AddAuthTables1775228738204 } from "@/shared/infrastructure/database/migrations/1775228738204-AddAuthTables";
+import { AddNotionConfigToAgency1775300000000 } from "@/shared/infrastructure/database/migrations/1775300000000-AddNotionConfigToAgency";
+import { AddThemesTable1775400000000 } from "@/shared/infrastructure/database/migrations/1775400000000-AddThemesTable";
 import { DataSource } from "typeorm";
 
-const DATABASE_URL = process.env["DATABASE_URL"] ??
+const DATABASE_URL =
+  process.env["DATABASE_URL"] ??
   "postgresql://contentai:contentai_secret@localhost:5432/contentai_db";
 
 export const AppDataSource = new DataSource({
@@ -17,13 +25,21 @@ export const AppDataSource = new DataSource({
   logging: process.env["NODE_ENV"] === "development",
   entities: [
     UserTypeormEntity,
+    AccountTypeormEntity,
+    VerificationTokenTypeormEntity,
     ArticleTypeormEntity,
     FeedTypeormEntity,
     FeedItemTypeormEntity,
     AgencyTypeormEntity,
     AgencyMemberTypeormEntity,
+    ThemeTypeormEntity,
   ],
-  migrations: ["src/shared/infrastructure/database/migrations/*.ts"],
+  migrations: [
+    InitialSchema1743000000000,
+    AddAuthTables1775228738204,
+    AddNotionConfigToAgency1775300000000,
+    AddThemesTable1775400000000,
+  ],
   subscribers: [],
 });
 

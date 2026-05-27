@@ -18,6 +18,22 @@ export interface GeneratedContent {
   slug: string;
 }
 
+export interface GenerateIdeasInput {
+  themes: string[];
+  existingTitles?: string[];
+  agencyContext?: string;
+  count?: number;
+}
+
+export interface ContentIdea {
+  title: string;
+  angle: string;
+  contentType: ContentTypeValue;
+  keywords: string[];
+}
+
 export interface AiGeneratorPort {
   generate(input: GenerateContentInput): Promise<GeneratedContent>;
+  generateStream?(input: GenerateContentInput): AsyncIterable<string>;
+  generateIdeas(input: GenerateIdeasInput): Promise<ContentIdea[]>;
 }

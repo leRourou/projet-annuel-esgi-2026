@@ -17,6 +17,9 @@ export class UserTypeormEntity {
   @Column({ type: "varchar" })
   name!: string;
 
+  @Column({ type: "timestamp", name: "email_verified", nullable: true })
+  emailVerified!: Date | null;
+
   @Column({ type: "varchar", default: "MEMBER" })
   role!: string;
 

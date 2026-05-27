@@ -1,8 +1,11 @@
-import { auth } from "@/lib/auth";
+import { authConfig } from "@/lib/auth.config";
+import NextAuth from "next-auth";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/verify", "/invite", "/onboarding"];
+const { auth } = NextAuth(authConfig);
+
+const PUBLIC_PATHS = ["/login", "/verify", "/invite", "/onboarding", "/debug-login"];
 
 export default auth((req: NextRequest & { auth: unknown }) => {
   const { pathname } = req.nextUrl;
@@ -16,8 +19,10 @@ export default auth((req: NextRequest & { auth: unknown }) => {
 
   const session = req.auth as { user?: { id?: string } } | null;
   if (!session?.user?.id) {
+    const loginPath =
+      process.env["NODE_ENV"] === "development" ? "/debug-login" : "/login";
     return NextResponse.redirect(
-      new URL(`/login?callbackUrl=${encodeURIComponent(pathname)}`, req.url),
+      new URL(`${loginPath}?callbackUrl=${encodeURIComponent(pathname)}`, req.url),
     );
   }
 
