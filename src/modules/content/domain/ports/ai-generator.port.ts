@@ -1,11 +1,14 @@
 import type { ContentTypeValue } from "../value-objects/content-type.vo";
 
+export type ArticleType = "HOW_TO" | "LISTICLE" | "COMPARISON" | "CASE_STUDY" | "OPINION" | "NEWS";
+
 export interface GenerateContentInput {
   contentType: ContentTypeValue;
   topic: string;
   keywords: string[];
   tone?: string;
   wordCount?: number;
+  articleType?: ArticleType;
   context?: string;
 }
 

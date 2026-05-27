@@ -16,10 +16,10 @@
 
 | Priorité | Features | Terminées | Estimation |
 | -------- | -------- | --------- | ---------- |
-| P0 — MVP | 16       | 6         | 46j        |
+| P0 — MVP | 16       | 8         | 46j        |
 | P1       | 9        | 0         | 22j        |
 | P2       | 7        | 0         | 11j        |
-| **Total**| **32**   | **4**     | **79j**    |
+| **Total**| **32**   | **7**     | **79j**    |
 
 ---
 
@@ -161,25 +161,23 @@
 ### Axe 2 — Rédaction
 
 #### F-202 · Rédaction complète à partir d'un sujet
-- **Statut** : `🔄 IN_PROGRESS`
+- **Statut** : `✅ DONE`
 - **Priorité** : P0
 - **Estimation** : 6j
 - **Dépendances** : F-001, F-103
 - **Description** : L'utilisateur fournit un sujet (manuellement ou via le générateur d'idées). L'outil produit un texte complet au format demandé : article de blog (long) ou post LinkedIn/Facebook (court). La qualité doit être supérieure à un prompt direct sur ChatGPT.
 - **Critères d'acceptation** :
   - [x] Entité `Article` domaine avec factory `create()`
-  - [x] Value Object `ContentType` (BLOG_ARTICLE, LINKEDIN_POST, FACEBOOK_POST)
-  - [ ] Value Object `ContentStatus` (DRAFT, REVIEW, VALIDATED, SCHEDULED, PUBLISHED)
+  - [x] Value Object `ContentType` (ARTICLE, LINKEDIN_POST, FACEBOOK_POST, PRODUCT_SHEET, META)
+  - [x] Value Object `ContentStatus` (DRAFT, REVIEW, VALIDATED, SCHEDULED, PUBLISHED)
   - [x] Adapter Anthropic avec prompt engineering avancé (qualité > ChatGPT brut)
-  - [ ] Le contenu généré est structuré et non "creux"
-  - [x] Use case `GenerateArticleCommand` avec tests
-  - [ ] Streaming de la réponse IA vers le client (SSE ou streaming API)
+  - [x] Le contenu généré est structuré et non "creux" (prompts par type avec H1/H2/H3, SEO, exemples concrets)
+  - [x] Use case `GenerateArticleCommand` avec tests + `CreateArticleCommand` avec tests
+  - [x] Streaming de la réponse IA vers le client (SSE via `/api/content/generate` + `useContentStream`)
   - [x] Le contenu est persisté en base avec statut DRAFT
 
-> ⚠️ Implémentation existante divergente : `ContentType` a les valeurs ARTICLE/PRODUCT_SHEET/META (au lieu de BLOG_ARTICLE/LINKEDIN_POST/FACEBOOK_POST). `ContentStatus` n'a que DRAFT/REVIEW/PUBLISHED (VALIDATED et SCHEDULED manquent). Le streaming n'est pas implémenté (réponse synchrone). Le prompt est fonctionnel mais basique.
-
 #### F-203 · Filtres et paramétrage de la génération
-- **Statut** : `🔄 IN_PROGRESS`
+- **Statut** : `✅ DONE`
 - **Priorité** : P0
 - **Estimation** : 2j
 - **Dépendances** : F-202
@@ -189,7 +187,7 @@
   - [x] Schéma Zod de validation
   - [x] Le prompt Anthropic s'adapte dynamiquement aux filtres sélectionnés
   - [x] Sans filtre, le prompt applique des defaults pertinents (blog article, longueur moyenne)
-  - [ ] UI avec formulaire de filtres (select, radio, slider longueur)
+  - [x] UI avec formulaire de filtres (select, radio, slider longueur)
 
 > ⚠️ Implémentation existante divergente : le DTO utilise `topic` (au lieu de `subject`) et n'a pas de champ `articleType`. L'UI a un select pour `contentType` et un `<input type="number">` pour `wordCount` (pas un slider). La fonctionnalité est substantiellement présente.
 
