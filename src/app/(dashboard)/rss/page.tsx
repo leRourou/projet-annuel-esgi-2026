@@ -1,50 +1,10 @@
-"use client";
-
-import { addFeedAction, refreshFeedsAction } from "@/actions/rss.actions";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { listFeedsAction, refreshFeedsAction } from "@/actions/rss.actions";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useState, useTransition } from "react";
+import { RssManager } from "./rss-manager";
 
-export default function RssPage() {
-  const [url, setUrl] = useState("");
-  const [name, setName] = useState("");
-  const [message, setMessage] = useState<string | null>(null);
-  const [isError, setIsError] = useState(false);
-  const [isPending, startTransition] = useTransition();
-
-  function handleAddFeed(e: React.FormEvent) {
-    e.preventDefault();
-    setMessage(null);
-    startTransition(async () => {
-      const result = await addFeedAction({ url, name });
-      if (result.error) {
-        setIsError(true);
-        setMessage(result.error);
-      } else {
-        setIsError(false);
-        setMessage(`Feed added successfully (id: ${result.data?.id})`);
-        setUrl("");
-        setName("");
-      }
-    });
-  }
-
-  function handleRefresh() {
-    setMessage(null);
-    startTransition(async () => {
-      const result = await refreshFeedsAction();
-      if (result.error) {
-        setIsError(true);
-        setMessage(result.error);
-      } else {
-        setIsError(false);
-        setMessage(`Refreshed: ${result.data?.refreshed} feeds, ${result.data?.failed} failed`);
-      }
-    });
-  }
+export default async function RssPage() {
+  const feedsResult = await listFeedsAction();
+  const feeds = feedsResult.data ?? [];
 
   return (
     <div className="max-w-2xl">
@@ -55,51 +15,19 @@ export default function RssPage() {
             Subscribe to content feeds for inspiration
           </p>
         </div>
-        <Button variant="outline" onClick={handleRefresh} disabled={isPending}>
-          Refresh all
-        </Button>
+        <form
+          action={async () => {
+            "use server";
+            await refreshFeedsAction();
+          }}
+        >
+          <Button type="submit" variant="outline">
+            Refresh all
+          </Button>
+        </form>
       </div>
 
-      {message && (
-        <Alert variant={isError ? "destructive" : "success"} className="mb-6">
-          <AlertDescription>{message}</AlertDescription>
-        </Alert>
-      )}
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Add a feed</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleAddFeed} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="url">Feed URL *</Label>
-              <Input
-                id="url"
-                type="url"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                required
-                placeholder="https://example.com/feed.xml"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="name">Name *</Label>
-              <Input
-                id="name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                placeholder="My favorite blog"
-              />
-            </div>
-            <Button type="submit" disabled={isPending} className="w-full">
-              Add feed
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+      <RssManager initialFeeds={feeds} />
     </div>
   );
 }

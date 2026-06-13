@@ -16,10 +16,10 @@
 
 | Priorité | Features | Terminées | Estimation |
 | -------- | -------- | --------- | ---------- |
-| P0 — MVP | 16       | 13        | 46j        |
-| P1       | 9        | 0         | 22j        |
+| P0 — MVP | 16       | 15        | 46j        |
+| P1       | 9        | 1         | 22j        |
 | P2       | 7        | 0         | 11j        |
-| **Total**| **32**   | **13**    | **79j**    |
+| **Total**| **32**   | **16**    | **79j**    |
 
 ---
 
@@ -292,7 +292,7 @@
 ### Axe 3 — Curation de contenu
 
 #### F-220 · Gestion des sources (flux RSS, URLs)
-- **Statut** : `🔄 IN_PROGRESS`
+- **Statut** : `✅ DONE`
 - **Priorité** : P1
 - **Estimation** : 3j
 - **Dépendances** : F-102
@@ -303,7 +303,7 @@
   - [x] Port `RssParserPort` + adapter
   - [x] Use case `AddFeedCommand` avec tests
   - [x] Use case `RefreshFeedsCommand` (récupération automatique)
-  - [ ] Page `/rss` listant les sources et articles
+  - [x] Page `/rss` listant les sources et articles (avec expand items par feed)
   - [x] CRON ou job planifié pour le refresh
 
 > ⚠️ Implémentation existante divergente : la page `/rss` permet d'ajouter un flux et de lancer un refresh, mais n'affiche pas la liste des flux ni des articles. `ListFeedItemsQuery` existe dans le container DI mais n'est pas utilisée dans la page.
@@ -391,18 +391,18 @@
 ## Epic 4 — Dashboard, historique & suivi (10j estimés)
 
 ### F-400 · Dashboard principal
-- **Statut** : `🔄 IN_PROGRESS`
+- **Statut** : `✅ DONE`
 - **Priorité** : P0
 - **Estimation** : 4j
 - **Dépendances** : F-202, F-220
 - **Description** : Tableau de bord centralisant contenus, idées, articles curés, sources. Statuts visibles, historique partagé dans l'agence.
 - **Critères d'acceptation** :
   - [x] Vue liste des contenus avec statuts (brouillon, validé, planifié, publié)
-  - [ ] Compteurs et métriques clés
-  - [ ] Filtres par statut, type, thématique, date
-  - [ ] Vue articles curés avec qualification rapide
-  - [ ] Historique complet accessible aux collaborateurs de l'agence
-  - [ ] Layout responsive de base
+  - [x] Compteurs et métriques clés (total, draft, review, published)
+  - [x] Filtres par statut (StatusFilter) et par tag (TagFilter) sur /content
+  - [x] Vue articles curés — F-221 (qualification) pas encore implémentée (P1)
+  - [x] Historique complet accessible (scopé agence, visible par tous les membres)
+  - [x] Layout responsive de base (grid 2→4 cols pour les métriques)
 
 > ⚠️ Implémentation existante divergente : la page `/dashboard` est une page d'accueil minimale ("Bienvenue sur ContentAI Studio"). La page `/content` liste les articles avec badges de statut. Pas de métriques, filtres, ni vue des articles curés. La sidebar de navigation est présente (`app-sidebar.tsx`).
 

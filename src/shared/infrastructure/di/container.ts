@@ -46,6 +46,7 @@ import { SearchNotionPagesQuery } from "@/modules/notion/application/queries/sea
 import { AddFeedCommand } from "@/modules/rss/application/commands/add-feed.command";
 import { RefreshFeedsCommand } from "@/modules/rss/application/commands/refresh-feeds.command";
 import { ListFeedItemsQuery } from "@/modules/rss/application/queries/list-feed-items.query";
+import { ListFeedsQuery } from "@/modules/rss/application/queries/list-feeds.query";
 
 export async function buildContainer() {
   const dataSource = await getDataSource();
@@ -93,6 +94,7 @@ export async function buildContainer() {
     addFeed: new AddFeedCommand(feedRepository),
     refreshFeeds: new RefreshFeedsCommand(feedRepository, rssParser),
     listFeedItems: new ListFeedItemsQuery(feedRepository),
+    listFeeds: new ListFeedsQuery(feedRepository),
 
     // Tags
     createTag: new CreateTagCommand(tagRepository, agencyMemberRepository),

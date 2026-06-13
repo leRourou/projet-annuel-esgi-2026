@@ -2,6 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import { AddFeedInputSchema } from "@/modules/rss/application/commands/add-feed.command";
+import type { FeedDto } from "@/modules/rss/application/dto/feed.dto";
 import type { FeedItemDto } from "@/modules/rss/application/dto/feed-item.dto";
 import { ListFeedItemsInputSchema } from "@/modules/rss/application/queries/list-feed-items.query";
 import { buildContainer } from "@/shared/infrastructure/di/container";
@@ -47,6 +48,18 @@ export async function refreshFeedsAction(): Promise<
 
   const stats = await container.refreshFeeds.execute();
   return { data: stats };
+}
+
+export async function listFeedsAction(): Promise<ActionResult<FeedDto[]>> {
+  const session = await requireSession();
+  if (!session) return { error: "Unauthorized" };
+
+  const container = await buildContainer();
+  const membership = await container.getUserMembership.execute(session.user.id);
+  if (!membership || membership.isPending) return { error: "No active agency membership" };
+
+  const feeds = await container.listFeeds.execute(membership.agencyId);
+  return { data: feeds };
 }
 
 export async function listFeedItemsAction(
