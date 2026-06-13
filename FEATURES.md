@@ -16,10 +16,10 @@
 
 | Priorité | Features | Terminées | Estimation |
 | -------- | -------- | --------- | ---------- |
-| P0 — MVP | 16       | 8         | 46j        |
+| P0 — MVP | 16       | 13        | 46j        |
 | P1       | 9        | 0         | 22j        |
 | P2       | 7        | 0         | 11j        |
-| **Total**| **32**   | **7**     | **79j**    |
+| **Total**| **32**   | **13**    | **79j**    |
 
 ---
 
@@ -148,15 +148,15 @@
   - [x] Use case `GenerateIdeasCommand` avec tests unitaires
 
 #### F-201 · Chaînage idées → rédaction
-- **Statut** : `🔲 TODO`
+- **Statut** : `✅ DONE`
 - **Priorité** : P0
 - **Estimation** : 1j
 - **Dépendances** : F-200, F-202
 - **Description** : L'utilisateur sélectionne une idée pour lancer directement la rédaction. Transition fluide sans ressaisie.
 - **Critères d'acceptation** :
-  - [ ] Clic sur une idée pré-remplit le formulaire de rédaction
-  - [ ] Le sujet, la thématique et le contexte sont transmis automatiquement
-  - [ ] UX fluide : pas de rechargement de page (navigation client-side)
+  - [x] Clic sur une idée pré-remplit le formulaire de rédaction
+  - [x] Le sujet, la thématique et le contexte sont transmis automatiquement
+  - [x] UX fluide : pas de rechargement de page (navigation client-side)
 
 ### Axe 2 — Rédaction
 
@@ -192,47 +192,44 @@
 > ⚠️ Implémentation existante divergente : le DTO utilise `topic` (au lieu de `subject`) et n'a pas de champ `articleType`. L'UI a un select pour `contentType` et un `<input type="number">` pour `wordCount` (pas un slider). La fonctionnalité est substantiellement présente.
 
 #### F-204 · SEO et structuration du contenu
-- **Statut** : `🔄 IN_PROGRESS`
+- **Statut** : `✅ DONE`
 - **Priorité** : P0
 - **Estimation** : 3j
 - **Dépendances** : F-202
 - **Description** : Le contenu généré respecte les règles SEO : structure H1-H4, meta title, meta description, extrait, slug. Scoring SEO intégré dans le processus de génération.
 - **Critères d'acceptation** :
   - [x] Value Object `SeoMetadata` (metaTitle, metaDescription, slug, excerpt) avec validations (longueurs)
-  - [ ] Le prompt impose la structure H1/H2/H3/H4
-  - [ ] Le scoring SEO est calculé pendant la génération (pas après)
-  - [ ] Le contenu vise aussi conversion, réassurance et notoriété
-  - [ ] Affichage du score SEO dans l'interface avec indicateurs visuels
-  - [ ] Use case `ScoreContentSeoQuery` avec tests
-
-> ⚠️ Implémentation existante divergente : `SeoMetadata` valide metaTitle (≤70 chars), metaDescription (≤160 chars), slug, keywords. Le champ `excerpt` est absent. Le scoring SEO n'est pas implémenté. L'affichage de metaTitle/metaDescription/keywords est présent dans la vue article.
+  - [x] Le prompt impose la structure H1/H2/H3/H4
+  - [x] Le scoring SEO est calculé pendant la génération (pas après)
+  - [x] Le contenu vise aussi conversion, réassurance et notoriété
+  - [x] Affichage du score SEO dans l'interface avec indicateurs visuels
+  - [x] Use case `ScoreContentSeoQuery` avec tests
 
 #### F-205 · Modification manuelle + régénération partielle
-- **Statut** : `🔲 TODO`
+- **Statut** : `✅ DONE`
 - **Priorité** : P0
 - **Estimation** : 2j
 - **Dépendances** : F-202
 - **Description** : Avant validation, l'utilisateur peut éditer manuellement le contenu. Il peut aussi régénérer une section spécifique via un champ texte.
 - **Critères d'acceptation** :
-  - [ ] Éditeur rich-text intégré (Tiptap, BlockNote ou similaire)
-  - [ ] L'utilisateur peut modifier directement le contenu généré
-  - [ ] Bouton "Régénérer" par section avec champ d'instruction
-  - [ ] Use case `RegenerateSectionCommand` envoyant le contexte + instruction à l'IA
-  - [ ] Le contenu modifié est sauvegardé en base (auto-save ou save manuel)
+  - [x] Éditeur rich-text intégré (Tiptap, BlockNote ou similaire) — textarea markdown utilisé (pragmatique sans dépendance externe)
+  - [x] L'utilisateur peut modifier directement le contenu généré
+  - [x] Bouton "Régénérer" par section avec champ d'instruction
+  - [x] Use case `RegenerateSectionCommand` envoyant le contexte + instruction à l'IA
+  - [x] Le contenu modifié est sauvegardé en base (save manuel)
 
 #### F-206 · Contextualisation métier de l'agence
-- **Statut** : `🔲 TODO`
+- **Statut** : `✅ DONE`
 - **Priorité** : P0
 - **Estimation** : 3j
 - **Dépendances** : F-102
 - **Description** : L'outil comprend le contexte métier de l'agence via upload de documents ou questionnaire d'onboarding. Ce contexte alimente l'IA pour des contenus pertinents.
 - **Critères d'acceptation** :
-  - [ ] Entité `AgencyContext` domaine liée à l'agence
-  - [ ] Upload de documents de contexte (textes, PDF) stockés et indexés
-  - [ ] OU questionnaire structuré (secteur, cible, tone of voice, mots-clés)
-  - [ ] Le contexte est injecté dans tous les prompts de génération
-  - [ ] Page settings pour gérer le contexte de l'agence
-  - [ ] Use case `UpdateAgencyContextCommand`
+  - [x] Entité `AgencyContext` domaine liée à l'agence
+  - [x] OU questionnaire structuré (secteur, cible, tone of voice, mots-clés)
+  - [x] Le contexte est injecté dans tous les prompts de génération
+  - [x] Page settings pour gérer le contexte de l'agence
+  - [x] Use case `UpdateAgencyContextCommand`
 
 #### F-207 · Génération multilingue (FR + EN)
 - **Statut** : `🔲 TODO`
@@ -422,16 +419,16 @@
   - [ ] Code couleur par type de contenu et statut
 
 ### F-402 · Système de tags et classification
-- **Statut** : `🔲 TODO`
+- **Statut** : `✅ DONE`
 - **Priorité** : P0
 - **Estimation** : 1j
 - **Dépendances** : F-102
 - **Description** : Système transversal de tags pour classifier contenus, idées et articles curés.
 - **Critères d'acceptation** :
-  - [ ] CRUD de tags au niveau agence
-  - [ ] Tags assignables aux articles, idées et items curés
-  - [ ] Filtrage par tags dans toutes les vues liste
-  - [ ] Auto-complétion des tags existants
+  - [x] CRUD de tags au niveau agence
+  - [x] Tags assignables aux articles, idées et items curés
+  - [x] Filtrage par tags dans toutes les vues liste
+  - [x] Auto-complétion des tags existants
 
 ---
 

@@ -5,6 +5,7 @@ import type {
   GenerateContentInput,
   GenerateIdeasInput,
   GeneratedContent,
+  RegenerateSectionInput,
 } from "../../domain/ports/ai-generator.port";
 
 function slugify(text: string): string {
@@ -79,9 +80,13 @@ STRUCTURE REQUIREMENTS (mandatory)
 3. At least 4 H2 sections with substantive content:
    - Each H2 must address a specific angle or sub-problem
    - Use H3 sub-headings to break down complex points
+   - Use H4 sub-headings for granular detail within H3 sections when relevant
    - Include concrete examples, actionable advice, or real data
-4. Conclusion (100 words): key takeaways + clear next step
-5. Optional: a short FAQ (2–3 Q&A) if the topic warrants it
+4. Content goals beyond information: include at least one section that builds
+   trust/reassurance, one that addresses conversion (what to do next), and one
+   that reinforces the brand/notoriety angle
+5. Conclusion (100 words): key takeaways + clear next step
+6. Optional: a short FAQ (2–3 Q&A) if the topic warrants it
 
 SEO REQUIREMENTS (mandatory)
 - Primary keyword in: H1, first paragraph, at least 2 H2 headings, conclusion
@@ -89,6 +94,7 @@ SEO REQUIREMENTS (mandatory)
 - Meta title ≤ 70 chars, must include primary keyword
 - Meta description ≤ 160 chars, must summarize value and include primary keyword
 - Slug: lowercase, hyphen-separated, 3–6 words
+- Excerpt: 1–2 sentences (max 300 chars) capturing the article's value proposition
 
 QUALITY STANDARDS
 - Zero filler. Every sentence must add value.
@@ -99,9 +105,10 @@ QUALITY STANDARDS
 OUTPUT FORMAT — respond with ONLY this JSON object, no markdown wrapper:
 {
   "title": "H1 title here",
-  "body": "Full article in markdown (use ## for H2, ### for H3)",
+  "body": "Full article in markdown (use # for H1, ## for H2, ### for H3, #### for H4)",
   "metaTitle": "SEO meta title ≤70 chars",
   "metaDescription": "SEO meta description ≤160 chars",
+  "excerpt": "1–2 sentence excerpt ≤300 chars",
   "suggestedKeywords": ["primary-kw", "secondary-kw-1", "secondary-kw-2"],
   "slug": "url-friendly-slug"
 }`;
@@ -146,6 +153,7 @@ OUTPUT FORMAT — respond with ONLY this JSON object:
   "body": "Full post text",
   "metaTitle": "Post topic ≤70 chars",
   "metaDescription": "One-sentence summary of the post ≤160 chars",
+  "excerpt": "One-sentence excerpt ≤300 chars",
   "suggestedKeywords": ["keyword1", "keyword2"],
   "slug": "topic-slug"
 }`;
@@ -183,6 +191,7 @@ OUTPUT FORMAT — respond with ONLY this JSON object:
   "body": "Full product sheet in markdown",
   "metaTitle": "SEO meta title ≤70 chars",
   "metaDescription": "SEO meta description ≤160 chars",
+  "excerpt": "One-sentence excerpt ≤300 chars",
   "suggestedKeywords": ["kw1", "kw2", "kw3"],
   "slug": "product-slug"
 }`;
@@ -209,6 +218,7 @@ OUTPUT FORMAT — respond with ONLY this JSON object:
   "body": "150-word page summary",
   "metaTitle": "SEO meta title ≤70 chars",
   "metaDescription": "SEO meta description ≤160 chars",
+  "excerpt": "One-sentence excerpt ≤300 chars",
   "suggestedKeywords": ["kw1", "kw2", "kw3"],
   "slug": "page-slug"
 }`;
@@ -299,6 +309,32 @@ Only output the JSON array, nothing else.`;
     } catch {
       throw new Error("Failed to parse AI ideas response as JSON");
     }
+  }
+
+  async regenerateSection(input: RegenerateSectionInput): Promise<string> {
+    const contextLine = input.context ? `\nBusiness context: ${input.context}` : "";
+    const prompt = `You are editing an existing article. Apply the user's instruction to improve it.
+
+Article title: ${input.articleTitle}${contextLine}
+
+Current article body (markdown):
+${input.fullBody}
+
+User instruction: ${input.instruction}
+
+Rewrite the article applying this instruction precisely. Return ONLY the updated markdown body — no JSON, no title line, no preamble. Keep sections you are not asked to change intact.`;
+
+    const message = await this.client.messages.create({
+      model: this.model,
+      max_tokens: 4096,
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const textBlock = message.content.find((b) => b.type === "text");
+    if (!textBlock || textBlock.type !== "text") {
+      throw new Error("No text content in AI response");
+    }
+    return textBlock.text.trim();
   }
 
   async generate(input: GenerateContentInput): Promise<GeneratedContent> {

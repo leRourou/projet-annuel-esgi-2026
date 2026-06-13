@@ -17,8 +17,8 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { useContentStream } from "@/hooks/use-content-stream";
-import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useRef, useState } from "react";
 
 const CONTENT_TYPE_LABELS: Record<string, string> = {
   ARTICLE: "Blog article",
@@ -39,9 +39,18 @@ const ARTICLE_TYPE_OPTIONS = [
 
 const DEFAULT_WORD_COUNT = 1200;
 
-export default function NewContentPage() {
+function NewContentForm() {
   const router = useRouter();
-  const [contentType, setContentType] = useState("ARTICLE");
+  const searchParams = useSearchParams();
+  const prefilledTopic = searchParams.get("topic") ?? "";
+  const prefilledKeywords = searchParams.get("keywords") ?? "";
+  const prefilledContentType = searchParams.get("contentType") ?? "ARTICLE";
+
+  const [contentType, setContentType] = useState(
+    Object.keys(CONTENT_TYPE_LABELS).includes(prefilledContentType)
+      ? prefilledContentType
+      : "ARTICLE",
+  );
   const [articleType, setArticleType] = useState<string | null>(null);
   const [wordCount, setWordCount] = useState(DEFAULT_WORD_COUNT);
   const [saving, setSaving] = useState(false);
@@ -131,6 +140,7 @@ export default function NewContentPage() {
                 name="topic"
                 required
                 placeholder="e.g. Best practices for TypeScript in 2025"
+                defaultValue={prefilledTopic}
                 disabled={isGenerating}
               />
             </div>
@@ -145,6 +155,7 @@ export default function NewContentPage() {
                 name="keywords"
                 required
                 placeholder="typescript, clean code, developer tools"
+                defaultValue={prefilledKeywords}
                 disabled={isGenerating}
               />
             </div>
@@ -345,5 +356,19 @@ export default function NewContentPage() {
         </Card>
       )}
     </div>
+  );
+}
+
+export default function NewContentPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="max-w-2xl space-y-6">
+          <div className="h-8 w-48 bg-muted animate-pulse rounded" />
+        </div>
+      }
+    >
+      <NewContentForm />
+    </Suspense>
   );
 }

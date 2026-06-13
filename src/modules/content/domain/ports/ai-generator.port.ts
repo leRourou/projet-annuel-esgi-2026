@@ -17,6 +17,7 @@ export interface GeneratedContent {
   body: string;
   metaTitle: string;
   metaDescription: string;
+  excerpt: string;
   suggestedKeywords: string[];
   slug: string;
 }
@@ -35,8 +36,16 @@ export interface ContentIdea {
   keywords: string[];
 }
 
+export interface RegenerateSectionInput {
+  articleTitle: string;
+  fullBody: string;
+  instruction: string;
+  context?: string;
+}
+
 export interface AiGeneratorPort {
   generate(input: GenerateContentInput): Promise<GeneratedContent>;
   generateStream?(input: GenerateContentInput): AsyncIterable<string>;
   generateIdeas(input: GenerateIdeasInput): Promise<ContentIdea[]>;
+  regenerateSection(input: RegenerateSectionInput): Promise<string>;
 }

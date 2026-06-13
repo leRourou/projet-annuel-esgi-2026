@@ -11,6 +11,7 @@ const mockGenerated: GeneratedContent = {
   body: "# TypeScript Best Practices\n\nContent here.",
   metaTitle: "TypeScript Best Practices Guide",
   metaDescription: "Learn the best TypeScript practices for modern development.",
+  excerpt: "A practical guide to TypeScript best practices for modern development.",
   suggestedKeywords: ["typescript", "best-practices"],
   slug: "typescript-best-practices",
 };
@@ -28,6 +29,7 @@ function makeAi(): AiGeneratorPort {
   return {
     generate: vi.fn().mockResolvedValue(mockGenerated),
     generateIdeas: vi.fn().mockResolvedValue([]),
+    regenerateSection: vi.fn().mockResolvedValue(""),
   };
 }
 
