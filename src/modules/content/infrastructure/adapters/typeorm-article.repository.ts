@@ -35,6 +35,9 @@ export class TypeormArticleRepository implements ArticleRepositoryPort {
     if (filters.status) {
       qb.andWhere("article.status = :status", { status: filters.status });
     }
+    if (filters.tagId) {
+      qb.andWhere(":tagId = ANY(article.tag_ids)", { tagId: filters.tagId });
+    }
 
     const [entities, total] = await qb
       .skip((pagination.page - 1) * pagination.limit)

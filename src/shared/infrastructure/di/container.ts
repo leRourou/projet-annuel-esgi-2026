@@ -33,6 +33,7 @@ import { GetUserByEmailQuery } from "@/modules/auth/application/queries/get-user
 import { AssignTagsCommand } from "@/modules/content/application/commands/assign-tags.command";
 import { CreateArticleCommand } from "@/modules/content/application/commands/create-article.command";
 import { GenerateArticleCommand } from "@/modules/content/application/commands/generate-article.command";
+import { GenerateEnrichedArticleCommand } from "@/modules/content/application/commands/generate-enriched-article.command";
 import { GenerateIdeasCommand } from "@/modules/content/application/commands/generate-ideas.command";
 import { PublishArticleCommand } from "@/modules/content/application/commands/publish-article.command";
 import { RegenerateSectionCommand } from "@/modules/content/application/commands/regenerate-section.command";
@@ -46,6 +47,7 @@ import { SearchNotionPagesQuery } from "@/modules/notion/application/queries/sea
 import { AddFeedCommand } from "@/modules/rss/application/commands/add-feed.command";
 import { QualifyFeedItemCommand } from "@/modules/rss/application/commands/qualify-feed-item.command";
 import { RefreshFeedsCommand } from "@/modules/rss/application/commands/refresh-feeds.command";
+import { GetSourceItemsQuery } from "@/modules/rss/application/queries/get-source-items.query";
 import { ListCuratedItemsQuery } from "@/modules/rss/application/queries/list-curated-items.query";
 import { ListFeedItemsQuery } from "@/modules/rss/application/queries/list-feed-items.query";
 import { ListFeedsQuery } from "@/modules/rss/application/queries/list-feeds.query";
@@ -79,6 +81,11 @@ export async function buildContainer() {
     // Content
     generateIdeas: new GenerateIdeasCommand(aiGenerator, articleRepository),
     generateArticle: new GenerateArticleCommand(articleRepository, aiGenerator),
+    generateEnrichedArticle: new GenerateEnrichedArticleCommand(
+      articleRepository,
+      aiGenerator,
+      feedRepository,
+    ),
     createArticle: new CreateArticleCommand(articleRepository),
     updateArticle: new UpdateArticleCommand(articleRepository),
     publishArticle: new PublishArticleCommand(articleRepository),
@@ -98,6 +105,7 @@ export async function buildContainer() {
     qualifyFeedItem: new QualifyFeedItemCommand(feedRepository),
     listFeedItems: new ListFeedItemsQuery(feedRepository),
     listCuratedItems: new ListCuratedItemsQuery(feedRepository),
+    getSourceItems: new GetSourceItemsQuery(feedRepository),
     listFeeds: new ListFeedsQuery(feedRepository),
 
     // Tags

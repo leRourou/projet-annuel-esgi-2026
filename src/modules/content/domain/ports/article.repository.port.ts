@@ -6,6 +6,7 @@ export interface ArticleFilters {
   agencyId: string;
   authorId?: string;
   status?: ContentStatusValue;
+  tagId?: string;
 }
 
 export interface ArticleRepositoryPort {

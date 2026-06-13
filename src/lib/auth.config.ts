@@ -25,8 +25,9 @@ export const authConfig: NextAuthConfig = {
         session.user.id = token.sub;
       }
       if (token["notionAccessToken"]) {
-        (session as typeof session & { notionAccessToken?: string }).notionAccessToken =
-          token["notionAccessToken"] as string;
+        (session as typeof session & { notionAccessToken?: string }).notionAccessToken = token[
+          "notionAccessToken"
+        ] as string;
       }
       return session;
     },

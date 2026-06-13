@@ -16,7 +16,7 @@ export const GenerateArticleInputSchema = z.object({
   tone: z.string().optional(),
   wordCount: z.number().int().min(100).max(5000).optional(),
   articleType: ArticleTypeSchema.optional(),
-  context: z.string().max(2000).optional(),
+  context: z.string().max(4000).optional(),
   authorId: z.string().uuid(),
   agencyId: z.string().uuid(),
 });

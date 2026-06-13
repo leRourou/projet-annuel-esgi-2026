@@ -1,7 +1,7 @@
 import { ValueObject } from "@/shared/domain/base/value-object.base";
 import { DomainError } from "@/shared/domain/errors/domain.error";
 
-export type ContentStatusValue = "DRAFT" | "REVIEW" | "PUBLISHED";
+export type ContentStatusValue = "DRAFT" | "REVIEW" | "VALIDATED" | "SCHEDULED" | "PUBLISHED";
 
 interface ContentStatusProps {
   readonly value: ContentStatusValue;
@@ -10,9 +10,17 @@ interface ContentStatusProps {
 export class ContentStatus extends ValueObject<ContentStatusProps> {
   static readonly DRAFT = new ContentStatus({ value: "DRAFT" });
   static readonly REVIEW = new ContentStatus({ value: "REVIEW" });
+  static readonly VALIDATED = new ContentStatus({ value: "VALIDATED" });
+  static readonly SCHEDULED = new ContentStatus({ value: "SCHEDULED" });
   static readonly PUBLISHED = new ContentStatus({ value: "PUBLISHED" });
 
-  private static readonly VALID: ContentStatusValue[] = ["DRAFT", "REVIEW", "PUBLISHED"];
+  private static readonly VALID: ContentStatusValue[] = [
+    "DRAFT",
+    "REVIEW",
+    "VALIDATED",
+    "SCHEDULED",
+    "PUBLISHED",
+  ];
 
   private constructor(props: ContentStatusProps) {
     super(props);
@@ -32,7 +40,9 @@ export class ContentStatus extends ValueObject<ContentStatusProps> {
   canTransitionTo(next: ContentStatus): boolean {
     const transitions: Record<ContentStatusValue, ContentStatusValue[]> = {
       DRAFT: ["REVIEW"],
-      REVIEW: ["DRAFT", "PUBLISHED"],
+      REVIEW: ["DRAFT", "VALIDATED"],
+      VALIDATED: ["SCHEDULED", "PUBLISHED"],
+      SCHEDULED: ["PUBLISHED"],
       PUBLISHED: [],
     };
     return transitions[this.props.value].includes(next.props.value);

@@ -7,6 +7,8 @@ export class AgencyMapper {
       name: entity.name,
       slug: entity.slug,
       createdAt: entity.createdAt,
+      notionAccessToken: entity.notionAccessToken,
+      notionDatabaseId: entity.notionDatabaseId,
     });
   }
 
@@ -15,6 +17,8 @@ export class AgencyMapper {
       id: agency.id,
       name: agency.name,
       slug: agency.slug,
+      notionAccessToken: agency.notionAccessToken ?? null,
+      notionDatabaseId: agency.notionDatabaseId ?? null,
     };
   }
 }

@@ -4,6 +4,8 @@ export interface AgencyDto {
   slug: string;
   createdAt: Date;
   memberCount: number;
+  notionConnected: boolean;
+  notionDatabaseId?: string | null;
 }
 
 export interface AgencyMemberDto {

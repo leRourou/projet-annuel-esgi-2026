@@ -1,14 +1,34 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { auth } from "@/lib/auth";
-import { signIn } from "@/lib/auth";
+import { auth, signIn } from "@/lib/auth";
+import type { AgencyContextDto } from "@/modules/agency/application/dto/agency-context.dto";
+import { buildContainer } from "@/shared/infrastructure/di/container";
+import { AgencyContextForm } from "@/shared/ui/agency-context-form";
 
 export default async function SettingsPage() {
   const session = await auth();
-  const hasNotion = !!(session as typeof session & { notionAccessToken?: string })
-    ?.notionAccessToken;
+
+  let hasNotion = false;
+  let notionDatabaseId: string | null = null;
+  let agencyContext: AgencyContextDto | null = null;
+
+  if (session?.user?.id) {
+    const container = await buildContainer();
+    const membership = await container.getUserMembership.execute(session.user.id);
+    if (membership && !membership.isPending) {
+      const [agency, context] = await Promise.all([
+        container.getAgency.execute({ agencyId: membership.agencyId }),
+        container.getAgencyContext.execute(membership.agencyId),
+      ]);
+      if (agency.success) {
+        hasNotion = agency.value.notionConnected;
+        notionDatabaseId = agency.value.notionDatabaseId ?? null;
+      }
+      agencyContext = context;
+    }
+  }
 
   return (
     <div className="max-w-2xl">
@@ -36,12 +56,16 @@ export default async function SettingsPage() {
           <CardHeader>
             <CardTitle className="text-base">Integrations</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium">Notion</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  {hasNotion ? "Connected" : "Not connected"}
+                  {hasNotion
+                    ? notionDatabaseId
+                      ? `Connected · database configured`
+                      : "Connected · no database selected"
+                    : "Not connected"}
                 </p>
               </div>
               {!hasNotion ? (
@@ -59,6 +83,18 @@ export default async function SettingsPage() {
                 <Badge variant="success">Active</Badge>
               )}
             </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Agency Context</CardTitle>
+            <CardDescription className="text-xs text-muted-foreground">
+              This context is automatically injected into every AI generation prompt to make content
+              relevant to your agency's business.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AgencyContextForm initial={agencyContext} />
           </CardContent>
         </Card>
       </div>

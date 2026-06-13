@@ -89,6 +89,15 @@ export class TypeormFeedRepository implements FeedRepositoryPort {
     return entity ? FeedMapper.feedItemToDomain(entity) : null;
   }
 
+  async findItemsByIds(ids: string[]): Promise<FeedItem[]> {
+    if (ids.length === 0) return [];
+    const entities = await this.itemRepo
+      .createQueryBuilder("item")
+      .where("item.id IN (:...ids)", { ids })
+      .getMany();
+    return entities.map(FeedMapper.feedItemToDomain);
+  }
+
   async deleteFeed(id: string): Promise<void> {
     await this.feedRepo.delete({ id });
   }

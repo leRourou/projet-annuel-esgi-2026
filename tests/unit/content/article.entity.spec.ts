@@ -55,9 +55,33 @@ describe("Article", () => {
     expect(() => article.transitionTo(ContentStatus.PUBLISHED)).toThrow(DomainError);
   });
 
-  it("emits ArticlePublishedEvent on publish", () => {
+  it("can transition REVIEW → VALIDATED", () => {
     const article = makeArticle();
     article.transitionTo(ContentStatus.REVIEW);
+    article.transitionTo(ContentStatus.VALIDATED);
+    expect(article.status.value).toBe("VALIDATED");
+  });
+
+  it("cannot transition REVIEW → PUBLISHED directly", () => {
+    const article = makeArticle();
+    article.transitionTo(ContentStatus.REVIEW);
+    expect(() => article.transitionTo(ContentStatus.PUBLISHED)).toThrow(DomainError);
+  });
+
+  it("emits ArticlePublishedEvent on publish via VALIDATED", () => {
+    const article = makeArticle();
+    article.transitionTo(ContentStatus.REVIEW);
+    article.transitionTo(ContentStatus.VALIDATED);
+    article.transitionTo(ContentStatus.PUBLISHED);
+    expect(article.domainEvents).toHaveLength(1);
+    expect(article.domainEvents[0]?.eventName).toBe("ArticlePublished");
+  });
+
+  it("emits ArticlePublishedEvent on publish via SCHEDULED", () => {
+    const article = makeArticle();
+    article.transitionTo(ContentStatus.REVIEW);
+    article.transitionTo(ContentStatus.VALIDATED);
+    article.transitionTo(ContentStatus.SCHEDULED);
     article.transitionTo(ContentStatus.PUBLISHED);
     expect(article.domainEvents).toHaveLength(1);
     expect(article.domainEvents[0]?.eventName).toBe("ArticlePublished");
@@ -66,6 +90,7 @@ describe("Article", () => {
   it("cannot edit a published article", () => {
     const article = makeArticle();
     article.transitionTo(ContentStatus.REVIEW);
+    article.transitionTo(ContentStatus.VALIDATED);
     article.transitionTo(ContentStatus.PUBLISHED);
     expect(() => article.update({ title: "New title" })).toThrow(DomainError);
   });

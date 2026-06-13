@@ -35,6 +35,9 @@ export class ArticleTypeormEntity {
   @Column({ type: "varchar", unique: true })
   slug!: string;
 
+  @Column({ type: "varchar", nullable: true })
+  excerpt!: string | null;
+
   @Column({ type: "varchar", name: "author_id" })
   authorId!: string;
 
@@ -43,6 +46,12 @@ export class ArticleTypeormEntity {
 
   @Column({ type: "varchar", name: "notion_page_id", nullable: true })
   notionPageId!: string | null;
+
+  @Column({ type: "text", array: true, name: "tag_ids", default: "{}" })
+  tagIds!: string[];
+
+  @Column({ type: "text", array: true, name: "source_ids", default: "{}" })
+  sourceIds!: string[];
 
   @CreateDateColumn({ name: "created_at", type: "timestamp" })
   createdAt!: Date;

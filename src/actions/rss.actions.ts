@@ -118,3 +118,19 @@ export async function qualifyFeedItemAction(
   if (!result.success) return { error: result.error.message };
   return { data: undefined };
 }
+
+export async function getSourceItemsAction(
+  sourceIds: string[],
+): Promise<ActionResult<FeedItemDto[]>> {
+  const session = await requireSession();
+  if (!session) return { error: "Unauthorized" };
+
+  if (sourceIds.length === 0) return { data: [] };
+
+  const container = await buildContainer();
+  const membership = await container.getUserMembership.execute(session.user.id);
+  if (!membership || membership.isPending) return { error: "No active agency membership" };
+
+  const items = await container.getSourceItems.execute(sourceIds);
+  return { data: items };
+}

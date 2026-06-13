@@ -15,9 +15,7 @@ const debugProvider =
           id: "debug",
           credentials: {},
           async authorize() {
-            const { getDataSource } = await import(
-              "@/shared/infrastructure/database/data-source"
-            );
+            const { getDataSource } = await import("@/shared/infrastructure/database/data-source");
             const ds = await getDataSource();
 
             const [agency] = await ds.query("SELECT id FROM agencies WHERE id = $1", [
@@ -30,10 +28,9 @@ const debugProvider =
               );
             }
 
-            const [member] = await ds.query(
-              "SELECT id FROM agency_members WHERE id = $1",
-              [DEBUG_MEMBER_ID],
-            );
+            const [member] = await ds.query("SELECT id FROM agency_members WHERE id = $1", [
+              DEBUG_MEMBER_ID,
+            ]);
             if (!member) {
               await ds.query(
                 `INSERT INTO agency_members (id, agency_id, user_id, role, joined_at, invited_by, invite_token, invite_expires_at)

@@ -13,16 +13,10 @@ export const metadata: Metadata = {
   description: "AI-powered SEO content production platform",
 };
 
-export default function RootLayout(
-  { children }: { children: React.ReactNode },
-) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
     </html>
   );
 }

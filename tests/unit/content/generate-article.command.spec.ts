@@ -28,6 +28,7 @@ function makeRepo(): ArticleRepositoryPort {
 function makeAi(): AiGeneratorPort {
   return {
     generate: vi.fn().mockResolvedValue(mockGenerated),
+    generateEnriched: vi.fn().mockResolvedValue(mockGenerated),
     generateIdeas: vi.fn().mockResolvedValue([]),
     regenerateSection: vi.fn().mockResolvedValue(""),
   };

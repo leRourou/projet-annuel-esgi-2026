@@ -5,6 +5,8 @@ export interface AgencyProps {
   name: string;
   slug: string;
   createdAt: Date;
+  notionAccessToken?: string | null;
+  notionDatabaseId?: string | null;
 }
 
 export class Agency extends AggregateRoot<string> {
@@ -56,6 +58,22 @@ export class Agency extends AggregateRoot<string> {
 
   get createdAt(): Date {
     return this.props.createdAt;
+  }
+
+  get notionAccessToken(): string | null | undefined {
+    return this.props.notionAccessToken;
+  }
+
+  get notionDatabaseId(): string | null | undefined {
+    return this.props.notionDatabaseId;
+  }
+
+  connectNotion(accessToken: string): void {
+    this.props = { ...this.props, notionAccessToken: accessToken };
+  }
+
+  setNotionDatabaseId(databaseId: string): void {
+    this.props = { ...this.props, notionDatabaseId: databaseId };
   }
 
   updateName(name: string): void {

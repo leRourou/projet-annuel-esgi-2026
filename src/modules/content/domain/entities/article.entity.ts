@@ -13,6 +13,8 @@ export interface ArticleProps {
   seoMetadata: SeoMetadata;
   authorId: string;
   agencyId: string;
+  tagIds: string[];
+  sourceIds: string[];
   notionPageId?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -28,7 +30,8 @@ export class Article extends AggregateRoot<string> {
 
   static create(
     id: string,
-    params: Omit<ArticleProps, "status" | "createdAt" | "updatedAt">,
+    params: Omit<ArticleProps, "status" | "tagIds" | "sourceIds" | "createdAt" | "updatedAt"> &
+      Partial<Pick<ArticleProps, "sourceIds">>,
   ): Article {
     if (!params.title.trim()) {
       throw new DomainError("Article title cannot be empty", "INVALID_ARTICLE_TITLE");
@@ -37,6 +40,8 @@ export class Article extends AggregateRoot<string> {
     return new Article(id, {
       ...params,
       status: ContentStatus.DRAFT,
+      tagIds: [],
+      sourceIds: params.sourceIds ?? [],
       createdAt: now,
       updatedAt: now,
     });
@@ -74,6 +79,14 @@ export class Article extends AggregateRoot<string> {
     return this.props.agencyId;
   }
 
+  get tagIds(): string[] {
+    return this.props.tagIds;
+  }
+
+  get sourceIds(): string[] {
+    return this.props.sourceIds;
+  }
+
   get notionPageId(): string | undefined {
     return this.props.notionPageId;
   }
@@ -84,6 +97,10 @@ export class Article extends AggregateRoot<string> {
 
   get updatedAt(): Date {
     return this.props.updatedAt;
+  }
+
+  setTags(tagIds: string[]): void {
+    this.props = { ...this.props, tagIds, updatedAt: new Date() };
   }
 
   update(params: { title?: string; body?: string; seoMetadata?: SeoMetadata }): void {

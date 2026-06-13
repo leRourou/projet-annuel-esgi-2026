@@ -22,6 +22,17 @@ export interface GeneratedContent {
   slug: string;
 }
 
+export interface CuratedSource {
+  id: string;
+  title: string;
+  link: string;
+  summary: string;
+}
+
+export interface GenerateEnrichedContentInput extends GenerateContentInput {
+  curatedSources: CuratedSource[];
+}
+
 export interface GenerateIdeasInput {
   themes: string[];
   existingTitles?: string[];
@@ -46,6 +57,7 @@ export interface RegenerateSectionInput {
 export interface AiGeneratorPort {
   generate(input: GenerateContentInput): Promise<GeneratedContent>;
   generateStream?(input: GenerateContentInput): AsyncIterable<string>;
+  generateEnriched(input: GenerateEnrichedContentInput): Promise<GeneratedContent>;
   generateIdeas(input: GenerateIdeasInput): Promise<ContentIdea[]>;
   regenerateSection(input: RegenerateSectionInput): Promise<string>;
 }

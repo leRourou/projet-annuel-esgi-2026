@@ -13,6 +13,7 @@ function makeIdea(title: string): ContentIdea {
 function makeMocks() {
   const aiGenerator: AiGeneratorPort = {
     generate: vi.fn(),
+    generateEnriched: vi.fn(),
     generateIdeas: vi.fn().mockResolvedValue([makeIdea("Idea 1"), makeIdea("Idea 2")]),
     regenerateSection: vi.fn().mockResolvedValue(""),
   };

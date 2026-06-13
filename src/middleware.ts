@@ -19,8 +19,7 @@ export default auth((req: NextRequest & { auth: unknown }) => {
 
   const session = req.auth as { user?: { id?: string } } | null;
   if (!session?.user?.id) {
-    const loginPath =
-      process.env["NODE_ENV"] === "development" ? "/debug-login" : "/login";
+    const loginPath = "/login";
     return NextResponse.redirect(
       new URL(`${loginPath}?callbackUrl=${encodeURIComponent(pathname)}`, req.url),
     );

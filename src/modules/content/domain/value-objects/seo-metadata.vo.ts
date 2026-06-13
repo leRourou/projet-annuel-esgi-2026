@@ -6,11 +6,13 @@ interface SeoMetadataProps {
   readonly metaDescription: string;
   readonly keywords: readonly string[];
   readonly slug: string;
+  readonly excerpt?: string;
 }
 
 export class SeoMetadata extends ValueObject<SeoMetadataProps> {
   private static readonly MAX_TITLE_LENGTH = 70;
   private static readonly MAX_DESCRIPTION_LENGTH = 160;
+  private static readonly MAX_EXCERPT_LENGTH = 300;
   private static readonly SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
   private constructor(props: SeoMetadataProps) {
@@ -22,6 +24,7 @@ export class SeoMetadata extends ValueObject<SeoMetadataProps> {
     metaDescription: string;
     keywords: string[];
     slug: string;
+    excerpt?: string;
   }): SeoMetadata {
     if (params.metaTitle.length > SeoMetadata.MAX_TITLE_LENGTH) {
       throw new DomainError(
@@ -38,11 +41,18 @@ export class SeoMetadata extends ValueObject<SeoMetadataProps> {
     if (!SeoMetadata.SLUG_REGEX.test(params.slug)) {
       throw new DomainError(`"${params.slug}" is not a valid slug`, "INVALID_SLUG");
     }
+    if (params.excerpt && params.excerpt.length > SeoMetadata.MAX_EXCERPT_LENGTH) {
+      throw new DomainError(
+        `Excerpt exceeds ${SeoMetadata.MAX_EXCERPT_LENGTH} characters`,
+        "SEO_EXCERPT_TOO_LONG",
+      );
+    }
     return new SeoMetadata({
       metaTitle: params.metaTitle,
       metaDescription: params.metaDescription,
       keywords: Object.freeze([...params.keywords]),
       slug: params.slug,
+      excerpt: params.excerpt,
     });
   }
 
@@ -60,5 +70,9 @@ export class SeoMetadata extends ValueObject<SeoMetadataProps> {
 
   get slug(): string {
     return this.props.slug;
+  }
+
+  get excerpt(): string | undefined {
+    return this.props.excerpt;
   }
 }

@@ -23,9 +23,27 @@ export async function generateIdeasAction(input: unknown): Promise<ActionResult<
   const membership = await container.getUserMembership.execute(session.user.id);
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
+  const agencyContext = await container.getAgencyContext.execute(membership.agencyId);
+  const agencyContextString = agencyContext
+    ? [
+        `Industry/Sector: ${agencyContext.sector}`,
+        `Target Audience: ${agencyContext.targetAudience}`,
+        `Tone of Voice: ${agencyContext.toneOfVoice}`,
+        agencyContext.brandKeywords.length > 0
+          ? `Brand Keywords: ${agencyContext.brandKeywords.join(", ")}`
+          : null,
+        agencyContext.additionalContext
+          ? `Additional Context: ${agencyContext.additionalContext}`
+          : null,
+      ]
+        .filter(Boolean)
+        .join("\n")
+    : undefined;
+
   const result = await container.generateIdeas.execute({
     agencyId: membership.agencyId,
     themes: parsed.data.themes,
+    agencyContext: agencyContextString,
     count: parsed.data.count,
   });
   if (!result.success) return { error: result.error.message };

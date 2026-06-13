@@ -25,6 +25,7 @@ function makeRepo(item: FeedItem | null = makeItem()): FeedRepositoryPort {
     findItemsByFeedId: vi.fn(),
     findItemsByAgency: vi.fn(),
     findItemById: vi.fn().mockResolvedValue(item),
+    findItemsByIds: vi.fn().mockResolvedValue([]),
     deleteFeed: vi.fn(),
   };
 }

@@ -17,7 +17,7 @@
 | Priorité | Features | Terminées | Estimation |
 | -------- | -------- | --------- | ---------- |
 | P0 — MVP | 16       | 16        | 46j        |
-| P1       | 9        | 2         | 22j        |
+| P1       | 9        | 3         | 22j        |
 | P2       | 7        | 0         | 11j        |
 | **Total**| **32**   | **18**    | **79j**    |
 
@@ -322,17 +322,17 @@
   - [x] Use case `QualifyFeedItemCommand`
 
 #### F-222 · Enrichissement de la génération via sources curées
-- **Statut** : `🔲 TODO`
+- **Statut** : `✅ DONE`
 - **Priorité** : P1
 - **Estimation** : 3j
 - **Dépendances** : F-221, F-202
 - **Description** : L'IA utilise les sources curées comme base pour enrichir la génération. Mix IA + sources réelles = différenciateur principal vs. wrapper LLM.
 - **Critères d'acceptation** :
-  - [ ] Les articles marqués TO_USE sont injectés dans le contexte du prompt
-  - [ ] Le contenu généré cite ou s'inspire des sources réelles
-  - [ ] Le prompt distingue contenu IA pur et contenu enrichi
-  - [ ] L'utilisateur voit quelles sources ont été utilisées
-  - [ ] Use case `GenerateEnrichedArticleCommand` avec tests
+  - [x] Les articles marqués TO_USE sont injectés dans le contexte du prompt
+  - [x] Le contenu généré cite ou s'inspire des sources réelles
+  - [x] Le prompt distingue contenu IA pur et contenu enrichi
+  - [x] L'utilisateur voit quelles sources ont été utilisées
+  - [x] Use case `GenerateEnrichedArticleCommand` avec tests
 
 ---
 

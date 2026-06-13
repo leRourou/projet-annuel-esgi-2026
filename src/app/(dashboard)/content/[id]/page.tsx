@@ -1,4 +1,5 @@
 import { getArticleAction, publishArticleAction } from "@/actions/content.actions";
+import { getSourceItemsAction } from "@/actions/rss.actions";
 import { listTagsAction } from "@/actions/tags.actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -36,6 +37,11 @@ export default async function ArticlePage({ params }: Props) {
   const { id } = await params;
   const [result, tagsResult] = await Promise.all([getArticleAction(id), listTagsAction()]);
   if (result.error || !result.data) notFound();
+
+  const sourceItems =
+    result.data.sourceIds.length > 0
+      ? ((await getSourceItemsAction(result.data.sourceIds)).data ?? [])
+      : [];
 
   const article = result.data;
   const allTags = tagsResult.data ?? [];
@@ -161,6 +167,35 @@ export default async function ArticlePage({ params }: Props) {
             <TagAssign articleId={article.id} allTags={allTags} currentTagIds={article.tagIds} />
           </CardContent>
         </Card>
+
+        {sourceItems.length > 0 && (
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium">
+                Curated sources used ({sourceItems.length})
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {sourceItems.map((source) => (
+                <div key={source.id} className="text-sm">
+                  <a
+                    href={source.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium hover:underline text-foreground"
+                  >
+                    {source.title}
+                  </a>
+                  {source.summary && (
+                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
+                      {source.summary}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
 
         <ContentEditor
           articleId={article.id}

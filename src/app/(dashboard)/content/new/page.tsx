@@ -1,6 +1,9 @@
 "use client";
 
-import { saveGeneratedArticleAction } from "@/actions/content.actions";
+import {
+  generateEnrichedArticleAction,
+  saveGeneratedArticleAction,
+} from "@/actions/content.actions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -55,6 +58,8 @@ function NewContentForm() {
   const [wordCount, setWordCount] = useState(DEFAULT_WORD_COUNT);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [enriched, setEnriched] = useState(false);
+  const [enrichedLoading, setEnrichedLoading] = useState(false);
   const {
     text,
     loading,
@@ -84,11 +89,29 @@ function NewContentForm() {
   }
 
   async function handleGenerate() {
+    if (enriched) {
+      await handleEnrichedGenerate();
+      return;
+    }
     reset();
     setSaveError(null);
     const input = getFormInput();
     if (!input) return;
     await startStream(input);
+  }
+
+  async function handleEnrichedGenerate() {
+    const input = getFormInput();
+    if (!input) return;
+    setEnrichedLoading(true);
+    setSaveError(null);
+    const result = await generateEnrichedArticleAction(input);
+    setEnrichedLoading(false);
+    if (result.error || !result.data) {
+      setSaveError(result.error ?? "Generation failed");
+      return;
+    }
+    router.push(`/content/${result.data.id}`);
   }
 
   async function handleSave() {
@@ -113,8 +136,8 @@ function NewContentForm() {
   }
 
   const hasError = streamError ?? saveError;
-  const isGenerating = loading;
-  const showPreview = isDone && parsedContent;
+  const isGenerating = loading || enrichedLoading;
+  const showPreview = isDone && parsedContent && !enriched;
   const isArticle = contentType === "ARTICLE";
 
   return (
@@ -247,13 +270,54 @@ function NewContentForm() {
               />
             </div>
 
+            <div className="rounded-lg border border-input p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium">Enrich with curated sources</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Automatically injects your "To use" RSS articles as research context
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={enriched}
+                  onClick={() => setEnriched(!enriched)}
+                  disabled={isGenerating}
+                  className={[
+                    "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50",
+                    enriched ? "bg-foreground" : "bg-input",
+                  ].join(" ")}
+                >
+                  <span
+                    className={[
+                      "pointer-events-none inline-block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform",
+                      enriched ? "translate-x-5" : "translate-x-0",
+                    ].join(" ")}
+                  />
+                </button>
+              </div>
+              {enriched && (
+                <p className="text-xs text-muted-foreground bg-muted rounded px-3 py-2">
+                  The article will be generated and saved immediately — no streaming preview. Make
+                  sure you have articles marked as "To use" in the RSS curation feed.
+                </p>
+              )}
+            </div>
+
             <Button
               type="button"
               onClick={handleGenerate}
               disabled={isGenerating || saving}
               className="w-full"
             >
-              {isGenerating ? "Writing your content…" : "Generate"}
+              {enrichedLoading
+                ? "Generating enriched article…"
+                : isGenerating
+                  ? "Writing your content…"
+                  : enriched
+                    ? "Generate enriched article"
+                    : "Generate"}
             </Button>
           </form>
         </CardContent>

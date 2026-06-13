@@ -19,5 +19,6 @@ export interface FeedRepositoryPort {
   findItemsByFeedId(feedId: string, limit?: number): Promise<FeedItem[]>;
   findItemsByAgency(agencyId: string, filters?: FeedItemFilters): Promise<FeedItem[]>;
   findItemById(id: string): Promise<FeedItem | null>;
+  findItemsByIds(ids: string[]): Promise<FeedItem[]>;
   deleteFeed(id: string): Promise<void>;
 }

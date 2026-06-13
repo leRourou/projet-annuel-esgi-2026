@@ -29,6 +29,8 @@ export class GetAgencyQuery {
       slug: agency.slug,
       createdAt: agency.createdAt,
       memberCount: members.length,
+      notionConnected: !!agency.notionAccessToken,
+      notionDatabaseId: agency.notionDatabaseId,
     });
   }
 }

@@ -46,6 +46,8 @@ export class CreateAgencyCommand {
         slug: agency.slug,
         createdAt: agency.createdAt,
         memberCount: 1,
+        notionConnected: false,
+        notionDatabaseId: null,
       });
     } catch (error) {
       if (error instanceof DomainError) return Result.fail(error);

@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { randomUUID } from "node:crypto";
 import { DomainError } from "@/shared/domain/errors/domain.error";
 import { Result } from "@/shared/domain/types/result.type";
 import { Article } from "../../domain/entities/article.entity";
@@ -31,6 +31,7 @@ export class GenerateArticleCommand {
         metaDescription: generated.metaDescription,
         keywords: generated.suggestedKeywords,
         slug: generated.slug,
+        excerpt: generated.excerpt,
       });
 
       const article = Article.create(randomUUID(), {

@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { AgencyTypeormEntity } from "./agency.typeorm-entity";
+import type { AgencyTypeormEntity } from "./agency.typeorm-entity";
 
 @Entity("agency_members")
 export class AgencyMemberTypeormEntity {
@@ -28,8 +28,9 @@ export class AgencyMemberTypeormEntity {
   inviteExpiresAt!: Date | null;
 
   @ManyToOne(
-    () => AgencyTypeormEntity,
-    (agency) => agency.members,
+    // biome-ignore lint/suspicious/noExplicitAny: defer require to break circular import
+    (): any => require("./agency.typeorm-entity").AgencyTypeormEntity,
+    (agency: AgencyTypeormEntity) => agency.members,
   )
   @JoinColumn({ name: "agency_id" })
   agency!: AgencyTypeormEntity;

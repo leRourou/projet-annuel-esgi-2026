@@ -2,7 +2,9 @@ import Anthropic from "@anthropic-ai/sdk";
 import type {
   AiGeneratorPort,
   ContentIdea,
+  CuratedSource,
   GenerateContentInput,
+  GenerateEnrichedContentInput,
   GenerateIdeasInput,
   GeneratedContent,
   RegenerateSectionInput,
@@ -224,6 +226,34 @@ OUTPUT FORMAT — respond with ONLY this JSON object:
 }`;
 }
 
+function buildEnrichedArticlePrompt(input: GenerateContentInput, sources: CuratedSource[]): string {
+  const basePrompt = buildArticlePrompt(input);
+  const sourcesBlock = sources
+    .map(
+      (s, i) =>
+        `SOURCE ${i + 1}: "${s.title}"
+URL: ${s.link}
+Summary: ${s.summary}`,
+    )
+    .join("\n\n");
+
+  return `${basePrompt}
+
+---
+CURATED SOURCES — MANDATORY ENRICHMENT INSTRUCTIONS
+
+You have been given ${sources.length} real, human-curated source(s) to enrich this article. These sources were hand-selected by the editorial team as relevant and trustworthy.
+
+${sourcesBlock}
+
+ENRICHMENT RULES (non-negotiable):
+1. Weave insights, data points, or angles from these sources throughout the article — do not confine them to one section.
+2. When referencing a source, use inline Markdown links: e.g. [Source Title](URL) or "According to [Source Title](URL), …"
+3. At the end of the article body, add a "## Sources" section listing all cited sources as a Markdown link list.
+4. The article must be clearly distinguishable from pure AI-generated content: it should feel researched, not generated.
+5. Do NOT copy verbatim paragraphs from sources — paraphrase and synthesize.`;
+}
+
 function buildPrompt(input: GenerateContentInput): string {
   switch (input.contentType) {
     case "LINKEDIN_POST":
@@ -335,6 +365,30 @@ Rewrite the article applying this instruction precisely. Return ONLY the updated
       throw new Error("No text content in AI response");
     }
     return textBlock.text.trim();
+  }
+
+  async generateEnriched(input: GenerateEnrichedContentInput): Promise<GeneratedContent> {
+    const prompt = buildEnrichedArticlePrompt(input, input.curatedSources);
+    const message = await this.client.messages.create({
+      model: this.model,
+      max_tokens: 6000,
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const textBlock = message.content.find((b) => b.type === "text");
+    if (!textBlock || textBlock.type !== "text") {
+      throw new Error("No text content in AI response");
+    }
+
+    try {
+      const parsed = JSON.parse(textBlock.text) as GeneratedContent;
+      return {
+        ...parsed,
+        slug: parsed.slug ?? slugify(parsed.title),
+      };
+    } catch {
+      throw new Error("Failed to parse AI enriched response as JSON");
+    }
   }
 
   async generate(input: GenerateContentInput): Promise<GeneratedContent> {

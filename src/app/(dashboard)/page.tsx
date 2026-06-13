@@ -89,7 +89,10 @@ export default async function DashboardPage() {
       <div>
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-medium">Recent articles</h2>
-          <Link href="/content" className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-4">
+          <Link
+            href="/content"
+            className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-4"
+          >
             View all
           </Link>
         </div>
@@ -111,7 +114,10 @@ export default async function DashboardPage() {
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between gap-4">
                       <p className="text-sm font-medium truncate">{article.title}</p>
-                      <Badge variant={statusVariant(article.status)} className="shrink-0 capitalize">
+                      <Badge
+                        variant={statusVariant(article.status)}
+                        className="shrink-0 capitalize"
+                      >
                         {article.status.toLowerCase()}
                       </Badge>
                     </div>

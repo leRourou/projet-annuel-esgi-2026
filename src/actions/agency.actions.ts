@@ -1,6 +1,8 @@
 "use server";
 
 import { auth } from "@/lib/auth";
+import { UpdateAgencyContextInputSchema } from "@/modules/agency/application/commands/update-agency-context.command";
+import type { AgencyContextDto } from "@/modules/agency/application/dto/agency-context.dto";
 import type { AgencyDto, AgencyMemberDto } from "@/modules/agency/application/dto/agency.dto";
 import { buildContainer } from "@/shared/infrastructure/di/container";
 
@@ -127,4 +129,42 @@ export async function removeMemberAction(targetUserId: string): Promise<ActionRe
   });
   if (!result.success) return { error: result.error.message };
   return { data: undefined };
+}
+
+export async function getAgencyContextAction(): Promise<ActionResult<AgencyContextDto | null>> {
+  const session = await requireSession();
+  if (!session) return { error: "Unauthorized" };
+
+  const container = await buildContainer();
+  const membership = await container.getUserMembership.execute(session.user.id);
+  if (!membership || membership.isPending) return { error: "No active agency membership" };
+
+  const context = await container.getAgencyContext.execute(membership.agencyId);
+  return { data: context };
+}
+
+export async function updateAgencyContextAction(
+  input: unknown,
+): Promise<ActionResult<AgencyContextDto>> {
+  const session = await requireSession();
+  if (!session) return { error: "Unauthorized" };
+
+  const container = await buildContainer();
+  const membership = await container.getUserMembership.execute(session.user.id);
+  if (!membership || membership.isPending) return { error: "No active agency membership" };
+
+  const parsed = UpdateAgencyContextInputSchema.safeParse({
+    ...(input as object),
+    agencyId: membership.agencyId,
+    requestingUserId: session.user.id,
+  });
+  if (!parsed.success) {
+    const fieldErrors = parsed.error.flatten().fieldErrors;
+    const firstError = Object.values(fieldErrors).flat()[0] ?? "Invalid input";
+    return { error: firstError };
+  }
+
+  const result = await container.updateAgencyContext.execute(parsed.data);
+  if (!result.success) return { error: result.error.message };
+  return { data: result.value };
 }
