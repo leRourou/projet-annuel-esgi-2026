@@ -1,6 +1,8 @@
 import "reflect-metadata";
+import { AgencyContextTypeormEntity } from "@/modules/agency/infrastructure/entities/agency-context.typeorm-entity";
 import { AgencyMemberTypeormEntity } from "@/modules/agency/infrastructure/entities/agency-member.typeorm-entity";
 import { AgencyTypeormEntity } from "@/modules/agency/infrastructure/entities/agency.typeorm-entity";
+import { TagTypeormEntity } from "@/modules/agency/infrastructure/entities/tag.typeorm-entity";
 import { ThemeTypeormEntity } from "@/modules/agency/infrastructure/entities/theme.typeorm-entity";
 import { AccountTypeormEntity } from "@/modules/auth/infrastructure/entities/account.typeorm-entity";
 import { UserTypeormEntity } from "@/modules/auth/infrastructure/entities/user.typeorm-entity";
@@ -12,6 +14,10 @@ import { InitialSchema1743000000000 } from "@/shared/infrastructure/database/mig
 import { AddAuthTables1775228738204 } from "@/shared/infrastructure/database/migrations/1775228738204-AddAuthTables";
 import { AddNotionConfigToAgency1775300000000 } from "@/shared/infrastructure/database/migrations/1775300000000-AddNotionConfigToAgency";
 import { AddThemesTable1775400000000 } from "@/shared/infrastructure/database/migrations/1775400000000-AddThemesTable";
+import { AddExcerptToArticles1775500000000 } from "@/shared/infrastructure/database/migrations/1775500000000-AddExcerptToArticles";
+import { AddAgencyContextTable1775600000000 } from "@/shared/infrastructure/database/migrations/1775600000000-AddAgencyContextTable";
+import { AddTagsTable1775700000000 } from "@/shared/infrastructure/database/migrations/1775700000000-AddTagsTable";
+import { AddCurationStatusToFeedItems1775800000000 } from "@/shared/infrastructure/database/migrations/1775800000000-AddCurationStatusToFeedItems";
 import { DataSource } from "typeorm";
 
 const DATABASE_URL =
@@ -33,12 +39,18 @@ export const AppDataSource = new DataSource({
     AgencyTypeormEntity,
     AgencyMemberTypeormEntity,
     ThemeTypeormEntity,
+    TagTypeormEntity,
+    AgencyContextTypeormEntity,
   ],
   migrations: [
     InitialSchema1743000000000,
     AddAuthTables1775228738204,
     AddNotionConfigToAgency1775300000000,
     AddThemesTable1775400000000,
+    AddExcerptToArticles1775500000000,
+    AddAgencyContextTable1775600000000,
+    AddTagsTable1775700000000,
+    AddCurationStatusToFeedItems1775800000000,
   ],
   subscribers: [],
 });

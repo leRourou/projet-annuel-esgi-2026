@@ -19,4 +19,10 @@ export class FeedItemTypeormEntity {
 
   @Column({ type: "timestamp", name: "published_at" })
   publishedAt!: Date;
+
+  @Column({ type: "varchar", name: "curation_status", default: "UNREAD" })
+  curationStatus!: string;
+
+  @Column({ type: "text", array: true, name: "tag_ids", default: "{}" })
+  tagIds!: string[];
 }

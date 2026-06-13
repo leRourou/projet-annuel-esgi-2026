@@ -1,5 +1,6 @@
 import { FeedItem } from "../../domain/entities/feed-item.entity";
 import { Feed } from "../../domain/entities/feed.entity";
+import { CurationStatus } from "../../domain/value-objects/curation-status.vo";
 import { FeedUrl } from "../../domain/value-objects/feed-url.vo";
 import type { FeedItemTypeormEntity } from "../entities/feed-item.typeorm-entity";
 import type { FeedTypeormEntity } from "../entities/feed.typeorm-entity";
@@ -34,6 +35,8 @@ export class FeedMapper {
       link: entity.link,
       summary: entity.summary,
       publishedAt: entity.publishedAt,
+      curationStatus: CurationStatus.create(entity.curationStatus ?? "UNREAD"),
+      tagIds: entity.tagIds ?? [],
     });
   }
 
@@ -45,6 +48,8 @@ export class FeedMapper {
       link: item.link,
       summary: item.summary,
       publishedAt: item.publishedAt,
+      curationStatus: item.curationStatus.value,
+      tagIds: item.tagIds,
     };
   }
 }

@@ -44,7 +44,9 @@ import { ImportFromNotionCommand } from "@/modules/notion/application/commands/i
 import { SyncPageToNotionCommand } from "@/modules/notion/application/commands/sync-page-to-notion.command";
 import { SearchNotionPagesQuery } from "@/modules/notion/application/queries/search-notion-pages.query";
 import { AddFeedCommand } from "@/modules/rss/application/commands/add-feed.command";
+import { QualifyFeedItemCommand } from "@/modules/rss/application/commands/qualify-feed-item.command";
 import { RefreshFeedsCommand } from "@/modules/rss/application/commands/refresh-feeds.command";
+import { ListCuratedItemsQuery } from "@/modules/rss/application/queries/list-curated-items.query";
 import { ListFeedItemsQuery } from "@/modules/rss/application/queries/list-feed-items.query";
 import { ListFeedsQuery } from "@/modules/rss/application/queries/list-feeds.query";
 
@@ -93,7 +95,9 @@ export async function buildContainer() {
     // RSS
     addFeed: new AddFeedCommand(feedRepository),
     refreshFeeds: new RefreshFeedsCommand(feedRepository, rssParser),
+    qualifyFeedItem: new QualifyFeedItemCommand(feedRepository),
     listFeedItems: new ListFeedItemsQuery(feedRepository),
+    listCuratedItems: new ListCuratedItemsQuery(feedRepository),
     listFeeds: new ListFeedsQuery(feedRepository),
 
     // Tags

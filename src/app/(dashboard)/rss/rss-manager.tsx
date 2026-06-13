@@ -1,19 +1,94 @@
 "use client";
 
-import { addFeedAction, listFeedItemsAction, refreshFeedsAction } from "@/actions/rss.actions";
+import {
+  addFeedAction,
+  listFeedItemsAction,
+  qualifyFeedItemAction,
+  refreshFeedsAction,
+} from "@/actions/rss.actions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { FeedDto } from "@/modules/rss/application/dto/feed.dto";
 import type { FeedItemDto } from "@/modules/rss/application/dto/feed-item.dto";
+import type { FeedDto } from "@/modules/rss/application/dto/feed.dto";
+import type { CurationStatusValue } from "@/modules/rss/domain/value-objects/curation-status.vo";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
+const STATUS_LABELS: Record<CurationStatusValue, string> = {
+  UNREAD: "·",
+  INTERESTING: "★",
+  IGNORED: "✕",
+  TO_USE: "✓",
+};
+
+const STATUS_TITLES: Record<CurationStatusValue, string> = {
+  UNREAD: "Unread",
+  INTERESTING: "Interesting",
+  IGNORED: "Ignore",
+  TO_USE: "To use",
+};
+
 interface RssManagerProps {
   initialFeeds: FeedDto[];
+}
+
+function FeedItemRow({ item }: { item: FeedItemDto }) {
+  const [status, setStatus] = useState<CurationStatusValue>(item.curationStatus);
+  const [isPending, start] = useTransition();
+
+  const statuses: CurationStatusValue[] = ["UNREAD", "INTERESTING", "IGNORED", "TO_USE"];
+
+  function handleQualify(s: CurationStatusValue) {
+    start(async () => {
+      await qualifyFeedItemAction(item.id, s);
+      setStatus(s);
+    });
+  }
+
+  return (
+    <li className="border-t pt-2 first:border-t-0 first:pt-0">
+      <div className="flex items-start gap-2">
+        <div className="flex-1 min-w-0">
+          <a
+            href={item.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs font-medium hover:underline"
+          >
+            {item.title}
+          </a>
+          {item.summary && (
+            <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{item.summary}</p>
+          )}
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {new Date(item.publishedAt).toLocaleDateString("fr-FR")}
+          </p>
+        </div>
+        <div className="flex gap-0.5 shrink-0">
+          {statuses.map((s) => (
+            <button
+              key={s}
+              type="button"
+              title={STATUS_TITLES[s]}
+              disabled={isPending}
+              onClick={() => handleQualify(s)}
+              className={`text-xs w-6 h-6 rounded flex items-center justify-center transition-colors ${
+                status === s
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+              }`}
+            >
+              {STATUS_LABELS[s]}
+            </button>
+          ))}
+        </div>
+      </div>
+    </li>
+  );
 }
 
 function FeedCard({ feed }: { feed: FeedDto }) {
@@ -73,24 +148,7 @@ function FeedCard({ feed }: { feed: FeedDto }) {
           ) : (
             <ul className="space-y-2">
               {items.map((item) => (
-                <li key={item.id} className="border-t pt-2 first:border-t-0 first:pt-0">
-                  <a
-                    href={item.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs font-medium hover:underline"
-                  >
-                    {item.title}
-                  </a>
-                  {item.summary && (
-                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
-                      {item.summary}
-                    </p>
-                  )}
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {new Date(item.publishedAt).toLocaleDateString("fr-FR")}
-                  </p>
-                </li>
+                <FeedItemRow key={item.id} item={item} />
               ))}
             </ul>
           )}

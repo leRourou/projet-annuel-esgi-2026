@@ -17,9 +17,9 @@
 | Priorité | Features | Terminées | Estimation |
 | -------- | -------- | --------- | ---------- |
 | P0 — MVP | 16       | 16        | 46j        |
-| P1       | 9        | 1         | 22j        |
+| P1       | 9        | 2         | 22j        |
 | P2       | 7        | 0         | 11j        |
-| **Total**| **32**   | **17**    | **79j**    |
+| **Total**| **32**   | **18**    | **79j**    |
 
 ---
 
@@ -309,17 +309,17 @@
 > ⚠️ Implémentation existante divergente : la page `/rss` permet d'ajouter un flux et de lancer un refresh, mais n'affiche pas la liste des flux ni des articles. `ListFeedItemsQuery` existe dans le container DI mais n'est pas utilisée dans la page.
 
 #### F-221 · Qualification et tagging des articles curés
-- **Statut** : `🔲 TODO`
+- **Statut** : `✅ DONE`
 - **Priorité** : P1
 - **Estimation** : 3j
 - **Dépendances** : F-220
 - **Description** : Qualification des articles récupérés (intéressant, à ignorer, à utiliser) et classement par tags.
 - **Critères d'acceptation** :
-  - [ ] Value Object `CurationStatus` (UNREAD, INTERESTING, IGNORED, TO_USE)
-  - [ ] Système de tags libres sur les articles curés
-  - [ ] Interface de qualification rapide
-  - [ ] Filtres par statut et par tags
-  - [ ] Use case `QualifyFeedItemCommand`
+  - [x] Value Object `CurationStatus` (UNREAD, INTERESTING, IGNORED, TO_USE)
+  - [x] Système de tags libres sur les articles curés
+  - [x] Interface de qualification rapide
+  - [x] Filtres par statut et par tags
+  - [x] Use case `QualifyFeedItemCommand`
 
 #### F-222 · Enrichissement de la génération via sources curées
 - **Statut** : `🔲 TODO`
