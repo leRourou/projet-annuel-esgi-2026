@@ -30,6 +30,10 @@ export async function signOutAction(): Promise<void> {
   await signOut({ redirectTo: "/login" });
 }
 
+export async function signInWithNotion(): Promise<void> {
+  await signIn("notion", { redirectTo: "/content" });
+}
+
 const CreateUserInputSchema = z.object({
   email: z.string().email(),
   name: z.string().min(1),

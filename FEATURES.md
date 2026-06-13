@@ -16,10 +16,10 @@
 
 | Priorité | Features | Terminées | Estimation |
 | -------- | -------- | --------- | ---------- |
-| P0 — MVP | 16       | 15        | 46j        |
+| P0 — MVP | 16       | 16        | 46j        |
 | P1       | 9        | 1         | 22j        |
 | P2       | 7        | 0         | 11j        |
-| **Total**| **32**   | **16**    | **79j**    |
+| **Total**| **32**   | **17**    | **79j**    |
 
 ---
 
@@ -72,13 +72,13 @@
   - [x] Entité `User` domaine + port `UserRepositoryPort` + adapter TypeORM
 
 ### F-101 · OAuth Notion
-- **Statut** : `🔄 IN_PROGRESS`
+- **Statut** : `✅ DONE`
 - **Priorité** : P0
 - **Estimation** : 1j
 - **Dépendances** : F-100
 - **Description** : Ajouter Notion comme provider OAuth dans Auth.js. Stocker le token Notion pour les intégrations futures (module Notion).
 - **Critères d'acceptation** :
-  - [ ] Bouton "Se connecter avec Notion" sur la page login
+  - [x] Bouton "Se connecter avec Notion" sur la page login
   - [x] Flow OAuth Notion fonctionnel (redirect → callback → session)
   - [x] Token d'accès Notion stocké de manière sécurisée en base
   - [x] L'utilisateur peut se connecter indifféremment par magic link ou Notion
