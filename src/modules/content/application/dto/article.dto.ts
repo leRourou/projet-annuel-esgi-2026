@@ -1,5 +1,8 @@
 import { z } from "zod";
 import type { Article } from "../../domain/entities/article.entity";
+import { ScoreContentSeoQuery } from "../queries/score-content-seo.query";
+
+const seoScoreQuery = new ScoreContentSeoQuery();
 
 export const ArticleDtoSchema = z.object({
   id: z.string().uuid(),
@@ -13,6 +16,29 @@ export const ArticleDtoSchema = z.object({
     keywords: z.array(z.string()),
     slug: z.string(),
     excerpt: z.string().optional(),
+  }),
+  seoScore: z.object({
+    overall: z.number(),
+    breakdown: z.object({
+      h1: z.number(),
+      h2: z.number(),
+      h3: z.number(),
+      metaTitle: z.number(),
+      metaDescription: z.number(),
+      keywordInTitle: z.number(),
+      keywordInBody: z.number(),
+      wordCount: z.number(),
+      excerpt: z.number(),
+    }),
+    details: z.object({
+      h1Count: z.number(),
+      h2Count: z.number(),
+      h3Count: z.number(),
+      metaTitleLength: z.number(),
+      metaDescriptionLength: z.number(),
+      wordCountValue: z.number(),
+      keywordDensityPercent: z.number(),
+    }),
   }),
   tagIds: z.array(z.string()),
   sourceIds: z.array(z.string()),
@@ -40,6 +66,17 @@ export function toArticleDto(article: Article): ArticleDto {
       slug: article.seoMetadata.slug,
       excerpt: article.seoMetadata.excerpt,
     },
+    seoScore: seoScoreQuery.execute({
+      title: article.title,
+      body: article.body,
+      seoMetadata: {
+        metaTitle: article.seoMetadata.metaTitle,
+        metaDescription: article.seoMetadata.metaDescription,
+        keywords: article.seoMetadata.keywords,
+        slug: article.seoMetadata.slug,
+        excerpt: article.seoMetadata.excerpt,
+      },
+    }),
     tagIds: [...article.tagIds],
     sourceIds: [...article.sourceIds],
     authorId: article.authorId,

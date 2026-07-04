@@ -73,6 +73,7 @@ export async function buildContainer() {
   const themeRepository = new TypeormThemeRepository(dataSource);
   const tagRepository = new TypeormTagRepository(dataSource);
   const agencyContextRepository = new TypeormAgencyContextRepository(dataSource);
+  const scoreContentSeoQuery = new ScoreContentSeoQuery();
 
   return {
     // Infrastructure
@@ -85,11 +86,16 @@ export async function buildContainer() {
 
     // Content
     generateIdeas: new GenerateIdeasCommand(aiGenerator, articleRepository),
-    generateArticle: new GenerateArticleCommand(articleRepository, aiGenerator),
+    generateArticle: new GenerateArticleCommand(
+      articleRepository,
+      aiGenerator,
+      scoreContentSeoQuery,
+    ),
     generateEnrichedArticle: new GenerateEnrichedArticleCommand(
       articleRepository,
       aiGenerator,
       feedRepository,
+      scoreContentSeoQuery,
     ),
     createArticle: new CreateArticleCommand(articleRepository),
     updateArticle: new UpdateArticleCommand(articleRepository),
@@ -97,7 +103,7 @@ export async function buildContainer() {
     regenerateSection: new RegenerateSectionCommand(aiGenerator, articleRepository),
     listArticles: new ListArticlesQuery(articleRepository),
     getArticle: new GetArticleQuery(articleRepository),
-    scoreContentSeo: new ScoreContentSeoQuery(),
+    scoreContentSeo: scoreContentSeoQuery,
 
     // Notion
     exportToNotion: new ExportToNotionCommand(notionClient, articleRepository, tagRepository),

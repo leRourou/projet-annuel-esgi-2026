@@ -1,4 +1,5 @@
 import { GenerateEnrichedArticleCommand } from "@/modules/content/application/commands/generate-enriched-article.command";
+import { ScoreContentSeoQuery } from "@/modules/content/application/queries/score-content-seo.query";
 import type {
   AiGeneratorPort,
   GeneratedContent,
@@ -9,9 +10,31 @@ import type { FeedRepositoryPort } from "@/modules/rss/domain/ports/feed.reposit
 import { CurationStatus } from "@/modules/rss/domain/value-objects/curation-status.vo";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+// A well-structured body so it scores above the auto-correction threshold by default —
+// the dedicated auto-correction test below uses its own low-scoring body instead.
+const GOOD_BODY = `# AI & Curated Sources: Best Practices
+
+As noted in [Real Source](https://example.com), combining AI with real research changes everything.
+
+## Why Curated Sources Matter
+
+This section explains how curated sources make content trustworthy and specific.
+
+## How the Enrichment Works
+
+The AI weaves insights from real sources throughout the article, not just in one section.
+
+### Citing Sources Properly
+
+Each claim links back to its source using inline markdown links.
+
+## Conclusion
+
+Enriched AI content stands apart from generic AI output. Adopt this approach today.`;
+
 const mockGenerated: GeneratedContent = {
   title: "AI & Curated Sources: Best Practices",
-  body: "# AI & Curated Sources\n\nAs noted in [Real Source](https://example.com)…",
+  body: GOOD_BODY,
   metaTitle: "AI & Curated Sources: Best Practices",
   metaDescription: "How to combine AI generation with real curated sources.",
   excerpt: "A guide to enriched AI content.",
@@ -83,7 +106,12 @@ describe("GenerateEnrichedArticleCommand", () => {
       const sources = [makeSourceItem("src-1"), makeSourceItem("src-2")];
       repo = makeRepo();
       ai = makeAi();
-      command = new GenerateEnrichedArticleCommand(repo, ai, makeFeedRepo(sources));
+      command = new GenerateEnrichedArticleCommand(
+        repo,
+        ai,
+        makeFeedRepo(sources),
+        new ScoreContentSeoQuery(),
+      );
     });
 
     it("generates and saves an article with sourceIds", async () => {
@@ -112,6 +140,32 @@ describe("GenerateEnrichedArticleCommand", () => {
       await command.execute(baseInput);
       expect(repo.save).toHaveBeenCalledOnce();
     });
+
+    it("auto-corrects when the initial draft scores below the threshold", async () => {
+      const poorDraft: GeneratedContent = {
+        title: "Weak draft",
+        body: "Just a couple of sentences with no structure at all.",
+        metaTitle: "Weak draft",
+        metaDescription: "Too short.",
+        excerpt: "",
+        suggestedKeywords: ["ai"],
+        slug: "weak-draft",
+      };
+      ai.generateEnriched = vi
+        .fn()
+        .mockResolvedValueOnce(poorDraft)
+        .mockResolvedValueOnce(mockGenerated);
+
+      const result = await command.execute(baseInput);
+
+      expect(ai.generateEnriched).toHaveBeenCalledTimes(2);
+      const secondCallArg = vi.mocked(ai.generateEnriched).mock.calls[1]?.[0];
+      expect(secondCallArg?.context).toContain("SEO FIX REQUIRED");
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.title).toBe(mockGenerated.title);
+      }
+    });
   });
 
   describe("with specific sourceIds provided", () => {
@@ -120,7 +174,7 @@ describe("GenerateEnrichedArticleCommand", () => {
       const feedRepo = makeFeedRepo(sources);
       repo = makeRepo();
       ai = makeAi();
-      command = new GenerateEnrichedArticleCommand(repo, ai, feedRepo);
+      command = new GenerateEnrichedArticleCommand(repo, ai, feedRepo, new ScoreContentSeoQuery());
 
       const result = await command.execute({ ...baseInput, sourceIds: ["specific-1"] });
 
@@ -134,7 +188,12 @@ describe("GenerateEnrichedArticleCommand", () => {
     beforeEach(() => {
       repo = makeRepo();
       ai = makeAi();
-      command = new GenerateEnrichedArticleCommand(repo, ai, makeFeedRepo([]));
+      command = new GenerateEnrichedArticleCommand(
+        repo,
+        ai,
+        makeFeedRepo([]),
+        new ScoreContentSeoQuery(),
+      );
     });
 
     it("returns a failure when no TO_USE sources exist", async () => {

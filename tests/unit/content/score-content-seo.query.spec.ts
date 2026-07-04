@@ -1,4 +1,7 @@
-import { ScoreContentSeoQuery } from "@/modules/content/application/queries/score-content-seo.query";
+import {
+  ScoreContentSeoQuery,
+  summarizeSeoIssues,
+} from "@/modules/content/application/queries/score-content-seo.query";
 import { describe, expect, it } from "vitest";
 
 const PERFECT_BODY = `# TypeScript Best Practices for 2024
@@ -167,5 +170,35 @@ describe("ScoreContentSeoQuery", () => {
     expect(score.overall).toBeLessThan(50);
     expect(score.breakdown.h1).toBe(0);
     expect(score.breakdown.h2).toBe(0);
+  });
+
+  it("computes the primary keyword density as a percentage of total words", () => {
+    const score = query.execute(perfectInput);
+    const expectedDensity =
+      Math.round(
+        ((perfectInput.body.toLowerCase().match(/typescript/g) ?? []).length /
+          score.details.wordCountValue) *
+          10000,
+      ) / 100;
+    expect(score.details.keywordDensityPercent).toBe(expectedDensity);
+  });
+
+  it("reports 0 keyword density for an empty body", () => {
+    const score = query.execute({ ...perfectInput, body: "" });
+    expect(score.details.keywordDensityPercent).toBe(0);
+  });
+
+  describe("summarizeSeoIssues", () => {
+    it("returns no issues for a perfect score", () => {
+      const score = query.execute(perfectInput);
+      expect(summarizeSeoIssues(score)).toEqual([]);
+    });
+
+    it("lists a human-readable issue for each zero-scoring breakdown item", () => {
+      const score = query.execute({ ...perfectInput, body: "" });
+      const issues = summarizeSeoIssues(score);
+      expect(issues).toContain("Add a single clear H1 heading");
+      expect(issues.length).toBeGreaterThan(0);
+    });
   });
 });

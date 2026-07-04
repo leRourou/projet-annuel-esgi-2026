@@ -3,6 +3,7 @@ import { listTagsAction } from "@/actions/tags.actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { SeoScoreBadge } from "@/shared/ui/seo-score-badge";
 import Link from "next/link";
 import { Suspense } from "react";
 import { StatusFilter } from "./status-filter";
@@ -92,9 +93,12 @@ export default async function ContentPage({ searchParams }: Props) {
                         </div>
                       )}
                     </div>
-                    <Badge variant={statusVariant(article.status)} className="shrink-0 capitalize">
-                      {article.status.toLowerCase()}
-                    </Badge>
+                    <div className="flex flex-col items-end gap-1.5 shrink-0">
+                      <Badge variant={statusVariant(article.status)} className="capitalize">
+                        {article.status.toLowerCase()}
+                      </Badge>
+                      <SeoScoreBadge score={article.seoScore.overall} />
+                    </div>
                   </div>
                 </CardContent>
               </Card>

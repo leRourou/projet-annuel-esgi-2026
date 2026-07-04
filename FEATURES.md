@@ -17,9 +17,9 @@
 | Priorité | Features | Terminées | Estimation |
 | -------- | -------- | --------- | ---------- |
 | P0 — MVP | 16       | 16 ✅     | 46j        |
-| P1       | 9        | 7         | 22j        |
+| P1       | 9        | 8         | 22j        |
 | P2       | 7        | 0         | 11j        |
-| **Total**| **32**   | **23**    | **79j**    |
+| **Total**| **32**   | **24**    | **79j**    |
 
 ---
 
@@ -246,16 +246,16 @@
 > Note : en corrigeant le passage des paramètres à l'IA, `articleType` (F-203) était en fait jamais transmis à `AiGeneratorPort.generate()` malgré son existence dans le DTO — corrigé au passage.
 
 #### F-208 · Scoring SEO avancé intégré
-- **Statut** : `🔲 TODO`
+- **Statut** : `✅ DONE`
 - **Priorité** : P1
 - **Estimation** : 2j
 - **Dépendances** : F-204
 - **Description** : Scoring SEO approfondi calculé pendant la génération, avec auto-correction si score insuffisant.
 - **Critères d'acceptation** :
-  - [ ] Algorithme de scoring (densité mots-clés, structure, longueur, meta)
-  - [ ] Le score est retourné avec le contenu généré
-  - [ ] Si le score est insuffisant, l'IA auto-corrige avant de livrer
-  - [ ] Dashboard affiche le score avec code couleur (rouge/orange/vert)
+  - [x] Algorithme de scoring (densité mots-clés, structure, longueur, meta) — `ScoreContentSeoQuery` couvrait déjà structure/longueur/meta (F-204) ; ajout de `keywordDensityPercent` (% réel, pas seulement un seuil binaire) dans `SeoScoreDetails`
+  - [x] Le score est retourné avec le contenu généré — `ArticleDto.seoScore` calculé dans `toArticleDto()`, donc présent immédiatement sur toute génération/lecture d'article
+  - [x] Si le score est insuffisant, l'IA auto-corrige avant de livrer — `GenerateArticleCommand`/`GenerateEnrichedArticleCommand` relancent l'IA avec les points faibles (`summarizeSeoIssues`) si score < 70, et ne gardent la version corrigée que si son score est meilleur
+  - [x] Dashboard affiche le score avec code couleur (rouge/orange/vert) — déjà sur `/content/[id]` (F-204), ajouté aussi sur la liste `/content` via `SeoScoreBadge` partagé
 
 #### F-209 · Suggestion de prompt image IA
 - **Statut** : `🔲 TODO`

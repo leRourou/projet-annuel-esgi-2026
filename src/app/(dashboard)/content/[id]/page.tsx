@@ -5,13 +5,11 @@ import { listTagsAction } from "@/actions/tags.actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScoreContentSeoQuery } from "@/modules/content/application/queries/score-content-seo.query";
+import { seoScoreVariant } from "@/shared/ui/seo-score-badge";
 import { notFound } from "next/navigation";
 import { ContentEditor } from "./content-editor";
 import { NotionExport } from "./notion-export";
 import { TagAssign } from "./tag-assign";
-
-const seoQuery = new ScoreContentSeoQuery();
 
 function statusVariant(status: string) {
   if (status === "PUBLISHED") return "success" as const;
@@ -19,10 +17,14 @@ function statusVariant(status: string) {
   return "secondary" as const;
 }
 
+const SCORE_TEXT_COLOR: Record<ReturnType<typeof seoScoreVariant>, string> = {
+  success: "text-green-600",
+  warning: "text-amber-500",
+  destructive: "text-red-500",
+};
+
 function seoScoreColor(score: number): string {
-  if (score >= 80) return "text-green-600";
-  if (score >= 50) return "text-amber-500";
-  return "text-red-500";
+  return SCORE_TEXT_COLOR[seoScoreVariant(score)];
 }
 
 function seoScoreLabel(score: number): string {
@@ -54,17 +56,7 @@ export default async function ArticlePage({ params }: Props) {
   const agency = agencyResult.data;
   const hasNotionConfig = !!(agency?.notionConnected && agency?.notionDatabaseId);
 
-  const seoScore = seoQuery.execute({
-    title: article.title,
-    body: article.body,
-    seoMetadata: {
-      metaTitle: article.seoMetadata.metaTitle,
-      metaDescription: article.seoMetadata.metaDescription,
-      keywords: article.seoMetadata.keywords,
-      slug: article.seoMetadata.slug,
-      excerpt: article.seoMetadata.excerpt,
-    },
-  });
+  const seoScore = article.seoScore;
 
   const scoreBreakdownItems = [
     { label: "H1 heading", pts: seoScore.breakdown.h1, max: 15 },
@@ -132,6 +124,9 @@ export default async function ArticlePage({ params }: Props) {
                 </div>
               ))}
             </div>
+            <p className="text-xs text-muted-foreground mt-3">
+              Keyword density: {seoScore.details.keywordDensityPercent}% (target 1–3%)
+            </p>
           </CardContent>
         </Card>
 

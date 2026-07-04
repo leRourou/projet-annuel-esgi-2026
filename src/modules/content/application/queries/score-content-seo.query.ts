@@ -29,6 +29,7 @@ export interface SeoScoreDetails {
   metaTitleLength: number;
   metaDescriptionLength: number;
   wordCountValue: number;
+  keywordDensityPercent: number;
 }
 
 export interface SeoScore {
@@ -86,6 +87,8 @@ export class ScoreContentSeoQuery {
     };
 
     const overall = Object.values(breakdown).reduce((sum, v) => sum + v, 0);
+    const keywordDensityPercent =
+      wordCountValue > 0 ? Math.round((keywordBodyMatches / wordCountValue) * 10000) / 100 : 0;
 
     return {
       overall,
@@ -97,7 +100,26 @@ export class ScoreContentSeoQuery {
         metaTitleLength: metaTitle.length,
         metaDescriptionLength: metaDescription.length,
         wordCountValue,
+        keywordDensityPercent,
       },
     };
   }
+}
+
+const ISSUE_DESCRIPTIONS: Record<keyof SeoScoreBreakdown, string> = {
+  h1: "Add a single clear H1 heading",
+  h2: "Add at least 2 H2 section headings",
+  h3: "Add at least 1 H3 sub-heading",
+  metaTitle: "Meta title must be between 10 and 70 characters",
+  metaDescription: "Meta description must be at most 160 characters",
+  keywordInTitle: "The primary keyword must appear in the meta title",
+  keywordInBody: "The primary keyword must appear at least 3 times in the body",
+  wordCount: "The body is too short — add more substantial content",
+  excerpt: "Add a short excerpt summarizing the content",
+};
+
+export function summarizeSeoIssues(score: SeoScore): string[] {
+  return (Object.keys(score.breakdown) as Array<keyof SeoScoreBreakdown>)
+    .filter((key) => score.breakdown[key] === 0)
+    .map((key) => ISSUE_DESCRIPTIONS[key]);
 }
