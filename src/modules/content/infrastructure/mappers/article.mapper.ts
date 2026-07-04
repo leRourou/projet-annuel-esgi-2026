@@ -23,6 +23,7 @@ export class ArticleMapper {
       authorId: entity.authorId,
       agencyId: entity.agencyId ?? "",
       notionPageId: entity.notionPageId ?? undefined,
+      scheduledAt: entity.scheduledAt ?? undefined,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     });
@@ -45,6 +46,7 @@ export class ArticleMapper {
       authorId: article.authorId,
       agencyId: article.agencyId || null,
       notionPageId: article.notionPageId ?? null,
+      scheduledAt: article.scheduledAt ?? null,
     };
   }
 }

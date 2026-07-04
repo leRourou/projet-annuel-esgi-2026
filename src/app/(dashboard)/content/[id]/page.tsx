@@ -1,3 +1,4 @@
+import { getAgencyAction } from "@/actions/agency.actions";
 import { getArticleAction, publishArticleAction } from "@/actions/content.actions";
 import { getSourceItemsAction } from "@/actions/rss.actions";
 import { listTagsAction } from "@/actions/tags.actions";
@@ -7,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScoreContentSeoQuery } from "@/modules/content/application/queries/score-content-seo.query";
 import { notFound } from "next/navigation";
 import { ContentEditor } from "./content-editor";
+import { NotionExport } from "./notion-export";
 import { TagAssign } from "./tag-assign";
 
 const seoQuery = new ScoreContentSeoQuery();
@@ -35,7 +37,11 @@ interface Props {
 
 export default async function ArticlePage({ params }: Props) {
   const { id } = await params;
-  const [result, tagsResult] = await Promise.all([getArticleAction(id), listTagsAction()]);
+  const [result, tagsResult, agencyResult] = await Promise.all([
+    getArticleAction(id),
+    listTagsAction(),
+    getAgencyAction(),
+  ]);
   if (result.error || !result.data) notFound();
 
   const sourceItems =
@@ -45,6 +51,8 @@ export default async function ArticlePage({ params }: Props) {
 
   const article = result.data;
   const allTags = tagsResult.data ?? [];
+  const agency = agencyResult.data;
+  const hasNotionConfig = !!(agency?.notionConnected && agency?.notionDatabaseId);
 
   const seoScore = seoQuery.execute({
     title: article.title,
@@ -196,6 +204,19 @@ export default async function ArticlePage({ params }: Props) {
             </CardContent>
           </Card>
         )}
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium">Export to Notion</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <NotionExport
+              articleId={article.id}
+              notionPageId={article.notionPageId}
+              hasNotionConfig={hasNotionConfig}
+            />
+          </CardContent>
+        </Card>
 
         <ContentEditor
           articleId={article.id}

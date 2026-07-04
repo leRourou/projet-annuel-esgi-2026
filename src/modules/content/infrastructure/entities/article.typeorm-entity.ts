@@ -47,6 +47,9 @@ export class ArticleTypeormEntity {
   @Column({ type: "varchar", name: "notion_page_id", nullable: true })
   notionPageId!: string | null;
 
+  @Column({ type: "timestamp", name: "scheduled_at", nullable: true })
+  scheduledAt!: Date | null;
+
   @Column({ type: "text", array: true, name: "tag_ids", default: "{}" })
   tagIds!: string[];
 

@@ -1,10 +1,16 @@
 import { Client } from "@notionhq/client";
+import type {
+  BlockObjectRequest,
+  CreatePageParameters,
+} from "@notionhq/client/build/src/api-endpoints";
 import type { NotionPage } from "../../domain/entities/notion-page.entity";
 import type {
   CreateNotionPageInput,
+  ExportPageInput,
   NotionClientPort,
   SearchNotionPagesInput,
 } from "../../domain/ports/notion-client.port";
+import { markdownToNotionBlocks } from "../../domain/value-objects/markdown-to-notion-blocks";
 import { NotionPageMapper } from "../mappers/notion-page.mapper";
 
 export class NotionSdkClientAdapter implements NotionClientPort {
@@ -67,7 +73,6 @@ export class NotionSdkClientAdapter implements NotionClientPort {
 
   async updatePage(pageId: string, content: string, accessToken: string): Promise<void> {
     const client = this.getClient(accessToken);
-    // Clear existing blocks then add new content
     const existing = await client.blocks.children.list({ block_id: pageId });
     await Promise.all(existing.results.map((b) => client.blocks.delete({ block_id: b.id })));
     await client.blocks.children.append({
@@ -82,5 +87,85 @@ export class NotionSdkClientAdapter implements NotionClientPort {
         },
       ],
     });
+  }
+
+  async exportPage(input: ExportPageInput): Promise<NotionPage> {
+    const client = this.getClient(input.accessToken);
+
+    type NotionProperties = CreatePageParameters["properties"];
+    const properties: NotionProperties = {
+      title: {
+        title: [{ text: { content: input.title } }],
+      },
+    };
+
+    if (input.status) {
+      properties.Status = { select: { name: input.status } };
+    }
+    if (input.contentType) {
+      properties.Type = { select: { name: input.contentType } };
+    }
+    if (input.tags && input.tags.length > 0) {
+      properties.Tags = {
+        multi_select: input.tags.map((tag) => ({ name: tag })),
+      };
+    }
+    if (input.scheduledAt) {
+      const dateStr = input.scheduledAt.toISOString().split("T")[0] as string;
+      properties["Publication date"] = {
+        date: { start: dateStr },
+      };
+    }
+
+    const blocks = markdownToNotionBlocks(input.body);
+    const richText = (text: string) => [{ type: "text" as const, text: { content: text } }];
+    const children: BlockObjectRequest[] = blocks.map((block) => {
+      switch (block.type) {
+        case "heading_1":
+          return {
+            object: "block",
+            type: "heading_1",
+            heading_1: { rich_text: richText(block.text) },
+          };
+        case "heading_2":
+          return {
+            object: "block",
+            type: "heading_2",
+            heading_2: { rich_text: richText(block.text) },
+          };
+        case "heading_3":
+          return {
+            object: "block",
+            type: "heading_3",
+            heading_3: { rich_text: richText(block.text) },
+          };
+        case "bulleted_list_item":
+          return {
+            object: "block",
+            type: "bulleted_list_item",
+            bulleted_list_item: { rich_text: richText(block.text) },
+          };
+        case "numbered_list_item":
+          return {
+            object: "block",
+            type: "numbered_list_item",
+            numbered_list_item: { rich_text: richText(block.text) },
+          };
+        default:
+          return {
+            object: "block",
+            type: "paragraph",
+            paragraph: { rich_text: richText(block.text) },
+          };
+      }
+    });
+
+    const page = await client.pages.create({
+      parent: { database_id: input.parentDatabaseId },
+      properties,
+      children,
+    });
+
+    return this.getPage(page.id, input.accessToken);
   }
 }

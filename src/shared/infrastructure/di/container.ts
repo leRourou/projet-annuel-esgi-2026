@@ -41,6 +41,7 @@ import { UpdateArticleCommand } from "@/modules/content/application/commands/upd
 import { GetArticleQuery } from "@/modules/content/application/queries/get-article.query";
 import { ListArticlesQuery } from "@/modules/content/application/queries/list-articles.query";
 import { ScoreContentSeoQuery } from "@/modules/content/application/queries/score-content-seo.query";
+import { ExportToNotionCommand } from "@/modules/notion/application/commands/export-to-notion.command";
 import { ImportFromNotionCommand } from "@/modules/notion/application/commands/import-from-notion.command";
 import { SyncPageToNotionCommand } from "@/modules/notion/application/commands/sync-page-to-notion.command";
 import { SearchNotionPagesQuery } from "@/modules/notion/application/queries/search-notion-pages.query";
@@ -95,6 +96,7 @@ export async function buildContainer() {
     scoreContentSeo: new ScoreContentSeoQuery(),
 
     // Notion
+    exportToNotion: new ExportToNotionCommand(notionClient, articleRepository, tagRepository),
     syncPageToNotion: new SyncPageToNotionCommand(notionClient, articleRepository),
     importFromNotion: new ImportFromNotionCommand(notionClient, articleRepository),
     searchNotionPages: new SearchNotionPagesQuery(notionClient),

@@ -19,6 +19,7 @@ export const ArticleDtoSchema = z.object({
   authorId: z.string().uuid(),
   agencyId: z.string(),
   notionPageId: z.string().optional(),
+  scheduledAt: z.date().optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -44,6 +45,7 @@ export function toArticleDto(article: Article): ArticleDto {
     authorId: article.authorId,
     agencyId: article.agencyId,
     notionPageId: article.notionPageId,
+    scheduledAt: article.scheduledAt,
     createdAt: article.createdAt,
     updatedAt: article.updatedAt,
   };

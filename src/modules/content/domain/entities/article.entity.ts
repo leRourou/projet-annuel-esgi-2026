@@ -16,6 +16,7 @@ export interface ArticleProps {
   tagIds: string[];
   sourceIds: string[];
   notionPageId?: string;
+  scheduledAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -91,6 +92,10 @@ export class Article extends AggregateRoot<string> {
     return this.props.notionPageId;
   }
 
+  get scheduledAt(): Date | undefined {
+    return this.props.scheduledAt;
+  }
+
   get createdAt(): Date {
     return this.props.createdAt;
   }
@@ -125,6 +130,10 @@ export class Article extends AggregateRoot<string> {
     if (nextStatus.value === "PUBLISHED") {
       this.addDomainEvent(new ArticlePublishedEvent(this.id, this.props.authorId));
     }
+  }
+
+  schedulePublication(date: Date): void {
+    this.props = { ...this.props, scheduledAt: date, updatedAt: new Date() };
   }
 
   linkToNotion(pageId: string): void {

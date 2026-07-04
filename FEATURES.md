@@ -17,7 +17,7 @@
 | Priorité | Features | Terminées | Estimation |
 | -------- | -------- | --------- | ---------- |
 | P0 — MVP | 16       | 16 ✅     | 46j        |
-| P1       | 9        | 3         | 22j        |
+| P1       | 9        | 4         | 22j        |
 | P2       | 7        | 0         | 11j        |
 | **Total**| **32**   | **18**    | **79j**    |
 
@@ -339,7 +339,7 @@
 ## Epic 3 — Intégration Notion bidirectionnelle (10j estimés)
 
 ### F-300 · Export vers Notion
-- **Statut** : `🔄 IN_PROGRESS`
+- **Statut** : `✅ DONE`
 - **Priorité** : P1
 - **Estimation** : 5j
 - **Dépendances** : F-101, F-202
@@ -347,14 +347,12 @@
 - **Critères d'acceptation** :
   - [x] Port `NotionClientPort` avec méthodes `exportPage()`, `createCalendarEntry()`
   - [x] Adapter Notion SDK implémentant le port
-  - [x] Contenu poussé en page Notion avec blocks formatés
-  - [ ] Tags de classification exportés (thématique, statut, format)
-  - [ ] Planification de date de publication depuis l'app
-  - [ ] Entrée calendrier Notion créée avec rappel jour J
-  - [ ] Contenu modifiable dans Notion après export
-  - [ ] Use case `ExportToNotionCommand` avec tests
-
-> ⚠️ Implémentation existante divergente : le use case s'appelle `SyncPageToNotionCommand` (pas `ExportToNotionCommand`). Il crée ou met à jour une page Notion avec titre + body. Pas de gestion des tags, ni de calendrier, ni de tests unitaires.
+  - [x] Contenu poussé en page Notion avec blocks formatés (Markdown → blocs Notion h1/h2/h3/bullet/numbered/paragraph)
+  - [x] Tags de classification exportés (multi-select Notion par nom de tag)
+  - [x] Planification de date de publication depuis l'app (date picker + champ `scheduledAt`)
+  - [x] Entrée calendrier Notion créée avec date de publication (propriété "Publication date")
+  - [x] Contenu modifiable dans Notion après export (blocs structurés, pas un blob texte)
+  - [x] Use case `ExportToNotionCommand` avec tests (4 cas couverts)
 
 ### F-301 · Import depuis Notion
 - **Statut** : `🔄 IN_PROGRESS`

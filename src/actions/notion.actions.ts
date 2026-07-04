@@ -2,6 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import type { ArticleDto } from "@/modules/content/application/dto/article.dto";
+import { ExportToNotionInputSchema } from "@/modules/notion/application/commands/export-to-notion.command";
 import { ImportFromNotionInputSchema } from "@/modules/notion/application/commands/import-from-notion.command";
 import { SyncPageToNotionInputSchema } from "@/modules/notion/application/commands/sync-page-to-notion.command";
 import type { NotionPageDto } from "@/modules/notion/application/dto/notion-page.dto";
@@ -28,6 +29,36 @@ async function getAgencyNotionTokenFromDb(agencyId: string): Promise<string | nu
     agencyId,
   ])) as Array<{ notion_access_token: string | null }>;
   return rows[0]?.notion_access_token ?? null;
+}
+
+export async function exportToNotionAction(
+  input: unknown,
+): Promise<ActionResult<{ notionPageId: string }>> {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Unauthorized" };
+
+  const container = await buildContainer();
+  const membership = await container.getUserMembership.execute(session.user.id);
+  if (!membership || membership.isPending) return { error: "No active agency membership" };
+
+  const notionToken = await getAgencyNotionToken(membership.agencyId);
+  if (!notionToken) return { error: "Notion account not connected. Connect Notion in Settings." };
+
+  const agencyResult = await container.getAgency.execute({ agencyId: membership.agencyId });
+  if (!agencyResult.success) return { error: "Agency not found" };
+  const databaseId = agencyResult.value.notionDatabaseId;
+  if (!databaseId) return { error: "No Notion database configured. Set it up in Settings." };
+
+  const parsed = ExportToNotionInputSchema.safeParse({
+    ...(input as object),
+    accessToken: notionToken,
+    parentDatabaseId: databaseId,
+  });
+  if (!parsed.success) return { error: "Invalid input" };
+
+  const result = await container.exportToNotion.execute(parsed.data);
+  if (!result.success) return { error: result.error.message };
+  return { data: result.value };
 }
 
 export async function syncToNotionAction(
