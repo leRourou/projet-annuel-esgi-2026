@@ -17,9 +17,9 @@
 | Priorité | Features | Terminées | Estimation |
 | -------- | -------- | --------- | ---------- |
 | P0 — MVP | 16       | 16 ✅     | 46j        |
-| P1       | 9        | 8         | 22j        |
+| P1       | 9        | 9         | 22j        |
 | P2       | 7        | 0         | 11j        |
-| **Total**| **32**   | **24**    | **79j**    |
+| **Total**| **32**   | **25**    | **79j**    |
 
 ---
 
@@ -405,16 +405,16 @@
 > ⚠️ Implémentation existante divergente : la page `/dashboard` est une page d'accueil minimale ("Bienvenue sur ContentAI Studio"). La page `/content` liste les articles avec badges de statut. Pas de métriques, filtres, ni vue des articles curés. La sidebar de navigation est présente (`app-sidebar.tsx`).
 
 ### F-401 · Calendrier de publication intégré
-- **Statut** : `🔲 TODO`
+- **Statut** : `✅ DONE`
 - **Priorité** : P1
 - **Estimation** : 2j
 - **Dépendances** : F-400, F-300
 - **Description** : Calendrier dans l'app montrant les contenus planifiés, complémentaire au calendrier Notion.
 - **Critères d'acceptation** :
-  - [ ] Vue calendrier mensuelle avec contenus planifiés
-  - [ ] Drag & drop pour replanifier
-  - [ ] Synchronisation avec le calendrier Notion
-  - [ ] Code couleur par type de contenu et statut
+  - [x] Vue calendrier mensuelle avec contenus planifiés — page `/calendar`, `ListScheduledArticlesQuery`
+  - [x] Drag & drop pour replanifier — `CalendarView` (HTML5 DnD natif) → `rescheduleArticleAction` → `RescheduleArticleCommand`
+  - [x] Synchronisation avec le calendrier Notion — `SyncArticleScheduleToNotionCommand` pousse la nouvelle date sur la propriété "Publication date" de la page Notion liée (best-effort, après chaque replanification)
+  - [x] Code couleur par type de contenu et statut — légende + puces de couleur par `contentType` et point de couleur par `status`
 
 ### F-402 · Système de tags et classification
 - **Statut** : `✅ DONE`

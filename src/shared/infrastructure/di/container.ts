@@ -37,13 +37,16 @@ import { GenerateEnrichedArticleCommand } from "@/modules/content/application/co
 import { GenerateIdeasCommand } from "@/modules/content/application/commands/generate-ideas.command";
 import { PublishArticleCommand } from "@/modules/content/application/commands/publish-article.command";
 import { RegenerateSectionCommand } from "@/modules/content/application/commands/regenerate-section.command";
+import { RescheduleArticleCommand } from "@/modules/content/application/commands/reschedule-article.command";
 import { UpdateArticleCommand } from "@/modules/content/application/commands/update-article.command";
 import { GetArticleQuery } from "@/modules/content/application/queries/get-article.query";
 import { ListArticlesQuery } from "@/modules/content/application/queries/list-articles.query";
+import { ListScheduledArticlesQuery } from "@/modules/content/application/queries/list-scheduled-articles.query";
 import { ScoreContentSeoQuery } from "@/modules/content/application/queries/score-content-seo.query";
 import { ExportToNotionCommand } from "@/modules/notion/application/commands/export-to-notion.command";
 import { ImportFromNotionCommand } from "@/modules/notion/application/commands/import-from-notion.command";
 import { ImportNotionEntriesCommand } from "@/modules/notion/application/commands/import-notion-entries.command";
+import { SyncArticleScheduleToNotionCommand } from "@/modules/notion/application/commands/sync-article-schedule-to-notion.command";
 import { SyncFeedItemStatusToNotionCommand } from "@/modules/notion/application/commands/sync-feed-item-status-to-notion.command";
 import { SyncPageToNotionCommand } from "@/modules/notion/application/commands/sync-page-to-notion.command";
 import { SearchNotionDatabasesQuery } from "@/modules/notion/application/queries/search-notion-databases.query";
@@ -103,6 +106,8 @@ export async function buildContainer() {
     regenerateSection: new RegenerateSectionCommand(aiGenerator, articleRepository),
     listArticles: new ListArticlesQuery(articleRepository),
     getArticle: new GetArticleQuery(articleRepository),
+    listScheduledArticles: new ListScheduledArticlesQuery(articleRepository),
+    rescheduleArticle: new RescheduleArticleCommand(articleRepository),
     scoreContentSeo: scoreContentSeoQuery,
 
     // Notion
@@ -113,6 +118,10 @@ export async function buildContainer() {
     searchNotionDatabases: new SearchNotionDatabasesQuery(notionClient),
     importNotionEntries: new ImportNotionEntriesCommand(notionClient, feedRepository),
     syncFeedItemStatusToNotion: new SyncFeedItemStatusToNotionCommand(notionClient, feedRepository),
+    syncArticleScheduleToNotion: new SyncArticleScheduleToNotionCommand(
+      notionClient,
+      articleRepository,
+    ),
 
     // RSS
     addFeed: new AddFeedCommand(feedRepository),

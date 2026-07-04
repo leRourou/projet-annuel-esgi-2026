@@ -48,6 +48,7 @@ function makeNotionClient(overrides: Partial<NotionClientPort> = {}): NotionClie
     }),
     queryDatabase: vi.fn().mockResolvedValue([]),
     setPageStatus: vi.fn(),
+    updatePageSchedule: vi.fn(),
     testConnection: vi.fn(),
     ...overrides,
   };

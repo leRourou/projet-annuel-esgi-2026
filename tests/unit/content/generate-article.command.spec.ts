@@ -43,6 +43,7 @@ function makeRepo(): ArticleRepositoryPort {
   return {
     findById: vi.fn().mockResolvedValue(null),
     findAll: vi.fn().mockResolvedValue({ items: [], total: 0, page: 1, limit: 20, totalPages: 0 }),
+    findScheduled: vi.fn().mockResolvedValue([]),
     save: vi.fn().mockResolvedValue(undefined),
     delete: vi.fn().mockResolvedValue(undefined),
   };

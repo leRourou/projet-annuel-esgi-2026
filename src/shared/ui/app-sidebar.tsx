@@ -11,7 +11,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { FileText, LayoutDashboard, Lightbulb, Rss, Settings, Star } from "lucide-react";
+import {
+  CalendarDays,
+  FileText,
+  LayoutDashboard,
+  Lightbulb,
+  Rss,
+  Settings,
+  Star,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -19,6 +27,7 @@ const NAV_ITEMS = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/ideas", label: "Ideas", icon: Lightbulb },
   { href: "/content", label: "Content", icon: FileText },
+  { href: "/calendar", label: "Calendar", icon: CalendarDays },
   { href: "/rss", label: "RSS feeds", icon: Rss },
   { href: "/rss/curated", label: "Curation", icon: Star },
   { href: "/settings", label: "Settings", icon: Settings },

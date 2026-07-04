@@ -48,6 +48,16 @@ export class TypeormArticleRepository implements ArticleRepositoryPort {
     return paginate(entities.map(ArticleMapper.toDomain), total, pagination);
   }
 
+  async findScheduled(agencyId: string): Promise<Article[]> {
+    const entities = await this.repo
+      .createQueryBuilder("article")
+      .where("article.agency_id = :agencyId", { agencyId })
+      .andWhere("article.scheduled_at IS NOT NULL")
+      .orderBy("article.scheduled_at", "ASC")
+      .getMany();
+    return entities.map(ArticleMapper.toDomain);
+  }
+
   async save(article: Article): Promise<void> {
     const data = ArticleMapper.toPersistence(article);
     await this.repo.save(data);

@@ -20,6 +20,7 @@ function makeMocks() {
   const articleRepository: ArticleRepositoryPort = {
     findById: vi.fn(),
     findAll: vi.fn().mockResolvedValue({ items: [], total: 0, page: 1, limit: 200, totalPages: 0 }),
+    findScheduled: vi.fn(),
     save: vi.fn(),
     delete: vi.fn(),
   };

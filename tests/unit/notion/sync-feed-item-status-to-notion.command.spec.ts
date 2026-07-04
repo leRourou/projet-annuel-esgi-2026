@@ -18,6 +18,7 @@ function makeNotionClient(): NotionClientPort {
     getDatabase: vi.fn(),
     queryDatabase: vi.fn(),
     setPageStatus: vi.fn().mockResolvedValue(undefined),
+    updatePageSchedule: vi.fn(),
     testConnection: vi.fn(),
   };
 }

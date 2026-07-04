@@ -55,6 +55,7 @@ function makeNotionClient(): NotionClientPort {
     getDatabase: vi.fn(),
     queryDatabase: vi.fn(),
     setPageStatus: vi.fn(),
+    updatePageSchedule: vi.fn(),
     testConnection: vi.fn(),
   };
 }
@@ -64,6 +65,7 @@ function makeArticleRepo(article: Article | null = makeArticle()): ArticleReposi
     findById: vi.fn().mockResolvedValue(article),
     save: vi.fn().mockResolvedValue(undefined),
     findAll: vi.fn(),
+    findScheduled: vi.fn(),
     delete: vi.fn(),
   };
 }

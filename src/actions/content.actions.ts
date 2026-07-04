@@ -1,8 +1,10 @@
 "use server";
 
+import { getAgencyNotionToken } from "@/actions/notion.actions";
 import { auth } from "@/lib/auth";
 import { CreateArticleInputSchema } from "@/modules/content/application/commands/create-article.command";
 import { RegenerateSectionInputSchema } from "@/modules/content/application/commands/regenerate-section.command";
+import { RescheduleArticleInputSchema } from "@/modules/content/application/commands/reschedule-article.command";
 import { UpdateArticleInputSchema } from "@/modules/content/application/commands/update-article.command";
 import type { ArticleDto } from "@/modules/content/application/dto/article.dto";
 import { GenerateArticleInputSchema } from "@/modules/content/application/dto/generate-article.dto";
@@ -244,5 +246,47 @@ export async function generateEnrichedArticleAction(
 
   const result = await container.generateEnrichedArticle.execute(parsed.data);
   if (!result.success) return { error: result.error.message };
+  return { data: result.value };
+}
+
+export async function listScheduledArticlesAction(): Promise<ActionResult<ArticleDto[]>> {
+  const session = await requireSession();
+  if (!session) return { error: "Unauthorized" };
+
+  const container = await buildContainer();
+  const membership = await container.getUserMembership.execute(session.user.id);
+  if (!membership || membership.isPending) return { error: "No active agency membership" };
+
+  const articles = await container.listScheduledArticles.execute(membership.agencyId);
+  return { data: articles };
+}
+
+export async function rescheduleArticleAction(
+  articleId: string,
+  scheduledAt: Date,
+): Promise<ActionResult<ArticleDto>> {
+  const session = await requireSession();
+  if (!session) return { error: "Unauthorized" };
+
+  const container = await buildContainer();
+  const membership = await container.getUserMembership.execute(session.user.id);
+  if (!membership || membership.isPending) return { error: "No active agency membership" };
+  if (!membership.role || membership.role === "VIEWER")
+    return { error: "Insufficient permissions" };
+
+  const parsed = RescheduleArticleInputSchema.safeParse({ articleId, scheduledAt });
+  if (!parsed.success) return { error: "Invalid input" };
+
+  const result = await container.rescheduleArticle.execute(parsed.data);
+  if (!result.success) return { error: result.error.message };
+
+  // Best-effort push of the new date to Notion for already-exported articles.
+  const notionToken = await getAgencyNotionToken(membership.agencyId);
+  if (notionToken) {
+    await container.syncArticleScheduleToNotion
+      .execute({ articleId, accessToken: notionToken })
+      .catch(() => undefined);
+  }
+
   return { data: result.value };
 }

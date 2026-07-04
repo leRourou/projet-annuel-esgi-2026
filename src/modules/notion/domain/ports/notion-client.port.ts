@@ -62,5 +62,6 @@ export interface NotionClientPort {
   getDatabase(databaseId: string, accessToken: string): Promise<NotionDatabaseSummary>;
   queryDatabase(input: QueryNotionDatabaseInput): Promise<NotionDatabaseEntry[]>;
   setPageStatus(pageId: string, status: string, accessToken: string): Promise<void>;
+  updatePageSchedule(pageId: string, date: Date, accessToken: string): Promise<void>;
   testConnection(accessToken: string): Promise<TestConnectionResult>;
 }

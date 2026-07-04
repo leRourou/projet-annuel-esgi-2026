@@ -239,6 +239,17 @@ export class NotionSdkClientAdapter implements NotionClientPort {
     });
   }
 
+  async updatePageSchedule(pageId: string, date: Date, accessToken: string): Promise<void> {
+    const client = this.getClient(accessToken);
+    const dateStr = date.toISOString().split("T")[0] as string;
+    await client.pages.update({
+      page_id: pageId,
+      properties: {
+        "Publication date": { date: { start: dateStr } },
+      },
+    });
+  }
+
   async testConnection(accessToken: string): Promise<TestConnectionResult> {
     const client = this.getClient(accessToken);
     try {

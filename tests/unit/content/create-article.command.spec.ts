@@ -7,6 +7,7 @@ function makeRepo(): ArticleRepositoryPort {
     save: vi.fn().mockResolvedValue(undefined),
     findById: vi.fn(),
     findAll: vi.fn(),
+    findScheduled: vi.fn(),
     delete: vi.fn(),
   };
 }
