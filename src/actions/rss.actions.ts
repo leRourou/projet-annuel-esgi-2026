@@ -1,5 +1,6 @@
 "use server";
 
+import { getAgencyNotionToken } from "@/actions/notion.actions";
 import { auth } from "@/lib/auth";
 import { AddFeedInputSchema } from "@/modules/rss/application/commands/add-feed.command";
 import { QualifyFeedItemInputSchema } from "@/modules/rss/application/commands/qualify-feed-item.command";
@@ -116,6 +117,19 @@ export async function qualifyFeedItemAction(
   const container = await buildContainer();
   const result = await container.qualifyFeedItem.execute(parsed.data);
   if (!result.success) return { error: result.error.message };
+
+  // Best-effort push of the curation status back to Notion for Notion-sourced items.
+  // Never blocks or fails the qualification itself.
+  const membership = await container.getUserMembership.execute(session.user.id);
+  if (membership && !membership.isPending) {
+    const notionToken = await getAgencyNotionToken(membership.agencyId);
+    if (notionToken) {
+      await container.syncFeedItemStatusToNotion
+        .execute({ itemId, accessToken: notionToken })
+        .catch(() => undefined);
+    }
+  }
+
   return { data: undefined };
 }
 

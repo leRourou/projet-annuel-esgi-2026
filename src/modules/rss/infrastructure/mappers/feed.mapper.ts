@@ -14,6 +14,8 @@ export class FeedMapper {
       agencyId: entity.agencyId ?? "",
       lastFetchedAt: entity.lastFetchedAt ?? undefined,
       createdAt: entity.createdAt,
+      sourceType: entity.sourceType === "NOTION" ? "NOTION" : "RSS",
+      notionDatabaseId: entity.notionDatabaseId,
     });
   }
 
@@ -25,6 +27,8 @@ export class FeedMapper {
       ownerId: feed.ownerId,
       agencyId: feed.agencyId || null,
       lastFetchedAt: feed.lastFetchedAt ?? null,
+      sourceType: feed.sourceType,
+      notionDatabaseId: feed.notionDatabaseId ?? null,
     };
   }
 

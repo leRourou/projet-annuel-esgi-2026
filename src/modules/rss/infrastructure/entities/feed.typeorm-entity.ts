@@ -20,6 +20,12 @@ export class FeedTypeormEntity {
   @Column({ type: "timestamp", name: "last_fetched_at", nullable: true })
   lastFetchedAt!: Date | null;
 
+  @Column({ type: "varchar", name: "source_type", default: "RSS" })
+  sourceType!: string;
+
+  @Column({ type: "varchar", name: "notion_database_id", nullable: true })
+  notionDatabaseId!: string | null;
+
   @CreateDateColumn({ name: "created_at", type: "timestamp" })
   createdAt!: Date;
 }

@@ -1,12 +1,76 @@
 "use client";
 
-import { importFromNotionAction, searchNotionPagesAction } from "@/actions/notion.actions";
+import { getAgencyAction } from "@/actions/agency.actions";
+import {
+  importFromNotionAction,
+  importNotionEntriesAction,
+  searchNotionPagesAction,
+} from "@/actions/notion.actions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import type { NotionPageDto } from "@/modules/notion/application/dto/notion-page.dto";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
+
+function CurationSyncPanel() {
+  const [databaseId, setDatabaseId] = useState<string | null>(null);
+  const [stats, setStats] = useState<{ imported: number; skipped: number } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    getAgencyAction().then((result) => {
+      setDatabaseId(result.data?.notionDatabaseId ?? null);
+    });
+  }, []);
+
+  function handleSync() {
+    if (!databaseId) return;
+    setError(null);
+    setStats(null);
+    startTransition(async () => {
+      const result = await importNotionEntriesAction(databaseId);
+      if (result.error) {
+        setError(result.error);
+      } else if (result.data) {
+        setStats({ imported: result.data.imported, skipped: result.data.skipped });
+      }
+    });
+  }
+
+  return (
+    <Card className="mb-6">
+      <CardHeader>
+        <CardTitle className="text-base">Synchronisation de la base de veille</CardTitle>
+        <CardDescription className="text-xs">
+          Importe les nouvelles pages de la base Notion configurée comme sources de curation.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {!databaseId ? (
+          <p className="text-xs text-muted-foreground">
+            Aucune base Notion configurée. Choisissez-en une dans Settings.
+          </p>
+        ) : (
+          <Button size="sm" onClick={handleSync} disabled={isPending}>
+            Importer les nouvelles entrées
+          </Button>
+        )}
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        {stats && (
+          <p className="text-xs text-muted-foreground">
+            {stats.imported} nouvelle(s) entrée(s) importée(s), {stats.skipped} déjà connue(s).
+          </p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function NotionPage() {
   const [query, setQuery] = useState("");
@@ -46,6 +110,8 @@ export default function NotionPage() {
           Search and import pages from your Notion workspace
         </p>
       </div>
+
+      <CurationSyncPanel />
 
       <form onSubmit={handleSearch} className="flex gap-2 mb-6">
         <Input

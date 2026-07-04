@@ -1,17 +1,34 @@
-import { Client } from "@notionhq/client";
+import { Client, isNotionClientError } from "@notionhq/client";
 import type {
   BlockObjectRequest,
   CreatePageParameters,
+  PageObjectResponse,
 } from "@notionhq/client/build/src/api-endpoints";
 import type { NotionPage } from "../../domain/entities/notion-page.entity";
 import type {
   CreateNotionPageInput,
   ExportPageInput,
   NotionClientPort,
+  NotionDatabaseEntry,
+  NotionDatabaseSummary,
+  QueryNotionDatabaseInput,
+  SearchNotionDatabasesInput,
   SearchNotionPagesInput,
+  TestConnectionResult,
 } from "../../domain/ports/notion-client.port";
 import { markdownToNotionBlocks } from "../../domain/value-objects/markdown-to-notion-blocks";
 import { NotionPageMapper } from "../mappers/notion-page.mapper";
+
+type NotionRichText = { plain_text: string };
+type NotionTitleProperty = { type: "title"; title: NotionRichText[] };
+
+function extractTitle(properties: Record<string, unknown>): string {
+  const titleProp = Object.values(properties).find(
+    (prop): prop is NotionTitleProperty =>
+      typeof prop === "object" && prop !== null && (prop as { type?: string }).type === "title",
+  );
+  return titleProp?.title.map((t) => t.plain_text).join("") || "Untitled";
+}
 
 export class NotionSdkClientAdapter implements NotionClientPort {
   private getClient(accessToken: string): Client {
@@ -167,5 +184,77 @@ export class NotionSdkClientAdapter implements NotionClientPort {
     });
 
     return this.getPage(page.id, input.accessToken);
+  }
+
+  async searchDatabases(input: SearchNotionDatabasesInput): Promise<NotionDatabaseSummary[]> {
+    const client = this.getClient(input.accessToken);
+    const response = await client.search({
+      query: input.query,
+      filter: { property: "object", value: "database" },
+    });
+
+    return response.results.map((result) => {
+      const db = result as { id: string; url: string; title?: NotionRichText[] };
+      return {
+        id: db.id,
+        title: db.title?.map((t) => t.plain_text).join("") || "Untitled",
+        url: db.url,
+      };
+    });
+  }
+
+  async getDatabase(databaseId: string, accessToken: string): Promise<NotionDatabaseSummary> {
+    const client = this.getClient(accessToken);
+    const db = (await client.databases.retrieve({ database_id: databaseId })) as {
+      id: string;
+      url: string;
+      title?: NotionRichText[];
+    };
+    return {
+      id: db.id,
+      title: db.title?.map((t) => t.plain_text).join("") || "Untitled",
+      url: db.url,
+    };
+  }
+
+  async queryDatabase(input: QueryNotionDatabaseInput): Promise<NotionDatabaseEntry[]> {
+    const client = this.getClient(input.accessToken);
+    const response = await client.databases.query({ database_id: input.databaseId });
+
+    return (response.results as PageObjectResponse[]).map((page) => ({
+      id: page.id,
+      title: extractTitle(page.properties),
+      url: page.url,
+      lastEditedAt: new Date(page.last_edited_time),
+    }));
+  }
+
+  async setPageStatus(pageId: string, status: string, accessToken: string): Promise<void> {
+    const client = this.getClient(accessToken);
+    await client.pages.update({
+      page_id: pageId,
+      properties: {
+        "Curation Status": { select: { name: status } },
+      },
+    });
+  }
+
+  async testConnection(accessToken: string): Promise<TestConnectionResult> {
+    const client = this.getClient(accessToken);
+    try {
+      await client.users.me({});
+      return { ok: true };
+    } catch (error) {
+      if (isNotionClientError(error)) {
+        if (error.code === "unauthorized" || error.code === "restricted_resource") {
+          return {
+            ok: false,
+            error: "Notion access token is invalid or expired. Please reconnect Notion.",
+          };
+        }
+        return { ok: false, error: error.message };
+      }
+      return { ok: false, error: "Unable to reach Notion. Please try again." };
+    }
   }
 }

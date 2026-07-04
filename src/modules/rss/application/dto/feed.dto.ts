@@ -1,4 +1,4 @@
-import type { Feed } from "../../domain/entities/feed.entity";
+import type { Feed, FeedSourceType } from "../../domain/entities/feed.entity";
 
 export interface FeedDto {
   id: string;
@@ -8,6 +8,7 @@ export interface FeedDto {
   agencyId: string;
   lastFetchedAt: Date | null;
   createdAt: Date;
+  sourceType: FeedSourceType;
 }
 
 export function toFeedDto(feed: Feed): FeedDto {
@@ -19,5 +20,6 @@ export function toFeedDto(feed: Feed): FeedDto {
     agencyId: feed.agencyId,
     lastFetchedAt: feed.lastFetchedAt ?? null,
     createdAt: feed.createdAt,
+    sourceType: feed.sourceType,
   };
 }

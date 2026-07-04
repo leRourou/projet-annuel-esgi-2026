@@ -1,6 +1,9 @@
 import { AggregateRoot } from "@/shared/domain/base/aggregate-root.base";
 import type { FeedUrl } from "../value-objects/feed-url.vo";
 
+export const FEED_SOURCE_TYPES = ["RSS", "NOTION"] as const;
+export type FeedSourceType = (typeof FEED_SOURCE_TYPES)[number];
+
 export interface FeedProps {
   name: string;
   url: FeedUrl;
@@ -8,6 +11,8 @@ export interface FeedProps {
   agencyId: string;
   lastFetchedAt?: Date;
   createdAt: Date;
+  sourceType: FeedSourceType;
+  notionDatabaseId?: string | null;
 }
 
 export class Feed extends AggregateRoot<string> {
@@ -18,10 +23,16 @@ export class Feed extends AggregateRoot<string> {
     super(id);
   }
 
-  static create(id: string, params: Omit<FeedProps, "createdAt">): Feed {
+  static create(
+    id: string,
+    params: Omit<FeedProps, "createdAt" | "sourceType" | "notionDatabaseId"> &
+      Partial<Pick<FeedProps, "sourceType" | "notionDatabaseId">>,
+  ): Feed {
     return new Feed(id, {
       ...params,
       createdAt: new Date(),
+      sourceType: params.sourceType ?? "RSS",
+      notionDatabaseId: params.notionDatabaseId ?? null,
     });
   }
 
@@ -51,6 +62,14 @@ export class Feed extends AggregateRoot<string> {
 
   get createdAt(): Date {
     return this.props.createdAt;
+  }
+
+  get sourceType(): FeedSourceType {
+    return this.props.sourceType;
+  }
+
+  get notionDatabaseId(): string | null | undefined {
+    return this.props.notionDatabaseId;
   }
 
   markFetched(): void {

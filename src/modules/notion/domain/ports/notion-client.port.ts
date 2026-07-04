@@ -6,6 +6,34 @@ export interface SearchNotionPagesInput {
   databaseId?: string;
 }
 
+export interface NotionDatabaseSummary {
+  id: string;
+  title: string;
+  url: string;
+}
+
+export interface NotionDatabaseEntry {
+  id: string;
+  title: string;
+  url: string;
+  lastEditedAt: Date;
+}
+
+export interface SearchNotionDatabasesInput {
+  query: string;
+  accessToken: string;
+}
+
+export interface QueryNotionDatabaseInput {
+  databaseId: string;
+  accessToken: string;
+}
+
+export interface TestConnectionResult {
+  ok: boolean;
+  error?: string;
+}
+
 export interface CreateNotionPageInput {
   parentDatabaseId: string;
   title: string;
@@ -30,4 +58,9 @@ export interface NotionClientPort {
   createPage(input: CreateNotionPageInput): Promise<NotionPage>;
   updatePage(pageId: string, content: string, accessToken: string): Promise<void>;
   exportPage(input: ExportPageInput): Promise<NotionPage>;
+  searchDatabases(input: SearchNotionDatabasesInput): Promise<NotionDatabaseSummary[]>;
+  getDatabase(databaseId: string, accessToken: string): Promise<NotionDatabaseSummary>;
+  queryDatabase(input: QueryNotionDatabaseInput): Promise<NotionDatabaseEntry[]>;
+  setPageStatus(pageId: string, status: string, accessToken: string): Promise<void>;
+  testConnection(accessToken: string): Promise<TestConnectionResult>;
 }

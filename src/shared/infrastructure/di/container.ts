@@ -43,7 +43,10 @@ import { ListArticlesQuery } from "@/modules/content/application/queries/list-ar
 import { ScoreContentSeoQuery } from "@/modules/content/application/queries/score-content-seo.query";
 import { ExportToNotionCommand } from "@/modules/notion/application/commands/export-to-notion.command";
 import { ImportFromNotionCommand } from "@/modules/notion/application/commands/import-from-notion.command";
+import { ImportNotionEntriesCommand } from "@/modules/notion/application/commands/import-notion-entries.command";
+import { SyncFeedItemStatusToNotionCommand } from "@/modules/notion/application/commands/sync-feed-item-status-to-notion.command";
 import { SyncPageToNotionCommand } from "@/modules/notion/application/commands/sync-page-to-notion.command";
+import { SearchNotionDatabasesQuery } from "@/modules/notion/application/queries/search-notion-databases.query";
 import { SearchNotionPagesQuery } from "@/modules/notion/application/queries/search-notion-pages.query";
 import { AddFeedCommand } from "@/modules/rss/application/commands/add-feed.command";
 import { QualifyFeedItemCommand } from "@/modules/rss/application/commands/qualify-feed-item.command";
@@ -74,6 +77,7 @@ export async function buildContainer() {
   return {
     // Infrastructure
     aiGenerator,
+    notionClient,
 
     // Auth
     createUser: new CreateUserCommand(userRepository),
@@ -100,6 +104,9 @@ export async function buildContainer() {
     syncPageToNotion: new SyncPageToNotionCommand(notionClient, articleRepository),
     importFromNotion: new ImportFromNotionCommand(notionClient, articleRepository),
     searchNotionPages: new SearchNotionPagesQuery(notionClient),
+    searchNotionDatabases: new SearchNotionDatabasesQuery(notionClient),
+    importNotionEntries: new ImportNotionEntriesCommand(notionClient, feedRepository),
+    syncFeedItemStatusToNotion: new SyncFeedItemStatusToNotionCommand(notionClient, feedRepository),
 
     // RSS
     addFeed: new AddFeedCommand(feedRepository),

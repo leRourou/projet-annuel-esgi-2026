@@ -6,6 +6,7 @@ import { auth, signIn } from "@/lib/auth";
 import type { AgencyContextDto } from "@/modules/agency/application/dto/agency-context.dto";
 import { buildContainer } from "@/shared/infrastructure/di/container";
 import { AgencyContextForm } from "@/shared/ui/agency-context-form";
+import { NotionConfigPanel } from "@/shared/ui/notion-config-panel";
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -83,6 +84,7 @@ export default async function SettingsPage() {
                 <Badge variant="success">Active</Badge>
               )}
             </div>
+            <NotionConfigPanel hasNotion={hasNotion} initialDatabaseId={notionDatabaseId} />
           </CardContent>
         </Card>
         <Card>

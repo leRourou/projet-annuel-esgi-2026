@@ -17,9 +17,9 @@
 | Priorité | Features | Terminées | Estimation |
 | -------- | -------- | --------- | ---------- |
 | P0 — MVP | 16       | 16 ✅     | 46j        |
-| P1       | 9        | 4         | 22j        |
+| P1       | 9        | 6         | 22j        |
 | P2       | 7        | 0         | 11j        |
-| **Total**| **32**   | **18**    | **79j**    |
+| **Total**| **32**   | **20**    | **79j**    |
 
 ---
 
@@ -355,34 +355,32 @@
   - [x] Use case `ExportToNotionCommand` avec tests (4 cas couverts)
 
 ### F-301 · Import depuis Notion
-- **Statut** : `🔄 IN_PROGRESS`
+- **Statut** : `✅ DONE`
 - **Priorité** : P1
 - **Estimation** : 3j
 - **Dépendances** : F-300
 - **Description** : Import des entrées Notion (veille) dans le processus de curation. Synchronisation bidirectionnelle.
 - **Critères d'acceptation** :
-  - [ ] Détection des nouvelles entrées dans la base Notion configurée
-  - [x] Import automatique ou manuel vers le module curation
-  - [ ] Les pages importées sont traitées comme des `FeedItem` qualifiables
-  - [ ] Synchronisation bidirectionnelle fonctionnelle
-  - [ ] Use case `ImportFromNotionCommand` avec tests
+  - [x] Détection des nouvelles entrées dans la base Notion configurée (`ImportNotionEntriesCommand` diffe contre les `FeedItem` déjà connus par id de page)
+  - [x] Import automatique ou manuel vers le module curation (bouton "Importer les nouvelles entrées" sur `/notion`, + `ImportFromNotionCommand` pour l'import ad hoc d'une page en Article)
+  - [x] Les pages importées sont traitées comme des `FeedItem` qualifiables (Feed synthétique `sourceType: "NOTION"` par base configurée, items UNREAD par défaut, qualifiables via `/rss/curated`)
+  - [x] Synchronisation bidirectionnelle fonctionnelle (`SyncFeedItemStatusToNotionCommand` pousse le statut de curation vers la page Notion — "Curation Status" — déclenché automatiquement après `qualifyFeedItemAction`)
+  - [x] Use case `ImportFromNotionCommand` avec tests (+ `ImportNotionEntriesCommand` et `SyncFeedItemStatusToNotionCommand`, tous testés)
 
-> ⚠️ Implémentation existante divergente : `ImportFromNotionCommand` existe et importe une page Notion comme `Article` (pas comme `FeedItem`). La page `/notion` permet la recherche et l'import manuel. Pas de détection automatique, pas de sync bidirectionnelle, pas de tests.
+> Note : l'import ad hoc d'une page unique reste un `Article` (`ImportFromNotionCommand`, usage `/notion` search), tandis que la synchronisation de la base de veille configurée produit des `FeedItem` qualifiables (`ImportNotionEntriesCommand`) — les deux coexistent car ce sont des usages distincts.
 
 ### F-302 · Configuration de la connexion Notion
-- **Statut** : `🔄 IN_PROGRESS`
+- **Statut** : `✅ DONE`
 - **Priorité** : P1
 - **Estimation** : 2j
 - **Dépendances** : F-101
 - **Description** : Page settings pour configurer la base Notion cible et tester la connexion.
 - **Critères d'acceptation** :
   - [x] Section Notion dans `/settings`
-  - [ ] Sélection de la base Notion cible (via API search)
-  - [ ] Bouton "Tester la connexion"
-  - [ ] Gestion erreurs d'autorisation (token expiré, permissions)
-  - [x] Config Notion persistée par agence
-
-> ⚠️ Implémentation existante divergente : la section Notion dans `/settings` affiche le statut connecté/non connecté et un bouton "Connect Notion". Il n'y a pas de sélection de base cible ni de test de connexion. La config Notion est stockée dans le JWT (pas en base par agence).
+  - [x] Sélection de la base Notion cible (via API search — `searchNotionDatabasesAction` + `NotionConfigPanel`)
+  - [x] Bouton "Tester la connexion" (`testNotionConnectionAction`, appelle `client.users.me`)
+  - [x] Gestion erreurs d'autorisation (token expiré, permissions) — messages dédiés sur `unauthorized`/`restricted_resource`, et le token est maintenant rafraîchi à chaque connexion Notion (`events.signIn` dans `auth.ts`), permettant une reconnexion réelle en cas de token expiré
+  - [x] Config Notion persistée par agence (confirmé : `agencies.notion_access_token`/`notion_database_id`, écrit désormais de façon centralisée dans `auth.ts`)
 
 ---
 

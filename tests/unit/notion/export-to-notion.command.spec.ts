@@ -51,6 +51,11 @@ function makeNotionClient(): NotionClientPort {
     createPage: vi.fn(),
     updatePage: vi.fn(),
     exportPage: vi.fn().mockResolvedValue(makeFakeNotionPage()),
+    searchDatabases: vi.fn(),
+    getDatabase: vi.fn(),
+    queryDatabase: vi.fn(),
+    setPageStatus: vi.fn(),
+    testConnection: vi.fn(),
   };
 }
 

@@ -15,6 +15,7 @@ export class RefreshFeedsCommand {
 
     await Promise.allSettled(
       feeds.map(async (feed) => {
+        if (feed.sourceType === "NOTION") return;
         try {
           const parsed = await this.rssParser.parse(feed.url.value);
           const items = parsed.items.map((item) =>
