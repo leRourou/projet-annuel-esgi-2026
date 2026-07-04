@@ -15,7 +15,7 @@ export async function signInWithEmail(
   const raw = Object.fromEntries(formData);
   const parsed = SignInInputSchema.safeParse(raw);
   if (!parsed.success) {
-    return { error: parsed.error.flatten().fieldErrors["email"]?.[0] ?? "Invalid email" };
+    return { error: parsed.error.flatten().fieldErrors.email?.[0] ?? "Invalid email" };
   }
 
   try {

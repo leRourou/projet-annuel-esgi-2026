@@ -63,7 +63,7 @@ export default async function SettingsPage() {
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {hasNotion
                     ? notionDatabaseId
-                      ? `Connected · database configured`
+                      ? "Connected · database configured"
                       : "Connected · no database selected"
                     : "Not connected"}
                 </p>

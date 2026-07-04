@@ -22,14 +22,13 @@ import { AddSourceIdsToArticles1775900000000 } from "@/shared/infrastructure/dat
 import { DataSource } from "typeorm";
 
 const DATABASE_URL =
-  process.env["DATABASE_URL"] ??
-  "postgresql://contentai:contentai_secret@localhost:5432/contentai_db";
+  process.env.DATABASE_URL ?? "postgresql://contentai:contentai_secret@localhost:5432/contentai_db";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
   url: DATABASE_URL,
   synchronize: false,
-  logging: process.env["NODE_ENV"] === "development",
+  logging: process.env.NODE_ENV === "development",
   entities: [
     UserTypeormEntity,
     AccountTypeormEntity,

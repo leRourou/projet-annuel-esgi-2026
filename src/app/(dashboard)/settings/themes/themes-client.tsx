@@ -35,7 +35,7 @@ export function ThemesClient({ initialThemes, isAdmin }: ThemesClientProps) {
         setError(result.error);
         return;
       }
-      if (result.data) setThemes((prev) => [...prev, result.data!]);
+      if (result.data) setThemes((prev) => [...prev, result.data]);
       setNewName("");
       router.refresh();
     });

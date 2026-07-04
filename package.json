@@ -13,7 +13,8 @@
     "test:e2e": "playwright test",
     "db:migrate": "docker compose --profile tools run --rm migrate npx tsx ./node_modules/typeorm/cli.js migration:run -d src/shared/infrastructure/database/data-source.ts",
     "db:generate": "docker compose --profile tools run --rm migrate npx tsx ./node_modules/typeorm/cli.js migration:generate -d src/shared/infrastructure/database/data-source.ts",
-    "db:revert": "docker compose --profile tools run --rm migrate npx tsx ./node_modules/typeorm/cli.js migration:revert -d src/shared/infrastructure/database/data-source.ts"
+    "db:revert": "docker compose --profile tools run --rm migrate npx tsx ./node_modules/typeorm/cli.js migration:revert -d src/shared/infrastructure/database/data-source.ts",
+    "db:seed": "tsx scripts/seed.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.36.3",

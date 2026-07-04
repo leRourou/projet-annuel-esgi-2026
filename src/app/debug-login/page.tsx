@@ -9,7 +9,7 @@ async function debugSignIn(callbackUrl: string) {
 export default async function DebugLoginPage(props: {
   searchParams: Promise<{ callbackUrl?: string }>;
 }) {
-  if (process.env["NODE_ENV"] !== "development") {
+  if (process.env.NODE_ENV !== "development") {
     redirect("/login");
   }
 

@@ -25,7 +25,7 @@ const CONTENT_TYPE_LABELS: Record<string, string> = {
 
 export function IdeasClient({ themes }: IdeasClientProps) {
   const [selectedThemes, setSelectedThemes] = useState<string[]>(
-    themes.length > 0 ? [themes[0]!.name] : [],
+    themes.length > 0 && themes[0] ? [themes[0].name] : [],
   );
   const [ideas, setIdeas] = useState<ContentIdea[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -103,8 +103,8 @@ export function IdeasClient({ themes }: IdeasClientProps) {
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
             {ideas.length} ideas generated
           </h2>
-          {ideas.map((idea, idx) => (
-            <Card key={idx}>
+          {ideas.map((idea) => (
+            <Card key={idea.title}>
               <CardContent className="pt-4 pb-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 space-y-1.5">

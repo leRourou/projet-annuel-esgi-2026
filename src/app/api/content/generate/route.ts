@@ -39,7 +39,7 @@ export async function POST(req: Request): Promise<Response> {
   const stream = new ReadableStream({
     async start(controller) {
       try {
-        for await (const chunk of container.aiGenerator.generateStream!(inputWithType)) {
+        for await (const chunk of container.aiGenerator.generateStream(inputWithType)) {
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: chunk })}\n\n`));
         }
         controller.enqueue(encoder.encode("data: [DONE]\n\n"));

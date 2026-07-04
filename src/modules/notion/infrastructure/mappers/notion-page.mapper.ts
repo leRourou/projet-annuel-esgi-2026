@@ -31,7 +31,7 @@ const SUPPORTED_TYPES: NotionBlockType[] = [
 
 export class NotionPageMapper {
   static toDomain(page: NotionApiPage, blocks: NotionApiBlock[]): NotionPage {
-    const titleArr = page.properties["title"]?.title ?? page.properties["Name"]?.title ?? [];
+    const titleArr = page.properties.title?.title ?? page.properties.Name?.title ?? [];
     const title = titleArr.map((t) => t.plain_text).join("") || "Untitled";
 
     const domainBlocks = blocks

@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { randomUUID } from "node:crypto";
 import { DomainError } from "@/shared/domain/errors/domain.error";
 import { Result } from "@/shared/domain/types/result.type";
 import { User } from "../../domain/entities/user.entity";

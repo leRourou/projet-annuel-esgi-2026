@@ -55,7 +55,7 @@ export default async function MembersPage() {
       {membership.role === "ADMIN" && (
         <>
           <Separator />
-          <MembersClient agencyId={membership.agencyId} actorRole={membership.role} />
+          <MembersClient actorRole={membership.role} />
         </>
       )}
     </div>

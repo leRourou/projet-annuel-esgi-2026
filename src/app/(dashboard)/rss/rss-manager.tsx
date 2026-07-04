@@ -244,9 +244,14 @@ export function RssManager({ initialFeeds }: RssManagerProps) {
 
       {initialFeeds.length > 0 ? (
         <div className="space-y-3">
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-            {initialFeeds.length} {initialFeeds.length === 1 ? "source" : "sources"}
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+              {initialFeeds.length} {initialFeeds.length === 1 ? "source" : "sources"}
+            </h2>
+            <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isPending}>
+              Refresh all
+            </Button>
+          </div>
           {initialFeeds.map((feed) => (
             <FeedCard key={feed.id} feed={feed} />
           ))}

@@ -9,7 +9,7 @@ const DEBUG_AGENCY_ID = "00000000-0000-0000-0000-000000000002";
 const DEBUG_MEMBER_ID = "00000000-0000-0000-0000-000000000003";
 
 const debugProvider =
-  process.env["NODE_ENV"] === "development"
+  process.env.NODE_ENV === "development"
     ? [
         Credentials({
           id: "debug",
@@ -46,8 +46,8 @@ const debugProvider =
     : [];
 
 const resendProvider = Resend({
-  apiKey: process.env["AUTH_RESEND_KEY"],
-  from: process.env["EMAIL_FROM"] ?? "noreply@contentai.studio",
+  apiKey: process.env.AUTH_RESEND_KEY,
+  from: process.env.EMAIL_FROM ?? "noreply@contentai.studio",
 });
 
 export const { handlers, signIn, signOut, auth } = NextAuth({

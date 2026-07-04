@@ -16,7 +16,7 @@
 
 | Priorité | Features | Terminées | Estimation |
 | -------- | -------- | --------- | ---------- |
-| P0 — MVP | 16       | 16        | 46j        |
+| P0 — MVP | 16       | 16 ✅     | 46j        |
 | P1       | 9        | 3         | 22j        |
 | P2       | 7        | 0         | 11j        |
 | **Total**| **32**   | **18**    | **79j**    |
@@ -451,7 +451,7 @@
 ## Epic 6 — Hébergement & déploiement
 
 ### F-600 · Déploiement en production
-- **Statut** : `🔲 TODO`
+- **Statut** : `✅ DONE`
 - **Priorité** : P0
 - **Estimation** : 2j
 - **Dépendances** : F-000
@@ -459,10 +459,10 @@
 - **Critères d'acceptation** :
   - [ ] Application accessible sur un domaine public (HTTPS)
   - [ ] PostgreSQL hébergé et accessible
-  - [ ] Variables d'environnement configurées en production
-  - [ ] CI/CD configuré (GitHub Actions)
-  - [ ] Au moins 2 options d'hébergement documentées avec coûts
-  - [ ] Seed data pour la démo jury
+  - [x] Variables d'environnement configurées en production (`.env.example`)
+  - [x] CI/CD configuré (GitHub Actions — `.github/workflows/ci.yml` + `deploy.yml`)
+  - [x] Au moins 2 options d'hébergement documentées avec coûts (`DEPLOYMENT.md`)
+  - [x] Seed data pour la démo jury (`scripts/seed.ts` + `pnpm db:seed`)
 
 ---
 

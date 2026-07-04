@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { randomUUID } from "node:crypto";
 import { type ArticleDto, toArticleDto } from "@/modules/content/application/dto/article.dto";
 import { Article } from "@/modules/content/domain/entities/article.entity";
 import type { ArticleRepositoryPort } from "@/modules/content/domain/ports/article.repository.port";

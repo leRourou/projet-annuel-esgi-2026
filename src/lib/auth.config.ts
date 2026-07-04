@@ -7,16 +7,16 @@ import NotionProvider from "next-auth/providers/notion";
 export const authConfig: NextAuthConfig = {
   providers: [
     NotionProvider({
-      clientId: process.env["AUTH_NOTION_ID"] ?? "",
-      clientSecret: process.env["AUTH_NOTION_SECRET"] ?? "",
-      redirectUri: `${process.env["AUTH_URL"] ?? "http://localhost:3000"}/api/auth/callback/notion`,
+      clientId: process.env.AUTH_NOTION_ID ?? "",
+      clientSecret: process.env.AUTH_NOTION_SECRET ?? "",
+      redirectUri: `${process.env.AUTH_URL ?? "http://localhost:3000"}/api/auth/callback/notion`,
     }),
   ],
   session: { strategy: "jwt" },
   callbacks: {
     async jwt({ token, account }) {
       if (account?.provider === "notion" && account.access_token) {
-        token["notionAccessToken"] = account.access_token;
+        token.notionAccessToken = account.access_token;
       }
       return token;
     },
@@ -24,10 +24,9 @@ export const authConfig: NextAuthConfig = {
       if (token.sub) {
         session.user.id = token.sub;
       }
-      if (token["notionAccessToken"]) {
-        (session as typeof session & { notionAccessToken?: string }).notionAccessToken = token[
-          "notionAccessToken"
-        ] as string;
+      if (token.notionAccessToken) {
+        (session as typeof session & { notionAccessToken?: string }).notionAccessToken =
+          token.notionAccessToken as string;
       }
       return session;
     },

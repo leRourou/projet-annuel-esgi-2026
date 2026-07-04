@@ -81,12 +81,12 @@ export function TypeormAuthAdapter(): Adapter {
       if (data.provider === "notion" && data.access_token) {
         const ds = await getDataSource();
         const memberships = await ds.query(
-          `SELECT agency_id FROM agency_members WHERE user_id = $1 AND joined_at IS NOT NULL LIMIT 1`,
+          "SELECT agency_id FROM agency_members WHERE user_id = $1 AND joined_at IS NOT NULL LIMIT 1",
           [data.userId],
         );
         const agencyId = (memberships as Array<{ agency_id: string }>)[0]?.agency_id;
         if (agencyId) {
-          await ds.query(`UPDATE agencies SET notion_access_token = $1 WHERE id = $2`, [
+          await ds.query("UPDATE agencies SET notion_access_token = $1 WHERE id = $2", [
             data.access_token,
             agencyId,
           ]);

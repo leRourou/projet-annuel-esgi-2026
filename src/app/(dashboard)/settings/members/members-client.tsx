@@ -18,13 +18,7 @@ import { useState } from "react";
 
 type State = { error?: string; success?: string };
 
-export function MembersClient({
-  agencyId,
-  actorRole,
-}: {
-  agencyId: string;
-  actorRole: string;
-}) {
+export function MembersClient({ actorRole }: { actorRole: string }) {
   const [inviteRole, setInviteRole] = useState("MEMBER");
 
   const [state, formAction, isPending] = useActionState(

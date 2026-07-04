@@ -24,7 +24,7 @@ async function getAgencyNotionToken(agencyId: string): Promise<string | null> {
 async function getAgencyNotionTokenFromDb(agencyId: string): Promise<string | null> {
   const { getDataSource } = await import("@/shared/infrastructure/database/data-source");
   const ds = await getDataSource();
-  const rows = (await ds.query(`SELECT notion_access_token FROM agencies WHERE id = $1 LIMIT 1`, [
+  const rows = (await ds.query("SELECT notion_access_token FROM agencies WHERE id = $1 LIMIT 1", [
     agencyId,
   ])) as Array<{ notion_access_token: string | null }>;
   return rows[0]?.notion_access_token ?? null;

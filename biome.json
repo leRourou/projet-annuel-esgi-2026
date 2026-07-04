@@ -17,6 +17,9 @@
       "style": {
         "useConst": "error",
         "useTemplate": "error"
+      },
+      "complexity": {
+        "noStaticOnlyClass": "off"
       }
     }
   },
