@@ -62,4 +62,20 @@ describe("GenerateArticleCommand", () => {
     expect(ai.generate).toHaveBeenCalledOnce();
     expect(repo.save).toHaveBeenCalledOnce();
   });
+
+  it("forwards language and articleType to the AI generator", async () => {
+    await command.execute({
+      topic: "TypeScript best practices",
+      keywords: ["typescript"],
+      contentType: "ARTICLE",
+      articleType: "HOW_TO",
+      language: "EN",
+      authorId: "550e8400-e29b-41d4-a716-446655440000",
+      agencyId: "550e8400-e29b-41d4-a716-446655440001",
+    });
+
+    expect(ai.generate).toHaveBeenCalledWith(
+      expect.objectContaining({ articleType: "HOW_TO", language: "EN" }),
+    );
+  });
 });

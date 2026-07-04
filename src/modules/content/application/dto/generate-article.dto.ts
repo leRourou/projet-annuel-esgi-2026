@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { LANGUAGES } from "../../domain/value-objects/language.vo";
 
 export const ArticleTypeSchema = z.enum([
   "HOW_TO",
@@ -17,6 +18,7 @@ export const GenerateArticleInputSchema = z.object({
   wordCount: z.number().int().min(100).max(5000).optional(),
   articleType: ArticleTypeSchema.optional(),
   context: z.string().max(4000).optional(),
+  language: z.enum(LANGUAGES).optional(),
   authorId: z.string().uuid(),
   agencyId: z.string().uuid(),
 });

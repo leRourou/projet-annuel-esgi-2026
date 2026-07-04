@@ -23,7 +23,9 @@ export class GenerateArticleCommand {
         keywords: input.keywords,
         tone: input.tone,
         wordCount: input.wordCount,
+        articleType: input.articleType,
         context: input.context,
+        language: input.language,
       });
 
       const seoMetadata = SeoMetadata.create({

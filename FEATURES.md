@@ -17,9 +17,9 @@
 | Priorité | Features | Terminées | Estimation |
 | -------- | -------- | --------- | ---------- |
 | P0 — MVP | 16       | 16 ✅     | 46j        |
-| P1       | 9        | 6         | 22j        |
+| P1       | 9        | 7         | 22j        |
 | P2       | 7        | 0         | 11j        |
-| **Total**| **32**   | **20**    | **79j**    |
+| **Total**| **32**   | **23**    | **79j**    |
 
 ---
 
@@ -232,16 +232,18 @@
   - [x] Use case `UpdateAgencyContextCommand`
 
 #### F-207 · Génération multilingue (FR + EN)
-- **Statut** : `🔲 TODO`
+- **Statut** : `✅ DONE`
 - **Priorité** : P1
 - **Estimation** : 1j
 - **Dépendances** : F-202
 - **Description** : Le contenu peut être généré en français et en anglais au minimum.
 - **Critères d'acceptation** :
-  - [ ] Value Object `Language` (FR, EN, extensible)
-  - [ ] Sélecteur de langue dans le formulaire de génération
-  - [ ] Le prompt s'adapte à la langue choisie
-  - [ ] Les métadonnées SEO sont aussi générées dans la langue cible
+  - [x] Value Object `Language` (FR, EN, extensible) — `src/modules/content/domain/value-objects/language.vo.ts`
+  - [x] Sélecteur de langue dans le formulaire de génération (`/content/new`, défaut FR)
+  - [x] Le prompt s'adapte à la langue choisie (instruction de langue injectée dans les 4 builders de prompt : article, social, fiche produit, meta)
+  - [x] Les métadonnées SEO sont aussi générées dans la langue cible (même appel IA que le corps — meta title/description/excerpt suivent la langue demandée)
+
+> Note : en corrigeant le passage des paramètres à l'IA, `articleType` (F-203) était en fait jamais transmis à `AiGeneratorPort.generate()` malgré son existence dans le DTO — corrigé au passage.
 
 #### F-208 · Scoring SEO avancé intégré
 - **Statut** : `🔲 TODO`

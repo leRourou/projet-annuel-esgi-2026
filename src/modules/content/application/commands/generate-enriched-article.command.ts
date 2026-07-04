@@ -7,6 +7,7 @@ import { Article } from "../../domain/entities/article.entity";
 import type { AiGeneratorPort, CuratedSource } from "../../domain/ports/ai-generator.port";
 import type { ArticleRepositoryPort } from "../../domain/ports/article.repository.port";
 import { ContentType } from "../../domain/value-objects/content-type.vo";
+import { LANGUAGES } from "../../domain/value-objects/language.vo";
 import { SeoMetadata } from "../../domain/value-objects/seo-metadata.vo";
 import { type ArticleDto, toArticleDto } from "../dto/article.dto";
 
@@ -17,6 +18,7 @@ export const GenerateEnrichedArticleInputSchema = z.object({
   tone: z.string().optional(),
   wordCount: z.number().int().min(100).max(5000).optional(),
   context: z.string().optional(),
+  language: z.enum(LANGUAGES).optional(),
   authorId: z.string().uuid(),
   agencyId: z.string().min(1),
   sourceIds: z.array(z.string()).optional(),
@@ -72,6 +74,7 @@ export class GenerateEnrichedArticleCommand {
         tone: input.tone,
         wordCount: input.wordCount,
         context: input.context,
+        language: input.language,
         curatedSources,
       });
 

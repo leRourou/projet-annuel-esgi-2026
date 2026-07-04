@@ -9,6 +9,13 @@ import type {
   GeneratedContent,
   RegenerateSectionInput,
 } from "../../domain/ports/ai-generator.port";
+import type { LanguageValue } from "../../domain/value-objects/language.vo";
+
+function languageInstruction(language?: LanguageValue): string {
+  return language === "EN"
+    ? "LANGUAGE: Write the entire output — title, body, meta title, meta description, excerpt, and keywords — in English."
+    : "LANGUAGE: Rédige l'intégralité du contenu — titre, corps, meta title, meta description, extrait et mots-clés — en français.";
+}
 
 function slugify(text: string): string {
   return text
@@ -76,6 +83,8 @@ Secondary keywords: ${secondaryKws || "none"}
 ${toneLine}
 ${wordTarget}${contextLine}
 ${articleTypeInstructions}
+${languageInstruction(input.language)}
+
 STRUCTURE REQUIREMENTS (mandatory)
 1. H1 title: compelling, includes primary keyword, under 65 chars
 2. Introduction (150–200 words): strong hook, problem statement, reader benefit
@@ -131,6 +140,7 @@ ASSIGNMENT
 Topic: ${input.topic}
 Primary keyword: ${primaryKw}
 ${toneLine}${contextLine}
+${languageInstruction(input.language)}
 
 POST STRUCTURE (mandatory)
 ${
@@ -173,6 +183,7 @@ Product/Service: ${input.topic}
 Primary keyword: ${primaryKw}
 Secondary keywords: ${input.keywords.slice(1).join(", ") || "none"}
 ${toneLine}${contextLine}
+${languageInstruction(input.language)}
 
 STRUCTURE (mandatory)
 1. H1: product name + primary benefit, includes primary keyword
@@ -208,6 +219,7 @@ Page topic: ${input.topic}
 Primary keyword: ${primaryKw}
 Secondary keywords: ${input.keywords.slice(1).join(", ") || "none"}
 ${input.context ? `Context: ${input.context}` : ""}
+${languageInstruction(input.language)}
 
 REQUIREMENTS
 - metaTitle: compelling, includes primary keyword, ≤ 70 chars, no brand suffix

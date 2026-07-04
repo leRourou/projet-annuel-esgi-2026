@@ -1,4 +1,5 @@
 import type { ContentTypeValue } from "../value-objects/content-type.vo";
+import type { LanguageValue } from "../value-objects/language.vo";
 
 export type ArticleType = "HOW_TO" | "LISTICLE" | "COMPARISON" | "CASE_STUDY" | "OPINION" | "NEWS";
 
@@ -10,6 +11,7 @@ export interface GenerateContentInput {
   wordCount?: number;
   articleType?: ArticleType;
   context?: string;
+  language?: LanguageValue;
 }
 
 export interface GeneratedContent {

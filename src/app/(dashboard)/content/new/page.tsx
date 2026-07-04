@@ -31,6 +31,11 @@ const CONTENT_TYPE_LABELS: Record<string, string> = {
   FACEBOOK_POST: "Facebook post",
 };
 
+const LANGUAGE_LABELS: Record<string, string> = {
+  FR: "Français",
+  EN: "English",
+};
+
 const ARTICLE_TYPE_OPTIONS = [
   { value: "HOW_TO", label: "How-to guide" },
   { value: "LISTICLE", label: "Listicle" },
@@ -55,6 +60,7 @@ function NewContentForm() {
       : "ARTICLE",
   );
   const [articleType, setArticleType] = useState<string | null>(null);
+  const [language, setLanguage] = useState("FR");
   const [wordCount, setWordCount] = useState(DEFAULT_WORD_COUNT);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -85,6 +91,7 @@ function NewContentForm() {
       tone: (data.get("tone") as string) || undefined,
       wordCount,
       articleType: articleType ?? undefined,
+      language,
     };
   }
 
@@ -198,6 +205,22 @@ function NewContentForm() {
                 </SelectTrigger>
                 <SelectContent>
                   {Object.entries(CONTENT_TYPE_LABELS).map(([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="language">Language *</Label>
+              <Select value={language} onValueChange={setLanguage} disabled={isGenerating}>
+                <SelectTrigger id="language">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(LANGUAGE_LABELS).map(([value, label]) => (
                     <SelectItem key={value} value={value}>
                       {label}
                     </SelectItem>
