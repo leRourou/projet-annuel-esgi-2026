@@ -38,8 +38,8 @@ async function seed() {
 
     // ── Utilisateur ───────────────────────────────────────────────────────
     const [user] = await qr.query(
-      `INSERT INTO users (email, name, role, created_at, updated_at)
-       VALUES ($1, $2, 'ADMIN', NOW(), NOW())
+      `INSERT INTO users (email, name, role, onboarding_completed, created_at, updated_at)
+       VALUES ($1, $2, 'ADMIN', true, NOW(), NOW())
        ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name
        RETURNING id`,
       [DEMO_USER_EMAIL, "Demo Admin"],

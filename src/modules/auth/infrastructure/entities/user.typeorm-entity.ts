@@ -26,6 +26,9 @@ export class UserTypeormEntity {
   @Column({ type: "varchar", name: "notion_access_token", nullable: true })
   notionAccessToken!: string | null;
 
+  @Column({ type: "boolean", name: "onboarding_completed", default: false })
+  onboardingCompleted!: boolean;
+
   @CreateDateColumn({ name: "created_at", type: "timestamp" })
   createdAt!: Date;
 

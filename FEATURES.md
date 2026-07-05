@@ -18,8 +18,8 @@
 | -------- | -------- | --------- | ---------- |
 | P0 — MVP | 16       | 16 ✅     | 46j        |
 | P1       | 9        | 9         | 22j        |
-| P2       | 7        | 0         | 11j        |
-| **Total**| **32**   | **25**    | **79j**    |
+| P2       | 7        | 1         | 11j        |
+| **Total**| **32**   | **26**    | **79j**    |
 
 ---
 
@@ -113,18 +113,18 @@
   - [x] Entité `Theme` domaine liée à l'agence
 
 ### F-104 · Onboarding guidé
-- **Statut** : `🔄 IN_PROGRESS`
+- **Statut** : `✅ DONE`
 - **Priorité** : P2
 - **Estimation** : 2j
 - **Dépendances** : F-102
 - **Description** : Parcours interactif lors de la première connexion pour expliquer le fonctionnement de l'outil (étapes, tutoriel).
 - **Critères d'acceptation** :
-  - [ ] Détection de la première connexion de l'utilisateur
-  - [ ] Wizard d'onboarding multi-étapes (création agence, thématiques, connexion Notion)
-  - [ ] L'utilisateur peut skip l'onboarding
-  - [ ] Flag `onboardingCompleted` persisté en base
+  - [x] Détection de la première connexion de l'utilisateur — flag `onboardingCompleted` sur `User` (défaut `false`), vérifié dans `(dashboard)/layout.tsx` en plus du check de membership existant
+  - [x] Wizard d'onboarding multi-étapes (création agence, thématiques, connexion Notion) — page `/onboarding` en 3 étapes avec indicateur de progression
+  - [x] L'utilisateur peut skip l'onboarding — bouton "Skip" sur les étapes thématiques/Notion (la création d'agence reste obligatoire, condition d'accès au dashboard multi-tenant)
+  - [x] Flag `onboardingCompleted` persisté en base — colonne `users.onboarding_completed`, `CompleteOnboardingCommand`
 
-> ⚠️ Implémentation existante divergente : la page `/onboarding` existe et permet la création d'agence (première étape), mais il n'y a pas de wizard multi-étapes, pas de détection de première connexion, pas de bouton skip, et pas de flag `onboardingCompleted`.
+> Migration avec backfill : les utilisateurs ayant déjà une agence (`agency_members.joined_at IS NOT NULL`) sont marqués `onboarding_completed = true` automatiquement, pour ne pas re-forcer l'onboarding sur les comptes existants (y compris le seed jury, mis à jour en conséquence).
 
 ---
 

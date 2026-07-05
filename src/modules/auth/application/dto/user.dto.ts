@@ -7,6 +7,7 @@ export const UserDtoSchema = z.object({
   name: z.string(),
   role: z.enum(["ADMIN", "MEMBER", "VIEWER"]),
   hasNotionConnected: z.boolean(),
+  onboardingCompleted: z.boolean(),
   createdAt: z.date(),
 });
 
@@ -19,6 +20,7 @@ export function toUserDto(user: User): UserDto {
     name: user.name,
     role: user.role.value,
     hasNotionConnected: user.notionAccessToken !== undefined,
+    onboardingCompleted: user.onboardingCompleted,
     createdAt: user.createdAt,
   };
 }

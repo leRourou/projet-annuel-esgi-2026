@@ -28,8 +28,10 @@ import { GetUserMembershipQuery } from "@/modules/agency/application/queries/get
 import { ListMembersQuery } from "@/modules/agency/application/queries/list-members.query";
 import { ListTagsQuery } from "@/modules/agency/application/queries/list-tags.query";
 import { ListThemesQuery } from "@/modules/agency/application/queries/list-themes.query";
+import { CompleteOnboardingCommand } from "@/modules/auth/application/commands/complete-onboarding.command";
 import { CreateUserCommand } from "@/modules/auth/application/commands/create-user.command";
 import { GetUserByEmailQuery } from "@/modules/auth/application/queries/get-user-by-email.query";
+import { GetUserByIdQuery } from "@/modules/auth/application/queries/get-user-by-id.query";
 import { AssignTagsCommand } from "@/modules/content/application/commands/assign-tags.command";
 import { CreateArticleCommand } from "@/modules/content/application/commands/create-article.command";
 import { GenerateArticleCommand } from "@/modules/content/application/commands/generate-article.command";
@@ -86,6 +88,8 @@ export async function buildContainer() {
     // Auth
     createUser: new CreateUserCommand(userRepository),
     getUserByEmail: new GetUserByEmailQuery(userRepository),
+    getUserById: new GetUserByIdQuery(userRepository),
+    completeOnboarding: new CompleteOnboardingCommand(userRepository),
 
     // Content
     generateIdeas: new GenerateIdeasCommand(aiGenerator, articleRepository),

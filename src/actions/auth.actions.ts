@@ -1,8 +1,10 @@
 "use server";
 
-import { signIn, signOut } from "@/lib/auth";
+import { auth, signIn, signOut } from "@/lib/auth";
 import { buildContainer } from "@/shared/infrastructure/di/container";
 import { z } from "zod";
+
+type ActionResult<T> = { data: T; error?: never } | { data?: never; error: string };
 
 const SignInInputSchema = z.object({
   email: z.string().email(),
@@ -34,6 +36,10 @@ export async function signInWithNotion(): Promise<void> {
   await signIn("notion", { redirectTo: "/content" });
 }
 
+export async function signInWithNotionForOnboarding(): Promise<void> {
+  await signIn("notion", { redirectTo: "/onboarding?step=notion" });
+}
+
 const CreateUserInputSchema = z.object({
   email: z.string().email(),
   name: z.string().min(1),
@@ -53,4 +59,14 @@ export async function createUserAction(
     return { error: result.error.message };
   }
   return { userId: result.value.id };
+}
+
+export async function completeOnboardingAction(): Promise<ActionResult<void>> {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Unauthorized" };
+
+  const container = await buildContainer();
+  const result = await container.completeOnboarding.execute(session.user.id);
+  if (!result.success) return { error: result.error.message };
+  return { data: undefined };
 }

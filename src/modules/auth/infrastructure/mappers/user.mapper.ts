@@ -10,6 +10,7 @@ export class UserMapper {
       name: entity.name,
       role: UserRole.create(entity.role),
       notionAccessToken: entity.notionAccessToken ?? undefined,
+      onboardingCompleted: entity.onboardingCompleted,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     });
@@ -22,6 +23,7 @@ export class UserMapper {
       name: user.name,
       role: user.role.value,
       notionAccessToken: user.notionAccessToken ?? null,
+      onboardingCompleted: user.onboardingCompleted,
     };
   }
 }

@@ -29,4 +29,15 @@ describe("User", () => {
     user.connectNotion("secret-token");
     expect(user.notionAccessToken).toBe("secret-token");
   });
+
+  it("defaults onboardingCompleted to false", () => {
+    const user = makeUser();
+    expect(user.onboardingCompleted).toBe(false);
+  });
+
+  it("marks onboarding as completed", () => {
+    const user = makeUser();
+    user.completeOnboarding();
+    expect(user.onboardingCompleted).toBe(true);
+  });
 });

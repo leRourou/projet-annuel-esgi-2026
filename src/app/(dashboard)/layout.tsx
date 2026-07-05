@@ -16,6 +16,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
     redirect("/onboarding");
   }
 
+  const userResult = await container.getUserById.execute(session.user.id);
+  if (userResult.success && !userResult.value.onboardingCompleted) {
+    redirect("/onboarding");
+  }
+
   return (
     <SidebarProvider>
       <AppSidebar userEmail={session.user.email ?? ""} />

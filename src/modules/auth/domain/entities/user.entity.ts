@@ -8,6 +8,7 @@ export interface UserProps {
   name: string;
   role: UserRole;
   notionAccessToken?: string;
+  onboardingCompleted: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -36,6 +37,7 @@ export class User extends AggregateRoot<string> {
       email: params.email,
       name: params.name.trim(),
       role: params.role ?? UserRole.MEMBER,
+      onboardingCompleted: false,
       createdAt: now,
       updatedAt: now,
     });
@@ -61,6 +63,10 @@ export class User extends AggregateRoot<string> {
     return this.props.notionAccessToken;
   }
 
+  get onboardingCompleted(): boolean {
+    return this.props.onboardingCompleted;
+  }
+
   get createdAt(): Date {
     return this.props.createdAt;
   }
@@ -71,6 +77,10 @@ export class User extends AggregateRoot<string> {
 
   connectNotion(accessToken: string): void {
     this.props = { ...this.props, notionAccessToken: accessToken, updatedAt: new Date() };
+  }
+
+  completeOnboarding(): void {
+    this.props = { ...this.props, onboardingCompleted: true, updatedAt: new Date() };
   }
 
   updateName(name: string): void {
