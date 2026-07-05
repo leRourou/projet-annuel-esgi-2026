@@ -50,6 +50,9 @@ export class ArticleTypeormEntity {
   @Column({ type: "timestamp", name: "scheduled_at", nullable: true })
   scheduledAt!: Date | null;
 
+  @Column({ type: "text", name: "image_prompt", nullable: true })
+  imagePrompt!: string | null;
+
   @Column({ type: "text", array: true, name: "tag_ids", default: "{}" })
   tagIds!: string[];
 

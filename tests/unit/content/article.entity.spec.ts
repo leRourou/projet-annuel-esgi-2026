@@ -94,4 +94,20 @@ describe("Article", () => {
     article.transitionTo(ContentStatus.PUBLISHED);
     expect(() => article.update({ title: "New title" })).toThrow(DomainError);
   });
+
+  it("partial update only touches the provided fields", () => {
+    const article = makeArticle();
+    article.update({ body: "Updated content" });
+    expect(article.body).toBe("Updated content");
+    expect(article.title).toBe("Hello World");
+    expect(article.seoMetadata).toBeDefined();
+  });
+
+  it("sets the image prompt without touching other fields", () => {
+    const article = makeArticle();
+    article.update({ imagePrompt: "A vivid illustration of the topic" });
+    expect(article.imagePrompt).toBe("A vivid illustration of the topic");
+    expect(article.title).toBe("Hello World");
+    expect(article.body).toBe("Content here");
+  });
 });

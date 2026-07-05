@@ -46,6 +46,7 @@ export const ArticleDtoSchema = z.object({
   agencyId: z.string(),
   notionPageId: z.string().optional(),
   scheduledAt: z.date().optional(),
+  imagePrompt: z.string().optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -83,6 +84,7 @@ export function toArticleDto(article: Article): ArticleDto {
     agencyId: article.agencyId,
     notionPageId: article.notionPageId,
     scheduledAt: article.scheduledAt,
+    imagePrompt: article.imagePrompt,
     createdAt: article.createdAt,
     updatedAt: article.updatedAt,
   };

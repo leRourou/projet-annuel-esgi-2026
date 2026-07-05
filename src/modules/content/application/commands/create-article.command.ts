@@ -17,6 +17,7 @@ export const CreateArticleInputSchema = z.object({
   suggestedKeywords: z.array(z.string()),
   excerpt: z.string().max(300).optional(),
   contentType: z.enum(["ARTICLE", "PRODUCT_SHEET", "META", "LINKEDIN_POST", "FACEBOOK_POST"]),
+  imagePrompt: z.string().optional(),
   authorId: z.string().uuid(),
   agencyId: z.string().uuid(),
 });
@@ -43,6 +44,7 @@ export class CreateArticleCommand {
         seoMetadata,
         authorId: input.authorId,
         agencyId: input.agencyId,
+        imagePrompt: input.imagePrompt,
       });
 
       await this.articleRepository.save(article);

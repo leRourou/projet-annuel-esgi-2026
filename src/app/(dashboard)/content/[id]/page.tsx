@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { seoScoreVariant } from "@/shared/ui/seo-score-badge";
 import { notFound } from "next/navigation";
 import { ContentEditor } from "./content-editor";
+import { ImagePromptCard } from "./image-prompt-card";
 import { NotionExport } from "./notion-export";
 import { TagAssign } from "./tag-assign";
 
@@ -161,6 +162,8 @@ export default async function ArticlePage({ params }: Props) {
             </div>
           </CardContent>
         </Card>
+
+        <ImagePromptCard articleId={article.id} initialPrompt={article.imagePrompt} />
 
         <Card>
           <CardHeader className="pb-3">

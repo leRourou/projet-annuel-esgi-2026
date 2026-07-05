@@ -138,6 +138,7 @@ export class GenerateEnrichedArticleCommand {
         authorId: input.authorId,
         agencyId: input.agencyId,
         sourceIds: curatedSources.map((s) => s.id),
+        imagePrompt: generated.imagePrompt,
       });
 
       await this.articleRepository.save(article);

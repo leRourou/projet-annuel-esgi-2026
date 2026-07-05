@@ -17,6 +17,7 @@ export interface ArticleProps {
   sourceIds: string[];
   notionPageId?: string;
   scheduledAt?: Date;
+  imagePrompt?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -96,6 +97,10 @@ export class Article extends AggregateRoot<string> {
     return this.props.scheduledAt;
   }
 
+  get imagePrompt(): string | undefined {
+    return this.props.imagePrompt;
+  }
+
   get createdAt(): Date {
     return this.props.createdAt;
   }
@@ -108,13 +113,21 @@ export class Article extends AggregateRoot<string> {
     this.props = { ...this.props, tagIds, updatedAt: new Date() };
   }
 
-  update(params: { title?: string; body?: string; seoMetadata?: SeoMetadata }): void {
+  update(params: {
+    title?: string;
+    body?: string;
+    seoMetadata?: SeoMetadata;
+    imagePrompt?: string;
+  }): void {
     if (this.props.status.value === "PUBLISHED") {
       throw new DomainError("Cannot edit a published article", "ARTICLE_ALREADY_PUBLISHED");
     }
     this.props = {
       ...this.props,
-      ...params,
+      ...(params.title !== undefined && { title: params.title }),
+      ...(params.body !== undefined && { body: params.body }),
+      ...(params.seoMetadata !== undefined && { seoMetadata: params.seoMetadata }),
+      ...(params.imagePrompt !== undefined && { imagePrompt: params.imagePrompt }),
       updatedAt: new Date(),
     };
   }

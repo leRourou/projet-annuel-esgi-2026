@@ -18,8 +18,8 @@
 | -------- | -------- | --------- | ---------- |
 | P0 — MVP | 16       | 16 ✅     | 46j        |
 | P1       | 9        | 9         | 22j        |
-| P2       | 7        | 1         | 11j        |
-| **Total**| **32**   | **26**    | **79j**    |
+| P2       | 7        | 2         | 11j        |
+| **Total**| **32**   | **27**    | **79j**    |
 
 ---
 
@@ -258,16 +258,18 @@
   - [x] Dashboard affiche le score avec code couleur (rouge/orange/vert) — déjà sur `/content/[id]` (F-204), ajouté aussi sur la liste `/content` via `SeoScoreBadge` partagé
 
 #### F-209 · Suggestion de prompt image IA
-- **Statut** : `🔲 TODO`
+- **Statut** : `✅ DONE`
 - **Priorité** : P2
 - **Estimation** : 1j
 - **Dépendances** : F-202
 - **Description** : L'outil suggère un prompt pour générer une image d'illustration par IA pour chaque contenu.
 - **Critères d'acceptation** :
-  - [ ] Après génération, un prompt image est proposé
-  - [ ] Le prompt est adapté au sujet et au ton
-  - [ ] L'utilisateur peut copier ou modifier le prompt
-  - [ ] Le prompt est sauvegardé avec l'article
+  - [x] Après génération, un prompt image est proposé — champ `imagePrompt` dans `GeneratedContent`, produit par le même appel IA (article, post social, fiche produit ; pas pour META)
+  - [x] Le prompt est adapté au sujet et au ton — instruction dédiée dans les builders de prompt (sujet, ton, éléments visuels concrets)
+  - [x] L'utilisateur peut copier ou modifier le prompt — bouton "Copy" + champ éditable sur `/content/new` (preview) et sur `/content/[id]` (`ImagePromptCard`)
+  - [x] Le prompt est sauvegardé avec l'article — colonne `articles.image_prompt`, `Article.imagePrompt`, persisté via `CreateArticleCommand`/`GenerateArticleCommand`/`GenerateEnrichedArticleCommand`/`UpdateArticleCommand`
+
+> Bug corrigé au passage : `Article.update()` écrasait les champs non fournis (ex. `title`) avec `undefined` lors d'une mise à jour partielle (spread d'un objet contenant des clés à `undefined`) — corrigé pour ne mettre à jour que les champs explicitement fournis.
 
 #### F-210 · Formats supplémentaires (Instagram, Substack, Facebook)
 - **Statut** : `🔲 TODO`

@@ -17,6 +17,14 @@ function languageInstruction(language?: LanguageValue): string {
     : "LANGUAGE: Rédige l'intégralité du contenu — titre, corps, meta title, meta description, extrait et mots-clés — en français.";
 }
 
+const IMAGE_PROMPT_REQUIREMENT = `IMAGE PROMPT (mandatory)
+Also produce a short, vivid prompt for an AI image generator (DALL-E / Midjourney / Stable Diffusion
+style) to create a relevant illustration for this content. It must match the subject and tone, describe
+concrete visual elements (subject, setting, style, lighting), be 1–2 sentences, and must NOT ask for any
+text/words to appear in the image.`;
+
+const IMAGE_PROMPT_FIELD = `  "imagePrompt": "Vivid AI image generation prompt, 1-2 sentences",\n`;
+
 function slugify(text: string): string {
   return text
     .toLowerCase()
@@ -113,6 +121,8 @@ QUALITY STANDARDS
 - Prefer active voice
 - No vague generalities ("It is important to…", "Many experts say…")
 
+${IMAGE_PROMPT_REQUIREMENT}
+
 OUTPUT FORMAT — respond with ONLY this JSON object, no markdown wrapper:
 {
   "title": "H1 title here",
@@ -121,8 +131,8 @@ OUTPUT FORMAT — respond with ONLY this JSON object, no markdown wrapper:
   "metaDescription": "SEO meta description ≤160 chars",
   "excerpt": "1–2 sentence excerpt ≤300 chars",
   "suggestedKeywords": ["primary-kw", "secondary-kw-1", "secondary-kw-2"],
-  "slug": "url-friendly-slug"
-}`;
+  "slug": "url-friendly-slug",
+${IMAGE_PROMPT_FIELD}}`;
 }
 
 function buildSocialPrompt(input: GenerateContentInput): string {
@@ -159,6 +169,8 @@ ${
 - Minimal hashtags (2–3 max)`
 }
 
+${IMAGE_PROMPT_REQUIREMENT}
+
 OUTPUT FORMAT — respond with ONLY this JSON object:
 {
   "title": "Post subject line (internal label, not shown publicly)",
@@ -167,8 +179,8 @@ OUTPUT FORMAT — respond with ONLY this JSON object:
   "metaDescription": "One-sentence summary of the post ≤160 chars",
   "excerpt": "One-sentence excerpt ≤300 chars",
   "suggestedKeywords": ["keyword1", "keyword2"],
-  "slug": "topic-slug"
-}`;
+  "slug": "topic-slug",
+${IMAGE_PROMPT_FIELD}}`;
 }
 
 function buildProductSheetPrompt(input: GenerateContentInput): string {
@@ -198,6 +210,8 @@ SEO REQUIREMENTS
 - Meta title ≤ 70 chars
 - Meta description ≤ 160 chars (include primary keyword + main benefit)
 
+${IMAGE_PROMPT_REQUIREMENT}
+
 OUTPUT FORMAT — respond with ONLY this JSON object:
 {
   "title": "Product/service H1 title",
@@ -206,8 +220,8 @@ OUTPUT FORMAT — respond with ONLY this JSON object:
   "metaDescription": "SEO meta description ≤160 chars",
   "excerpt": "One-sentence excerpt ≤300 chars",
   "suggestedKeywords": ["kw1", "kw2", "kw3"],
-  "slug": "product-slug"
-}`;
+  "slug": "product-slug",
+${IMAGE_PROMPT_FIELD}}`;
 }
 
 function buildMetaPrompt(input: GenerateContentInput): string {

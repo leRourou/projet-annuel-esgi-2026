@@ -87,6 +87,7 @@ export class GenerateArticleCommand {
         seoMetadata,
         authorId: input.authorId,
         agencyId: input.agencyId,
+        imagePrompt: generated.imagePrompt,
       });
 
       await this.articleRepository.save(article);

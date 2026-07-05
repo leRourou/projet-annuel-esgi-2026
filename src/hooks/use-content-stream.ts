@@ -19,6 +19,7 @@ export interface ParsedGeneratedContent {
   metaDescription: string;
   suggestedKeywords: string[];
   slug: string;
+  imagePrompt?: string;
 }
 
 export function useContentStream() {

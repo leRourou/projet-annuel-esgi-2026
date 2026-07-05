@@ -18,6 +18,7 @@ export const UpdateArticleInputSchema = z.object({
       slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
     })
     .optional(),
+  imagePrompt: z.string().optional(),
 });
 
 export type UpdateArticleInput = z.infer<typeof UpdateArticleInputSchema>;
@@ -34,7 +35,12 @@ export class UpdateArticleCommand {
 
       const seoMetadata = input.seoMetadata ? SeoMetadata.create(input.seoMetadata) : undefined;
 
-      article.update({ title: input.title, body: input.body, seoMetadata });
+      article.update({
+        title: input.title,
+        body: input.body,
+        seoMetadata,
+        imagePrompt: input.imagePrompt,
+      });
       await this.articleRepository.save(article);
       return Result.ok(toArticleDto(article));
     } catch (error) {

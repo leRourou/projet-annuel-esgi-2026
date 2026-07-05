@@ -21,7 +21,7 @@ import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { useContentStream } from "@/hooks/use-content-stream";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 const CONTENT_TYPE_LABELS: Record<string, string> = {
   ARTICLE: "Blog article",
@@ -66,6 +66,8 @@ function NewContentForm() {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [enriched, setEnriched] = useState(false);
   const [enrichedLoading, setEnrichedLoading] = useState(false);
+  const [imagePrompt, setImagePrompt] = useState("");
+  const [imagePromptCopied, setImagePromptCopied] = useState(false);
   const {
     text,
     loading,
@@ -76,6 +78,19 @@ function NewContentForm() {
     reset,
   } = useContentStream();
   const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    setImagePrompt(parsedContent?.imagePrompt ?? "");
+    setImagePromptCopied(false);
+  }, [parsedContent]);
+
+  function handleCopyImagePrompt() {
+    if (!imagePrompt) return;
+    navigator.clipboard.writeText(imagePrompt).then(() => {
+      setImagePromptCopied(true);
+      setTimeout(() => setImagePromptCopied(false), 2000);
+    });
+  }
 
   function getFormInput() {
     const form = formRef.current;
@@ -133,6 +148,7 @@ function NewContentForm() {
       slug: parsedContent.slug,
       suggestedKeywords: parsedContent.suggestedKeywords,
       contentType,
+      imagePrompt: imagePrompt || undefined,
     });
     setSaving(false);
     if (result.error || !result.data) {
@@ -410,6 +426,34 @@ function NewContentForm() {
                 </div>
               </div>
             </div>
+
+            {imagePrompt && (
+              <>
+                <Separator />
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                      AI image prompt
+                    </p>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleCopyImagePrompt}
+                      className="h-6 px-2 text-xs"
+                    >
+                      {imagePromptCopied ? "Copied!" : "Copy"}
+                    </Button>
+                  </div>
+                  <Input
+                    value={imagePrompt}
+                    onChange={(e) => setImagePrompt(e.target.value)}
+                    disabled={saving}
+                    className="text-sm"
+                  />
+                </div>
+              </>
+            )}
 
             {saveError && (
               <Alert variant="destructive">

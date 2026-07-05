@@ -24,6 +24,7 @@ export class ArticleMapper {
       agencyId: entity.agencyId ?? "",
       notionPageId: entity.notionPageId ?? undefined,
       scheduledAt: entity.scheduledAt ?? undefined,
+      imagePrompt: entity.imagePrompt ?? undefined,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     });
@@ -47,6 +48,7 @@ export class ArticleMapper {
       agencyId: article.agencyId || null,
       notionPageId: article.notionPageId ?? null,
       scheduledAt: article.scheduledAt ?? null,
+      imagePrompt: article.imagePrompt ?? null,
     };
   }
 }

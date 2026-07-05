@@ -22,6 +22,7 @@ export interface GeneratedContent {
   excerpt: string;
   suggestedKeywords: string[];
   slug: string;
+  imagePrompt?: string;
 }
 
 export interface CuratedSource {
