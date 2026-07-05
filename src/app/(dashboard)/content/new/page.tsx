@@ -29,7 +29,11 @@ const CONTENT_TYPE_LABELS: Record<string, string> = {
   META: "Meta description",
   LINKEDIN_POST: "LinkedIn post",
   FACEBOOK_POST: "Facebook post",
+  INSTAGRAM_POST: "Instagram post",
+  SUBSTACK_ARTICLE: "Substack newsletter",
 };
+
+const SOCIAL_CONTENT_TYPES = ["LINKEDIN_POST", "FACEBOOK_POST", "INSTAGRAM_POST"];
 
 const LANGUAGE_LABELS: Record<string, string> = {
   FR: "Français",
@@ -380,50 +384,64 @@ function NewContentForm() {
             <Badge variant="outline">{CONTENT_TYPE_LABELS[contentType]}</Badge>
           </CardHeader>
           <CardContent className="space-y-4">
+            {SOCIAL_CONTENT_TYPES.includes(contentType) ? (
+              <div className="rounded-lg border bg-muted/30 p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Badge variant="outline">{CONTENT_TYPE_LABELS[contentType]} preview</Badge>
+                </div>
+                <p className="whitespace-pre-wrap text-sm leading-relaxed font-sans">
+                  {parsedContent.body}
+                </p>
+              </div>
+            ) : (
+              <>
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
+                    {contentType === "SUBSTACK_ARTICLE" ? "Subject line" : "Title"}
+                  </p>
+                  <p className="font-semibold">{parsedContent.title}</p>
+                </div>
+
+                <Separator />
+
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
+                    Content
+                  </p>
+                  <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans">
+                    {parsedContent.body}
+                  </pre>
+                </div>
+
+                <Separator />
+
+                <div className="grid grid-cols-1 gap-3">
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
+                      Meta title
+                    </p>
+                    <p className="text-sm">{parsedContent.metaTitle}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
+                      Meta description
+                    </p>
+                    <p className="text-sm text-muted-foreground">{parsedContent.metaDescription}</p>
+                  </div>
+                </div>
+              </>
+            )}
+
             <div>
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
-                Title
+                {SOCIAL_CONTENT_TYPES.includes(contentType) ? "Hashtags" : "Keywords"}
               </p>
-              <p className="font-semibold">{parsedContent.title}</p>
-            </div>
-
-            <Separator />
-
-            <div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
-                Content
-              </p>
-              <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans">
-                {parsedContent.body}
-              </pre>
-            </div>
-
-            <Separator />
-
-            <div className="grid grid-cols-1 gap-3">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
-                  Meta title
-                </p>
-                <p className="text-sm">{parsedContent.metaTitle}</p>
-              </div>
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
-                  Meta description
-                </p>
-                <p className="text-sm text-muted-foreground">{parsedContent.metaDescription}</p>
-              </div>
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
-                  Keywords
-                </p>
-                <div className="flex flex-wrap gap-1">
-                  {parsedContent.suggestedKeywords.map((kw) => (
-                    <Badge key={kw} variant="secondary" className="text-xs">
-                      {kw}
-                    </Badge>
-                  ))}
-                </div>
+              <div className="flex flex-wrap gap-1">
+                {parsedContent.suggestedKeywords.map((kw) => (
+                  <Badge key={kw} variant="secondary" className="text-xs">
+                    {kw}
+                  </Badge>
+                ))}
               </div>
             </div>
 

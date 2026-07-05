@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { Article } from "../../domain/entities/article.entity";
+import { CONTENT_TYPES } from "../../domain/value-objects/content-type.vo";
 import { ScoreContentSeoQuery } from "../queries/score-content-seo.query";
 
 const seoScoreQuery = new ScoreContentSeoQuery();
@@ -8,7 +9,7 @@ export const ArticleDtoSchema = z.object({
   id: z.string().uuid(),
   title: z.string(),
   body: z.string(),
-  contentType: z.enum(["ARTICLE", "PRODUCT_SHEET", "META", "LINKEDIN_POST", "FACEBOOK_POST"]),
+  contentType: z.enum(CONTENT_TYPES),
   status: z.enum(["DRAFT", "REVIEW", "VALIDATED", "SCHEDULED", "PUBLISHED"]),
   seoMetadata: z.object({
     metaTitle: z.string(),

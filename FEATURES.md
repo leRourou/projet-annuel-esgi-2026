@@ -18,8 +18,8 @@
 | -------- | -------- | --------- | ---------- |
 | P0 — MVP | 16       | 16 ✅     | 46j        |
 | P1       | 9        | 9         | 22j        |
-| P2       | 7        | 2         | 11j        |
-| **Total**| **32**   | **27**    | **79j**    |
+| P2       | 7        | 3         | 11j        |
+| **Total**| **32**   | **28**    | **79j**    |
 
 ---
 
@@ -272,15 +272,15 @@
 > Bug corrigé au passage : `Article.update()` écrasait les champs non fournis (ex. `title`) avec `undefined` lors d'une mise à jour partielle (spread d'un objet contenant des clés à `undefined`) — corrigé pour ne mettre à jour que les champs explicitement fournis.
 
 #### F-210 · Formats supplémentaires (Instagram, Substack, Facebook)
-- **Statut** : `🔲 TODO`
+- **Statut** : `✅ DONE`
 - **Priorité** : P2
 - **Estimation** : 2j
 - **Dépendances** : F-202
 - **Description** : Extension des formats au-delà de blog et LinkedIn.
 - **Critères d'acceptation** :
-  - [ ] `ContentType` étendu : INSTAGRAM_POST, SUBSTACK_ARTICLE, FACEBOOK_POST
-  - [ ] Prompts adaptés à chaque format
-  - [ ] Preview du rendu adapté au format
+  - [x] `ContentType` étendu : INSTAGRAM_POST, SUBSTACK_ARTICLE, FACEBOOK_POST (FACEBOOK_POST existait déjà depuis F-202 ; INSTAGRAM_POST et SUBSTACK_ARTICLE ajoutés, `CONTENT_TYPES` centralisé dans le VO et réutilisé par tous les schémas Zod du module)
+  - [x] Prompts adaptés à chaque format — `SOCIAL_PLATFORM_CONFIG` (LinkedIn/Facebook/Instagram, structure et ton dédiés par plateforme) + `buildSubstackPrompt` (newsletter, voix personnelle, sign-off)
+  - [x] Preview du rendu adapté au format — `/content/new` : rendu "post card" pour les formats sociaux (pas de titre/meta affichés, libellé "Hashtags"), rendu article classique pour le reste ; couleur dédiée par type sur le calendrier
 
 #### F-211 · Export multi-format du contenu
 - **Statut** : `🔲 TODO`

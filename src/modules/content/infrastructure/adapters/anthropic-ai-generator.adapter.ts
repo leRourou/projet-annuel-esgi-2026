@@ -135,16 +135,52 @@ OUTPUT FORMAT — respond with ONLY this JSON object, no markdown wrapper:
 ${IMAGE_PROMPT_FIELD}}`;
 }
 
+const SOCIAL_PLATFORM_CONFIG: Record<
+  "LINKEDIN_POST" | "FACEBOOK_POST" | "INSTAGRAM_POST",
+  { name: string; defaultTone: string; structure: string; keywordsLabel: string }
+> = {
+  LINKEDIN_POST: {
+    name: "LinkedIn",
+    defaultTone: "professional and insightful",
+    structure: `1. HOOK (first line): bold statement, surprising stat, or provocative question — must stop the scroll
+2. SETUP (1–2 short paragraphs): context and problem
+3. INSIGHT (2–3 short paragraphs): your perspective, a specific example, or a numbered list
+4. CTA (last line): a question or clear next step to drive engagement
+- Use line breaks generously (short paragraphs)
+- 150–300 words total
+- 3–5 relevant hashtags at the end`,
+    keywordsLabel: "hashtags",
+  },
+  FACEBOOK_POST: {
+    name: "Facebook",
+    defaultTone: "engaging and community-oriented",
+    structure: `1. HOOK (first line): relatable situation or question
+2. BODY (2–4 short paragraphs): story, tip, or insight with a personal angle
+3. CTA: invite comments or shares
+- Conversational tone, 100–200 words
+- Minimal hashtags (2–3 max)`,
+    keywordsLabel: "hashtags",
+  },
+  INSTAGRAM_POST: {
+    name: "Instagram",
+    defaultTone: "visual, upbeat, and authentic",
+    structure: `1. HOOK (first line): scroll-stopping statement, question, or emoji-led line
+2. CAPTION BODY (2–3 short paragraphs or a mini-list): value, story, or tip — write for a visual-first audience
+3. CTA (last line): "double tap", "save this", "comment below", or "link in bio"
+- Short punchy sentences, generous line breaks and emoji where natural
+- 100–200 words
+- 8–15 relevant hashtags at the end, grouped after the caption`,
+    keywordsLabel: "hashtags",
+  },
+};
+
 function buildSocialPrompt(input: GenerateContentInput): string {
-  const isLinkedIn = input.contentType === "LINKEDIN_POST";
-  const platform = isLinkedIn ? "LinkedIn" : "Facebook";
-  const toneLine = input.tone
-    ? `Tone: ${input.tone}.`
-    : `Tone: ${isLinkedIn ? "professional and insightful" : "engaging and community-oriented"}.`;
+  const config = SOCIAL_PLATFORM_CONFIG[input.contentType as keyof typeof SOCIAL_PLATFORM_CONFIG];
+  const toneLine = input.tone ? `Tone: ${input.tone}.` : `Tone: ${config.defaultTone}.`;
   const contextLine = input.context ? `\nBusiness context: ${input.context}` : "";
   const primaryKw = input.keywords[0] ?? input.topic;
 
-  return `You are a ${platform} content specialist who writes high-performing posts.
+  return `You are a ${config.name} content specialist who writes high-performing posts.
 
 ASSIGNMENT
 Topic: ${input.topic}
@@ -153,21 +189,7 @@ ${toneLine}${contextLine}
 ${languageInstruction(input.language)}
 
 POST STRUCTURE (mandatory)
-${
-  isLinkedIn
-    ? `1. HOOK (first line): bold statement, surprising stat, or provocative question — must stop the scroll
-2. SETUP (1–2 short paragraphs): context and problem
-3. INSIGHT (2–3 short paragraphs): your perspective, a specific example, or a numbered list
-4. CTA (last line): a question or clear next step to drive engagement
-- Use line breaks generously (short paragraphs)
-- 150–300 words total
-- 3–5 relevant hashtags at the end`
-    : `1. HOOK (first line): relatable situation or question
-2. BODY (2–4 short paragraphs): story, tip, or insight with a personal angle
-3. CTA: invite comments or shares
-- Conversational tone, 100–200 words
-- Minimal hashtags (2–3 max)`
-}
+${config.structure}
 
 ${IMAGE_PROMPT_REQUIREMENT}
 
@@ -178,8 +200,56 @@ OUTPUT FORMAT — respond with ONLY this JSON object:
   "metaTitle": "Post topic ≤70 chars",
   "metaDescription": "One-sentence summary of the post ≤160 chars",
   "excerpt": "One-sentence excerpt ≤300 chars",
-  "suggestedKeywords": ["keyword1", "keyword2"],
+  "suggestedKeywords": ["${config.keywordsLabel}1", "${config.keywordsLabel}2"],
   "slug": "topic-slug",
+${IMAGE_PROMPT_FIELD}}`;
+}
+
+function buildSubstackPrompt(input: GenerateContentInput): string {
+  const wordTarget = input.wordCount
+    ? `The newsletter must be approximately ${input.wordCount} words.`
+    : "The newsletter must be 800–1200 words.";
+  const toneLine = input.tone
+    ? `Tone of voice: ${input.tone}.`
+    : "Tone: personal, direct, first-person — write as if talking to a subscriber, not a search engine.";
+  const contextLine = input.context ? `\nBusiness context: ${input.context}` : "";
+  const primaryKw = input.keywords[0] ?? input.topic;
+  const secondaryKws = input.keywords.slice(1).join(", ");
+
+  return `You are a Substack newsletter writer known for a distinctive, personal voice that readers subscribe for.
+
+ASSIGNMENT
+Topic: ${input.topic}
+Primary keyword: ${primaryKw}
+Secondary keywords: ${secondaryKws || "none"}
+${toneLine}
+${wordTarget}${contextLine}
+${languageInstruction(input.language)}
+
+NEWSLETTER STRUCTURE (mandatory)
+1. Personal opening (50–100 words): a short anecdote, observation, or direct address to the reader —
+   never open with a generic definition
+2. Main body: 3–5 sections using ## subheadings, written in first person, with concrete examples and
+   the writer's own take (not neutral reporting)
+3. A pull-quote or callout line that could stand alone if shared
+4. Closing (50–80 words): a direct, warm sign-off inviting replies — e.g. "Hit reply and tell me…"
+
+QUALITY STANDARDS
+- Written like a letter to one specific reader, not a broadcast
+- Opinionated: take a clear position, don't just summarize
+- Zero filler, no generic AI phrasing
+
+${IMAGE_PROMPT_REQUIREMENT}
+
+OUTPUT FORMAT — respond with ONLY this JSON object, no markdown wrapper:
+{
+  "title": "Newsletter subject line, compelling, under 65 chars",
+  "body": "Full newsletter in markdown (use ## for section headings)",
+  "metaTitle": "SEO meta title ≤70 chars",
+  "metaDescription": "SEO meta description ≤160 chars",
+  "excerpt": "1–2 sentence excerpt ≤300 chars",
+  "suggestedKeywords": ["primary-kw", "secondary-kw-1", "secondary-kw-2"],
+  "slug": "url-friendly-slug",
 ${IMAGE_PROMPT_FIELD}}`;
 }
 
@@ -284,11 +354,14 @@ function buildPrompt(input: GenerateContentInput): string {
   switch (input.contentType) {
     case "LINKEDIN_POST":
     case "FACEBOOK_POST":
+    case "INSTAGRAM_POST":
       return buildSocialPrompt(input);
     case "PRODUCT_SHEET":
       return buildProductSheetPrompt(input);
     case "META":
       return buildMetaPrompt(input);
+    case "SUBSTACK_ARTICLE":
+      return buildSubstackPrompt(input);
     default:
       return buildArticlePrompt(input);
   }

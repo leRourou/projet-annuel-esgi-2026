@@ -9,11 +9,13 @@ describe("ContentType", () => {
     expect(ContentType.create("META").value).toBe("META");
     expect(ContentType.create("LINKEDIN_POST").value).toBe("LINKEDIN_POST");
     expect(ContentType.create("FACEBOOK_POST").value).toBe("FACEBOOK_POST");
+    expect(ContentType.create("INSTAGRAM_POST").value).toBe("INSTAGRAM_POST");
+    expect(ContentType.create("SUBSTACK_ARTICLE").value).toBe("SUBSTACK_ARTICLE");
   });
 
   it("throws on invalid type", () => {
     expect(() => ContentType.create("BLOG")).toThrow(DomainError);
-    expect(() => ContentType.create("INSTAGRAM_POST")).toThrow(DomainError);
+    expect(() => ContentType.create("TWEET")).toThrow(DomainError);
     expect(() => ContentType.create("")).toThrow(DomainError);
   });
 
@@ -23,5 +25,7 @@ describe("ContentType", () => {
     expect(ContentType.META.value).toBe("META");
     expect(ContentType.LINKEDIN_POST.value).toBe("LINKEDIN_POST");
     expect(ContentType.FACEBOOK_POST.value).toBe("FACEBOOK_POST");
+    expect(ContentType.INSTAGRAM_POST.value).toBe("INSTAGRAM_POST");
+    expect(ContentType.SUBSTACK_ARTICLE.value).toBe("SUBSTACK_ARTICLE");
   });
 });

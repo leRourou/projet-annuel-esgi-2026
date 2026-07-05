@@ -4,7 +4,7 @@ import { Result } from "@/shared/domain/types/result.type";
 import { z } from "zod";
 import { Article } from "../../domain/entities/article.entity";
 import type { ArticleRepositoryPort } from "../../domain/ports/article.repository.port";
-import { ContentType } from "../../domain/value-objects/content-type.vo";
+import { CONTENT_TYPES, ContentType } from "../../domain/value-objects/content-type.vo";
 import { SeoMetadata } from "../../domain/value-objects/seo-metadata.vo";
 import { type ArticleDto, toArticleDto } from "../dto/article.dto";
 
@@ -16,7 +16,7 @@ export const CreateArticleInputSchema = z.object({
   slug: z.string().min(1),
   suggestedKeywords: z.array(z.string()),
   excerpt: z.string().max(300).optional(),
-  contentType: z.enum(["ARTICLE", "PRODUCT_SHEET", "META", "LINKEDIN_POST", "FACEBOOK_POST"]),
+  contentType: z.enum(CONTENT_TYPES),
   imagePrompt: z.string().optional(),
   authorId: z.string().uuid(),
   agencyId: z.string().uuid(),

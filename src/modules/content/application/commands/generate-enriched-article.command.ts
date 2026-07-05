@@ -10,7 +10,7 @@ import type {
   GeneratedContent,
 } from "../../domain/ports/ai-generator.port";
 import type { ArticleRepositoryPort } from "../../domain/ports/article.repository.port";
-import { ContentType } from "../../domain/value-objects/content-type.vo";
+import { CONTENT_TYPES, ContentType } from "../../domain/value-objects/content-type.vo";
 import { LANGUAGES } from "../../domain/value-objects/language.vo";
 import { SeoMetadata } from "../../domain/value-objects/seo-metadata.vo";
 import { type ArticleDto, toArticleDto } from "../dto/article.dto";
@@ -21,7 +21,7 @@ const AUTO_CORRECT_THRESHOLD = 70;
 export const GenerateEnrichedArticleInputSchema = z.object({
   topic: z.string().min(3),
   keywords: z.array(z.string().min(1)).min(1),
-  contentType: z.enum(["ARTICLE", "PRODUCT_SHEET", "META", "LINKEDIN_POST", "FACEBOOK_POST"]),
+  contentType: z.enum(CONTENT_TYPES),
   tone: z.string().optional(),
   wordCount: z.number().int().min(100).max(5000).optional(),
   context: z.string().optional(),

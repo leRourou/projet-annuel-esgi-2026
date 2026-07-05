@@ -16,6 +16,8 @@ const CONTENT_TYPE_COLORS: Record<ContentTypeValue, string> = {
   META: "bg-slate-100 text-slate-800 border-slate-200",
   LINKEDIN_POST: "bg-sky-100 text-sky-800 border-sky-200",
   FACEBOOK_POST: "bg-indigo-100 text-indigo-800 border-indigo-200",
+  INSTAGRAM_POST: "bg-pink-100 text-pink-800 border-pink-200",
+  SUBSTACK_ARTICLE: "bg-orange-100 text-orange-800 border-orange-200",
 };
 
 const STATUS_DOT: Record<string, string> = {

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CONTENT_TYPES } from "../../domain/value-objects/content-type.vo";
 import { LANGUAGES } from "../../domain/value-objects/language.vo";
 
 export const ArticleTypeSchema = z.enum([
@@ -13,7 +14,7 @@ export const ArticleTypeSchema = z.enum([
 export const GenerateArticleInputSchema = z.object({
   topic: z.string().min(3, "Topic must be at least 3 characters"),
   keywords: z.array(z.string()).min(1, "At least one keyword is required").max(10),
-  contentType: z.enum(["ARTICLE", "PRODUCT_SHEET", "META", "LINKEDIN_POST", "FACEBOOK_POST"]),
+  contentType: z.enum(CONTENT_TYPES),
   tone: z.string().optional(),
   wordCount: z.number().int().min(100).max(5000).optional(),
   articleType: ArticleTypeSchema.optional(),
