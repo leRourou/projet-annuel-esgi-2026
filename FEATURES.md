@@ -18,8 +18,8 @@
 | -------- | -------- | --------- | ---------- |
 | P0 — MVP | 16       | 16 ✅     | 46j        |
 | P1       | 9        | 9         | 22j        |
-| P2       | 7        | 5         | 11j        |
-| **Total**| **32**   | **30**    | **79j**    |
+| P2       | 7        | 6         | 11j        |
+| **Total**| **32**   | **31**    | **79j**    |
 
 ---
 
@@ -471,15 +471,17 @@
 ## Epic 7 — Qualité & UX transversale
 
 ### F-700 · Responsive avancé (mobile-first)
-- **Statut** : `🔲 TODO`
+- **Statut** : `✅ DONE`
 - **Priorité** : P2
 - **Estimation** : 2j
 - **Dépendances** : F-400
 - **Critères d'acceptation** :
-  - [ ] Toutes les pages fonctionnent sur mobile (≥ 375px)
-  - [ ] Navigation adaptée (sidebar → burger menu)
-  - [ ] Formulaires utilisables sur mobile
-  - [ ] Tests visuels sur 3 breakpoints
+  - [x] Toutes les pages fonctionnent sur mobile (≥ 375px) — audit Playwright (13 pages × 375/768/1280px) sans overflow horizontal ; padding de la coquille `(dashboard)/layout.tsx` rendu responsive (`p-4 sm:p-6 lg:p-8`)
+  - [x] Navigation adaptée (sidebar → burger menu) — déjà fourni par le bloc shadcn `Sidebar` (`useIsMobile`, bascule en `Sheet`/drawer sous 768px, `SidebarTrigger`) ; vérifié en navigateur réel
+  - [x] Formulaires utilisables sur mobile — formulaire de génération (`/content/new`), invitation membre, tags, contexte agence : vérifiés à 375px, aucun champ ni bouton coupé
+  - [x] Tests visuels sur 3 breakpoints — script Playwright dédié (375/768/1280px, détection d'overflow + captures), exécuté sur les pages principales
+
+> Bug corrigé au passage : `SidebarInset` (`src/components/ui/sidebar.tsx`) n'avait pas de `min-w-0`, empêchant le `<main>` de rétrécir sous la largeur intrinsèque de son contenu — provoquait un débordement horizontal de page entière à 768px dès qu'un titre d'article long était affiché (le `truncate` sur le titre ne suffisait pas à lui seul). Complété par `min-w-0` sur les éléments `truncate` isolés dans `page.tsx` (dashboard), `calendar-view.tsx` et `notion-config-panel.tsx` qui en manquaient.
 
 ### F-701 · Accessibilité de base
 - **Statut** : `🔲 TODO`

@@ -113,7 +113,7 @@ export default async function DashboardPage() {
                 <Card className="hover:border-foreground/20 transition-colors">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between gap-4">
-                      <p className="text-sm font-medium truncate">{article.title}</p>
+                      <p className="text-sm font-medium truncate min-w-0">{article.title}</p>
                       <Badge
                         variant={statusVariant(article.status)}
                         className="shrink-0 capitalize"

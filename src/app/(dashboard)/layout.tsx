@@ -25,14 +25,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <SidebarProvider>
       <AppSidebar userEmail={session.user.email ?? ""} />
       <SidebarInset>
-        <header className="flex items-center gap-3 border-b px-4 py-3">
+        <header className="flex items-center gap-3 border-b px-3 py-3 sm:px-4">
           <SidebarTrigger />
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input type="search" placeholder="Rechercher..." className="pl-9 w-full" />
           </div>
         </header>
-        <div className="p-8">{children}</div>
+        <div className="p-4 sm:p-6 lg:p-8">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

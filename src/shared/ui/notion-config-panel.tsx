@@ -109,7 +109,7 @@ export function NotionConfigPanel({ hasNotion, initialDatabaseId }: NotionConfig
               key={db.id}
               className="flex items-center justify-between rounded-md border px-3 py-2 text-sm"
             >
-              <span className="truncate">{db.title}</span>
+              <span className="truncate min-w-0">{db.title}</span>
               {db.id === databaseId ? (
                 <Badge variant="success">Sélectionnée</Badge>
               ) : (

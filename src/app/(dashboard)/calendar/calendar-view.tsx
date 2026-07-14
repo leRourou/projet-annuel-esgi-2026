@@ -183,13 +183,13 @@ export function CalendarView({ initialArticles }: CalendarViewProps) {
                         e.dataTransfer.setData("text/plain", article.id);
                         e.dataTransfer.effectAllowed = "move";
                       }}
-                      className={`flex items-center gap-1 rounded border px-1.5 py-0.5 text-[11px] cursor-grab active:cursor-grabbing hover:opacity-80 ${CONTENT_TYPE_COLORS[article.contentType]}`}
+                      className={`flex items-center gap-1 rounded border px-1.5 py-0.5 text-[11px] cursor-grab active:cursor-grabbing hover:opacity-80 min-w-0 ${CONTENT_TYPE_COLORS[article.contentType]}`}
                       title={article.title}
                     >
                       <span
                         className={`inline-block w-1.5 h-1.5 rounded-full shrink-0 ${STATUS_DOT[article.status] ?? "bg-gray-400"}`}
                       />
-                      <span className="truncate">{article.title}</span>
+                      <span className="truncate min-w-0">{article.title}</span>
                     </Link>
                   ))}
                 </div>
