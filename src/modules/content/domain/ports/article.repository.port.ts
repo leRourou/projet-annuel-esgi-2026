@@ -13,6 +13,7 @@ export interface ArticleRepositoryPort {
   findById(id: string): Promise<Article | null>;
   findAll(filters: ArticleFilters, pagination: PaginationParams): Promise<PaginatedResult<Article>>;
   findScheduled(agencyId: string): Promise<Article[]>;
+  findPublishedBefore(cutoffDate: Date): Promise<Article[]>;
   save(article: Article): Promise<void>;
   delete(id: string): Promise<void>;
 }

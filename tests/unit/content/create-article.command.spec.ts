@@ -8,6 +8,7 @@ function makeRepo(): ArticleRepositoryPort {
     findById: vi.fn(),
     findAll: vi.fn(),
     findScheduled: vi.fn(),
+    findPublishedBefore: vi.fn(),
     delete: vi.fn(),
   };
 }

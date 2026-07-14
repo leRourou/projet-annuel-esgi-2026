@@ -66,6 +66,7 @@ function makeArticleRepo(article: Article | null = makeArticle()): ArticleReposi
     save: vi.fn().mockResolvedValue(undefined),
     findAll: vi.fn(),
     findScheduled: vi.fn(),
+    findPublishedBefore: vi.fn(),
     delete: vi.fn(),
   };
 }

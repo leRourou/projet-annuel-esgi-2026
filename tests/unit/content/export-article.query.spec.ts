@@ -28,6 +28,7 @@ function makeRepo(article: Article | null = makeArticle()): ArticleRepositoryPor
     findById: vi.fn().mockResolvedValue(article),
     findAll: vi.fn(),
     findScheduled: vi.fn(),
+    findPublishedBefore: vi.fn(),
     save: vi.fn(),
     delete: vi.fn(),
   };

@@ -11,6 +11,7 @@ import { ContentEditor } from "./content-editor";
 import { ExportContent } from "./export-content";
 import { ImagePromptCard } from "./image-prompt-card";
 import { NotionExport } from "./notion-export";
+import { RetentionAlert } from "./retention-alert";
 import { TagAssign } from "./tag-assign";
 
 function statusVariant(status: string) {
@@ -97,6 +98,14 @@ export default async function ArticlePage({ params }: Props) {
       </div>
 
       <div className="space-y-4">
+        <RetentionAlert
+          articleId={article.id}
+          daysUntilBodyPurge={article.daysUntilBodyPurge}
+          bodyPurgedAt={article.bodyPurgedAt}
+          notionPageId={article.notionPageId}
+          hasNotionConfig={hasNotionConfig}
+        />
+
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center justify-between">

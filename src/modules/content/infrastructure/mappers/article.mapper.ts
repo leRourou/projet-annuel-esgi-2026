@@ -25,6 +25,8 @@ export class ArticleMapper {
       notionPageId: entity.notionPageId ?? undefined,
       scheduledAt: entity.scheduledAt ?? undefined,
       imagePrompt: entity.imagePrompt ?? undefined,
+      publishedAt: entity.publishedAt ?? undefined,
+      bodyPurgedAt: entity.bodyPurgedAt ?? undefined,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     });
@@ -49,6 +51,8 @@ export class ArticleMapper {
       notionPageId: article.notionPageId ?? null,
       scheduledAt: article.scheduledAt ?? null,
       imagePrompt: article.imagePrompt ?? null,
+      publishedAt: article.publishedAt ?? null,
+      bodyPurgedAt: article.bodyPurgedAt ?? null,
     };
   }
 }

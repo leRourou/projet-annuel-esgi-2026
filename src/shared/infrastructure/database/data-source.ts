@@ -23,6 +23,7 @@ import { AddScheduledAtToArticles1776000000000 } from "@/shared/infrastructure/d
 import { AddSourceTypeToFeeds1776100000000 } from "@/shared/infrastructure/database/migrations/1776100000000-AddSourceTypeToFeeds";
 import { AddOnboardingCompletedToUsers1776200000000 } from "@/shared/infrastructure/database/migrations/1776200000000-AddOnboardingCompletedToUsers";
 import { AddImagePromptToArticles1776300000000 } from "@/shared/infrastructure/database/migrations/1776300000000-AddImagePromptToArticles";
+import { AddRetentionFieldsToArticles1776400000000 } from "@/shared/infrastructure/database/migrations/1776400000000-AddRetentionFieldsToArticles";
 import { DataSource } from "typeorm";
 
 const DATABASE_URL =
@@ -60,6 +61,7 @@ export const AppDataSource = new DataSource({
     AddSourceTypeToFeeds1776100000000,
     AddOnboardingCompletedToUsers1776200000000,
     AddImagePromptToArticles1776300000000,
+    AddRetentionFieldsToArticles1776400000000,
   ],
   subscribers: [],
 });

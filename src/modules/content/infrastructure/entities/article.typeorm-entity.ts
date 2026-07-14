@@ -53,6 +53,12 @@ export class ArticleTypeormEntity {
   @Column({ type: "text", name: "image_prompt", nullable: true })
   imagePrompt!: string | null;
 
+  @Column({ type: "timestamp", name: "published_at", nullable: true })
+  publishedAt!: Date | null;
+
+  @Column({ type: "timestamp", name: "body_purged_at", nullable: true })
+  bodyPurgedAt!: Date | null;
+
   @Column({ type: "text", array: true, name: "tag_ids", default: "{}" })
   tagIds!: string[];
 

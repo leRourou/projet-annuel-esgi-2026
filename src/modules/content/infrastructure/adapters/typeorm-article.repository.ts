@@ -58,6 +58,16 @@ export class TypeormArticleRepository implements ArticleRepositoryPort {
     return entities.map(ArticleMapper.toDomain);
   }
 
+  async findPublishedBefore(cutoffDate: Date): Promise<Article[]> {
+    const entities = await this.repo
+      .createQueryBuilder("article")
+      .where("article.status = 'PUBLISHED'")
+      .andWhere("article.published_at <= :cutoffDate", { cutoffDate })
+      .andWhere("article.body_purged_at IS NULL")
+      .getMany();
+    return entities.map(ArticleMapper.toDomain);
+  }
+
   async save(article: Article): Promise<void> {
     const data = ArticleMapper.toPersistence(article);
     await this.repo.save(data);

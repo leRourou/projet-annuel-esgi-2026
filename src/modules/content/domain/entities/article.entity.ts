@@ -18,11 +18,15 @@ export interface ArticleProps {
   notionPageId?: string;
   scheduledAt?: Date;
   imagePrompt?: string;
+  publishedAt?: Date;
+  bodyPurgedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export class Article extends AggregateRoot<string> {
+  static readonly BODY_RETENTION_DAYS = 30;
+
   private constructor(
     id: string,
     private props: ArticleProps,
@@ -101,6 +105,14 @@ export class Article extends AggregateRoot<string> {
     return this.props.imagePrompt;
   }
 
+  get publishedAt(): Date | undefined {
+    return this.props.publishedAt;
+  }
+
+  get bodyPurgedAt(): Date | undefined {
+    return this.props.bodyPurgedAt;
+  }
+
   get createdAt(): Date {
     return this.props.createdAt;
   }
@@ -139,10 +151,41 @@ export class Article extends AggregateRoot<string> {
         "INVALID_STATUS_TRANSITION",
       );
     }
-    this.props = { ...this.props, status: nextStatus, updatedAt: new Date() };
+    const now = new Date();
+    this.props = {
+      ...this.props,
+      status: nextStatus,
+      updatedAt: now,
+      ...(nextStatus.value === "PUBLISHED" && { publishedAt: this.props.publishedAt ?? now }),
+    };
     if (nextStatus.value === "PUBLISHED") {
       this.addDomainEvent(new ArticlePublishedEvent(this.id, this.props.authorId));
     }
+  }
+
+  isEligibleForBodyPurge(now: Date): boolean {
+    if (this.props.status.value !== "PUBLISHED" || !this.props.publishedAt) return false;
+    if (this.props.bodyPurgedAt) return false;
+    const retentionMs = Article.BODY_RETENTION_DAYS * 24 * 60 * 60 * 1000;
+    return now.getTime() - this.props.publishedAt.getTime() >= retentionMs;
+  }
+
+  purgeBody(now: Date): void {
+    if (!this.isEligibleForBodyPurge(now)) {
+      throw new DomainError(
+        "Article is not eligible for body purge yet",
+        "BODY_PURGE_NOT_ELIGIBLE",
+      );
+    }
+    this.props = { ...this.props, body: "", bodyPurgedAt: now, updatedAt: now };
+  }
+
+  daysUntilBodyPurge(now: Date): number | null {
+    if (this.props.status.value !== "PUBLISHED" || !this.props.publishedAt) return null;
+    if (this.props.bodyPurgedAt) return null;
+    const retentionMs = Article.BODY_RETENTION_DAYS * 24 * 60 * 60 * 1000;
+    const remainingMs = this.props.publishedAt.getTime() + retentionMs - now.getTime();
+    return Math.max(0, Math.ceil(remainingMs / (24 * 60 * 60 * 1000)));
   }
 
   schedulePublication(date: Date): void {

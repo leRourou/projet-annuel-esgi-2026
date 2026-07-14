@@ -38,6 +38,7 @@ import { GenerateArticleCommand } from "@/modules/content/application/commands/g
 import { GenerateEnrichedArticleCommand } from "@/modules/content/application/commands/generate-enriched-article.command";
 import { GenerateIdeasCommand } from "@/modules/content/application/commands/generate-ideas.command";
 import { PublishArticleCommand } from "@/modules/content/application/commands/publish-article.command";
+import { PurgeExpiredArticleBodiesCommand } from "@/modules/content/application/commands/purge-expired-article-bodies.command";
 import { RegenerateSectionCommand } from "@/modules/content/application/commands/regenerate-section.command";
 import { RescheduleArticleCommand } from "@/modules/content/application/commands/reschedule-article.command";
 import { UpdateArticleCommand } from "@/modules/content/application/commands/update-article.command";
@@ -108,6 +109,7 @@ export async function buildContainer() {
     createArticle: new CreateArticleCommand(articleRepository),
     updateArticle: new UpdateArticleCommand(articleRepository),
     publishArticle: new PublishArticleCommand(articleRepository),
+    purgeExpiredArticleBodies: new PurgeExpiredArticleBodiesCommand(articleRepository),
     regenerateSection: new RegenerateSectionCommand(aiGenerator, articleRepository),
     listArticles: new ListArticlesQuery(articleRepository),
     getArticle: new GetArticleQuery(articleRepository),

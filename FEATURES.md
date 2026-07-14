@@ -18,8 +18,8 @@
 | -------- | -------- | --------- | ---------- |
 | P0 — MVP | 16       | 16 ✅     | 46j        |
 | P1       | 9        | 9         | 22j        |
-| P2       | 7        | 4         | 11j        |
-| **Total**| **32**   | **29**    | **79j**    |
+| P2       | 7        | 5         | 11j        |
+| **Total**| **32**   | **30**    | **79j**    |
 
 ---
 
@@ -435,16 +435,18 @@
 ## Epic 5 — Stockage & rétention
 
 ### F-500 · Politique de rétention
-- **Statut** : `🔲 TODO`
+- **Statut** : `✅ DONE`
 - **Priorité** : P2
 - **Estimation** : 2j
 - **Dépendances** : F-202, F-300
 - **Description** : Suppression du body 30j après publication. Historique des thématiques conservé. Option d'export Notion avant suppression.
 - **Critères d'acceptation** :
-  - [ ] Job planifié supprimant le body > 30j après publication
-  - [ ] Métadonnées conservées indéfiniment
-  - [ ] Alerte + option export Notion avant suppression
-  - [ ] L'historique des sujets reste disponible pour l'anti-doublon IA
+  - [x] Job planifié supprimant le body > 30j après publication — `PurgeExpiredArticleBodiesCommand` (application), exposé via `GET /api/cron/purge-article-bodies` protégé par `CRON_SECRET` (même pattern que le cron RSS existant) ; invariant encapsulé dans `Article.isEligibleForBodyPurge()` / `purgeBody()`
+  - [x] Métadonnées conservées indéfiniment — seul le champ `body` est vidé (`purgeBody()`), title/SEO/tags/slug ne sont jamais touchés par le job
+  - [x] Alerte + option export Notion avant suppression — carte "Retention policy" (`RetentionAlert`) sur `/content/[id]`, urgente (rouge) à ≤ 7 jours, avec bouton "Export to Notion before it's purged" réutilisant `exportToNotionAction` ; message dédié une fois le body purgé
+  - [x] L'historique des sujets reste disponible pour l'anti-doublon IA — `GenerateIdeasCommand` s'appuie uniquement sur `article.title` (jamais sur `body`), donc non affecté par la purge
+
+> Migration `AddRetentionFieldsToArticles` : ajoute `published_at`/`body_purged_at` sur `articles`, avec backfill de `published_at = updated_at` pour les articles déjà publiés (sinon leur fenêtre de rétention ne démarrerait jamais).
 
 ---
 
