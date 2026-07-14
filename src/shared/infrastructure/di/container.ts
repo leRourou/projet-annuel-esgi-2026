@@ -41,6 +41,7 @@ import { PublishArticleCommand } from "@/modules/content/application/commands/pu
 import { RegenerateSectionCommand } from "@/modules/content/application/commands/regenerate-section.command";
 import { RescheduleArticleCommand } from "@/modules/content/application/commands/reschedule-article.command";
 import { UpdateArticleCommand } from "@/modules/content/application/commands/update-article.command";
+import { ExportArticleQuery } from "@/modules/content/application/queries/export-article.query";
 import { GetArticleQuery } from "@/modules/content/application/queries/get-article.query";
 import { ListArticlesQuery } from "@/modules/content/application/queries/list-articles.query";
 import { ListScheduledArticlesQuery } from "@/modules/content/application/queries/list-scheduled-articles.query";
@@ -110,6 +111,7 @@ export async function buildContainer() {
     regenerateSection: new RegenerateSectionCommand(aiGenerator, articleRepository),
     listArticles: new ListArticlesQuery(articleRepository),
     getArticle: new GetArticleQuery(articleRepository),
+    exportArticle: new ExportArticleQuery(articleRepository),
     listScheduledArticles: new ListScheduledArticlesQuery(articleRepository),
     rescheduleArticle: new RescheduleArticleCommand(articleRepository),
     scoreContentSeo: scoreContentSeoQuery,

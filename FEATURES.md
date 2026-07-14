@@ -18,8 +18,8 @@
 | -------- | -------- | --------- | ---------- |
 | P0 — MVP | 16       | 16 ✅     | 46j        |
 | P1       | 9        | 9         | 22j        |
-| P2       | 7        | 3         | 11j        |
-| **Total**| **32**   | **28**    | **79j**    |
+| P2       | 7        | 4         | 11j        |
+| **Total**| **32**   | **29**    | **79j**    |
 
 ---
 
@@ -283,15 +283,15 @@
   - [x] Preview du rendu adapté au format — `/content/new` : rendu "post card" pour les formats sociaux (pas de titre/meta affichés, libellé "Hashtags"), rendu article classique pour le reste ; couleur dédiée par type sur le calendrier
 
 #### F-211 · Export multi-format du contenu
-- **Statut** : `🔲 TODO`
+- **Statut** : `✅ DONE`
 - **Priorité** : P2
 - **Estimation** : 1j
 - **Dépendances** : F-202
 - **Description** : Export du contenu en Markdown, HTML, texte brut.
 - **Critères d'acceptation** :
-  - [ ] Bouton d'export avec sélection du format
-  - [ ] Formats : Markdown, HTML, texte brut
-  - [ ] Téléchargement côté client
+  - [x] Bouton d'export avec sélection du format — carte "Download" sur `/content/[id]` (`ExportContent`), Select de format + bouton "Export"
+  - [x] Formats : Markdown, HTML, texte brut — `ExportFormat` VO (MARKDOWN/HTML/TEXT), conversion pure dans `domain/services/markdown-renderer.ts` (`markdownToHtml`, `markdownToPlainText`)
+  - [x] Téléchargement côté client — `ExportArticleQuery` retourne `{ filename, mimeType, content }` via `exportArticleAction`, déclenchement du download par `Blob` + `<a download>` dans le composant client
 
 ### Axe 3 — Curation de contenu
 

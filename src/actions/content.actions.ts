@@ -8,9 +8,12 @@ import { RescheduleArticleInputSchema } from "@/modules/content/application/comm
 import { UpdateArticleInputSchema } from "@/modules/content/application/commands/update-article.command";
 import type { ArticleDto } from "@/modules/content/application/dto/article.dto";
 import { GenerateArticleInputSchema } from "@/modules/content/application/dto/generate-article.dto";
+import type { ExportedArticleDto } from "@/modules/content/application/queries/export-article.query";
 import { ListArticlesInputSchema } from "@/modules/content/application/queries/list-articles.query";
+import { EXPORT_FORMATS } from "@/modules/content/domain/value-objects/export-format.vo";
 import type { PaginatedResult } from "@/shared/domain/types/pagination.type";
 import { buildContainer } from "@/shared/infrastructure/di/container";
+import { z } from "zod";
 
 type ActionResult<T> = { data: T; error?: never } | { data?: never; error: string };
 
@@ -288,5 +291,32 @@ export async function rescheduleArticleAction(
       .catch(() => undefined);
   }
 
+  return { data: result.value };
+}
+
+const ExportArticleInputSchema = z.object({
+  articleId: z.string().uuid(),
+  format: z.enum(EXPORT_FORMATS),
+});
+
+export async function exportArticleAction(
+  input: unknown,
+): Promise<ActionResult<ExportedArticleDto>> {
+  const session = await requireSession();
+  if (!session) return { error: "Unauthorized" };
+
+  const container = await buildContainer();
+  const membership = await container.getUserMembership.execute(session.user.id);
+  if (!membership || membership.isPending) return { error: "No active agency membership" };
+
+  const parsed = ExportArticleInputSchema.safeParse(input);
+  if (!parsed.success) return { error: "Invalid input" };
+
+  const article = await container.getArticle.execute(parsed.data.articleId);
+  if (!article.success) return { error: article.error.message };
+  if (article.value.agencyId !== membership.agencyId) return { error: "Forbidden" };
+
+  const result = await container.exportArticle.execute(parsed.data.articleId, parsed.data.format);
+  if (!result.success) return { error: result.error.message };
   return { data: result.value };
 }

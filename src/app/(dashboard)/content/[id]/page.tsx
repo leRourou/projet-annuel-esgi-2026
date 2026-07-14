@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { seoScoreVariant } from "@/shared/ui/seo-score-badge";
 import { notFound } from "next/navigation";
 import { ContentEditor } from "./content-editor";
+import { ExportContent } from "./export-content";
 import { ImagePromptCard } from "./image-prompt-card";
 import { NotionExport } from "./notion-export";
 import { TagAssign } from "./tag-assign";
@@ -213,6 +214,15 @@ export default async function ArticlePage({ params }: Props) {
               notionPageId={article.notionPageId}
               hasNotionConfig={hasNotionConfig}
             />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium">Download</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ExportContent articleId={article.id} />
           </CardContent>
         </Card>
 
