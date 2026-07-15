@@ -41,6 +41,7 @@ function makeRepos(overrides?: {
     },
     agencyRepo: {
       findById: vi.fn().mockResolvedValue(agencyValue),
+      findByIds: vi.fn().mockResolvedValue([]),
       findBySlug: vi.fn().mockResolvedValue(null),
       save: vi.fn().mockResolvedValue(undefined),
       delete: vi.fn().mockResolvedValue(undefined),
@@ -50,6 +51,7 @@ function makeRepos(overrides?: {
       findByInviteToken: vi.fn().mockResolvedValue(null),
       findAllByAgency: vi.fn().mockResolvedValue([]),
       findByUser: vi.fn().mockResolvedValue(null),
+      findAllByUser: vi.fn().mockResolvedValue([]),
       save: vi.fn().mockResolvedValue(undefined),
       delete: vi.fn().mockResolvedValue(undefined),
     },

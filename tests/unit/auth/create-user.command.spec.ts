@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 function makeRepo(): UserRepositoryPort {
   return {
     findById: vi.fn().mockResolvedValue(null),
+    findByIds: vi.fn().mockResolvedValue([]),
     findByEmail: vi.fn().mockResolvedValue(null),
     save: vi.fn().mockResolvedValue(undefined),
     delete: vi.fn().mockResolvedValue(undefined),

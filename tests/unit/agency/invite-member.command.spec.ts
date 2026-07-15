@@ -19,11 +19,13 @@ function makeRepos(): {
       findByInviteToken: vi.fn().mockResolvedValue(null),
       findAllByAgency: vi.fn().mockResolvedValue([]),
       findByUser: vi.fn().mockResolvedValue(null),
+      findAllByUser: vi.fn().mockResolvedValue([]),
       save: vi.fn().mockResolvedValue(undefined),
       delete: vi.fn().mockResolvedValue(undefined),
     },
     userRepo: {
       findById: vi.fn().mockResolvedValue(null),
+      findByIds: vi.fn().mockResolvedValue([]),
       findByEmail: vi.fn().mockResolvedValue(makeUser()),
       save: vi.fn().mockResolvedValue(undefined),
       delete: vi.fn().mockResolvedValue(undefined),

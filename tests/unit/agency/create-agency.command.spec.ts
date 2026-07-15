@@ -10,6 +10,7 @@ function makeRepos(): {
   return {
     agencyRepo: {
       findById: vi.fn().mockResolvedValue(null),
+      findByIds: vi.fn().mockResolvedValue([]),
       findBySlug: vi.fn().mockResolvedValue(null),
       save: vi.fn().mockResolvedValue(undefined),
       delete: vi.fn().mockResolvedValue(undefined),
@@ -19,6 +20,7 @@ function makeRepos(): {
       findByInviteToken: vi.fn().mockResolvedValue(null),
       findAllByAgency: vi.fn().mockResolvedValue([]),
       findByUser: vi.fn().mockResolvedValue(null),
+      findAllByUser: vi.fn().mockResolvedValue([]),
       save: vi.fn().mockResolvedValue(undefined),
       delete: vi.fn().mockResolvedValue(undefined),
     },

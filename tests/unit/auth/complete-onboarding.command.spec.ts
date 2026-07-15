@@ -11,6 +11,7 @@ function makeUser(): User {
 function makeRepo(user: User | null = makeUser()): UserRepositoryPort {
   return {
     findById: vi.fn().mockResolvedValue(user),
+    findByIds: vi.fn().mockResolvedValue([]),
     findByEmail: vi.fn(),
     save: vi.fn().mockResolvedValue(undefined),
     delete: vi.fn(),
