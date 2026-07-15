@@ -5,6 +5,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { preserveEntityName } from "@/shared/infrastructure/database/preserve-entity-name";
 
 @Entity("users")
 export class UserTypeormEntity {
@@ -35,3 +36,4 @@ export class UserTypeormEntity {
   @UpdateDateColumn({ name: "updated_at", type: "timestamp" })
   updatedAt!: Date;
 }
+preserveEntityName(UserTypeormEntity, "UserTypeormEntity");

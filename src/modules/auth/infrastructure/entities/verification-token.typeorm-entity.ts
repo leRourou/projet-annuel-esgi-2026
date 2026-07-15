@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
+import { preserveEntityName } from "@/shared/infrastructure/database/preserve-entity-name";
 
 @Entity("verification_tokens")
 export class VerificationTokenTypeormEntity {
@@ -11,3 +12,4 @@ export class VerificationTokenTypeormEntity {
   @Column({ type: "timestamp" })
   expires!: Date;
 }
+preserveEntityName(VerificationTokenTypeormEntity, "VerificationTokenTypeormEntity");

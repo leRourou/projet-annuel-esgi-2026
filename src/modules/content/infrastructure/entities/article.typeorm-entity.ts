@@ -5,6 +5,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { preserveEntityName } from "@/shared/infrastructure/database/preserve-entity-name";
 
 @Entity("articles")
 export class ArticleTypeormEntity {
@@ -71,3 +72,4 @@ export class ArticleTypeormEntity {
   @UpdateDateColumn({ name: "updated_at", type: "timestamp" })
   updatedAt!: Date;
 }
+preserveEntityName(ArticleTypeormEntity, "ArticleTypeormEntity");

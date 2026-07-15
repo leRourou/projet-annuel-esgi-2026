@@ -1,4 +1,5 @@
 import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
+import { preserveEntityName } from "@/shared/infrastructure/database/preserve-entity-name";
 
 @Entity("accounts")
 @Index(["provider", "providerAccountId"], { unique: true })
@@ -39,3 +40,4 @@ export class AccountTypeormEntity {
   @Column({ type: "varchar", name: "session_state", nullable: true })
   session_state!: string | null;
 }
+preserveEntityName(AccountTypeormEntity, "AccountTypeormEntity");

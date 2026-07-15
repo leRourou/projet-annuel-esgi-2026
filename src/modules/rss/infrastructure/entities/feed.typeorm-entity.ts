@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { preserveEntityName } from "@/shared/infrastructure/database/preserve-entity-name";
 
 @Entity("feeds")
 export class FeedTypeormEntity {
@@ -29,3 +30,4 @@ export class FeedTypeormEntity {
   @CreateDateColumn({ name: "created_at", type: "timestamp" })
   createdAt!: Date;
 }
+preserveEntityName(FeedTypeormEntity, "FeedTypeormEntity");

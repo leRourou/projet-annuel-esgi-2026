@@ -1,4 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { preserveEntityName } from "@/shared/infrastructure/database/preserve-entity-name";
 import type { AgencyTypeormEntity } from "./agency.typeorm-entity";
 
 @Entity("agency_members")
@@ -35,3 +36,4 @@ export class AgencyMemberTypeormEntity {
   @JoinColumn({ name: "agency_id" })
   agency!: AgencyTypeormEntity;
 }
+preserveEntityName(AgencyMemberTypeormEntity, "AgencyMemberTypeormEntity");

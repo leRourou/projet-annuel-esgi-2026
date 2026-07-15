@@ -6,6 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { preserveEntityName } from "@/shared/infrastructure/database/preserve-entity-name";
 import { AgencyTypeormEntity } from "./agency.typeorm-entity";
 
 @Entity("tags")
@@ -26,3 +27,4 @@ export class TagTypeormEntity {
   @JoinColumn({ name: "agency_id" })
   agency!: AgencyTypeormEntity;
 }
+preserveEntityName(TagTypeormEntity, "TagTypeormEntity");

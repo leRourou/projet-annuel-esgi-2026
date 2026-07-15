@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
+import { preserveEntityName } from "@/shared/infrastructure/database/preserve-entity-name";
 
 @Entity("feed_items")
 export class FeedItemTypeormEntity {
@@ -26,3 +27,4 @@ export class FeedItemTypeormEntity {
   @Column({ type: "text", array: true, name: "tag_ids", default: "{}" })
   tagIds!: string[];
 }
+preserveEntityName(FeedItemTypeormEntity, "FeedItemTypeormEntity");
