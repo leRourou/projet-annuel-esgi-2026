@@ -38,13 +38,19 @@ interface RssManagerProps {
 
 function FeedItemRow({ item }: { item: FeedItemDto }) {
   const [status, setStatus] = useState<CurationStatusValue>(item.curationStatus);
+  const [error, setError] = useState<string | null>(null);
   const [isPending, start] = useTransition();
 
   const statuses: CurationStatusValue[] = ["UNREAD", "INTERESTING", "IGNORED", "TO_USE"];
 
   function handleQualify(s: CurationStatusValue) {
+    setError(null);
     start(async () => {
-      await qualifyFeedItemAction(item.id, s);
+      const result = await qualifyFeedItemAction(item.id, s);
+      if (result.error) {
+        setError(result.error);
+        return;
+      }
       setStatus(s);
     });
   }
@@ -67,6 +73,7 @@ function FeedItemRow({ item }: { item: FeedItemDto }) {
           <p className="text-xs text-muted-foreground mt-0.5">
             {new Date(item.publishedAt).toLocaleDateString("fr-FR")}
           </p>
+          {error && <p className="text-xs text-destructive mt-0.5">{error}</p>}
         </div>
         <div className="flex gap-0.5 shrink-0">
           {statuses.map((s) => (

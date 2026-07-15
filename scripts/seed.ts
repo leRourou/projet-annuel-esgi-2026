@@ -57,10 +57,10 @@ async function seed() {
     const agencyId: string = agency.id;
     console.log(`🏢 Agence créée : Agence Démo (${agencyId})`);
 
-    // ── Membre OWNER ──────────────────────────────────────────────────────
+    // ── Membre ADMIN (propriétaire) ──────────────────────────────────────
     await qr.query(
       `INSERT INTO agency_members (agency_id, user_id, role, joined_at, invited_by)
-       VALUES ($1, $2, 'OWNER', NOW(), $2)`,
+       VALUES ($1, $2, 'ADMIN', NOW(), $2)`,
       [agencyId, userId],
     );
 

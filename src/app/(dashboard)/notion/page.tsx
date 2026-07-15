@@ -42,19 +42,19 @@ function CurationSyncPanel() {
   return (
     <Card className="mb-6">
       <CardHeader>
-        <CardTitle className="text-base">Synchronisation de la base de veille</CardTitle>
+        <CardTitle className="text-base">Curation database sync</CardTitle>
         <CardDescription className="text-xs">
-          Importe les nouvelles pages de la base Notion configurée comme sources de curation.
+          Imports new pages from the configured Notion database as curation sources.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         {!databaseId ? (
           <p className="text-xs text-muted-foreground">
-            Aucune base Notion configurée. Choisissez-en une dans Settings.
+            No Notion database configured. Choose one in Settings.
           </p>
         ) : (
           <Button size="sm" onClick={handleSync} disabled={isPending}>
-            Importer les nouvelles entrées
+            Import new entries
           </Button>
         )}
         {error && (
@@ -64,7 +64,7 @@ function CurationSyncPanel() {
         )}
         {stats && (
           <p className="text-xs text-muted-foreground">
-            {stats.imported} nouvelle(s) entrée(s) importée(s), {stats.skipped} déjà connue(s).
+            {stats.imported} new entry(ies) imported, {stats.skipped} already known.
           </p>
         )}
       </CardContent>

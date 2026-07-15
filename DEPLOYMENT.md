@@ -102,6 +102,69 @@ Railway héberge l'app, la base de données et Redis dans un seul environnement.
 
 ---
 
+## Option 3 : Self-hosted 100% Docker (VPS) — ~4–6 €/mois
+
+**Coût estimé :** prix d'un petit VPS (Hetzner, OVH, Scaleway…), aucun service tiers requis.
+
+### Infrastructure
+Tout tourne dans `docker-compose.prod.yml` sur un unique VPS :
+
+| Service | Rôle |
+|---------|------|
+| `app` | Next.js buildé via `Dockerfile` (build multi-stage, sortie `standalone`) |
+| `postgres` | Base de données |
+| `redis` | Sessions |
+| `caddy` | Reverse proxy + HTTPS automatique (Let's Encrypt) |
+| `migrate` / `seed` | Services one-off (profil `tools`), ne tournent pas en continu |
+
+### Prérequis
+- Un VPS avec Docker + Docker Compose installés
+- Un nom de domaine dont le DNS pointe vers l'IP du VPS (requis pour que Caddy obtienne un certificat HTTPS)
+
+### Étapes
+
+1. **Cloner le repo sur le VPS et créer `.env`**
+   ```bash
+   git clone <repo> && cd contentai-studio
+   cp .env.example .env
+   # Remplir : DATABASE_URL n'a pas besoin d'être rempli (surchargé par le compose),
+   # remplir POSTGRES_*, AUTH_SECRET, AUTH_URL, ANTHROPIC_API_KEY, DOMAIN, etc.
+   ```
+   - `AUTH_URL` et `NEXT_PUBLIC_APP_URL` → `https://<DOMAIN>`
+   - `DOMAIN` → le nom de domaine pointé vers le VPS (utilisé par Caddy)
+
+2. **Builder et démarrer l'app + l'infra**
+   ```bash
+   docker compose -f docker-compose.prod.yml up -d --build
+   ```
+   Caddy obtient automatiquement un certificat HTTPS pour `DOMAIN` au premier démarrage.
+
+3. **Lancer les migrations**
+   ```bash
+   docker compose -f docker-compose.prod.yml --profile tools run --rm migrate
+   ```
+
+4. **Lancer le seed jury (optionnel)**
+   ```bash
+   docker compose -f docker-compose.prod.yml --profile tools run --rm seed
+   ```
+
+5. **Mises à jour ultérieures**
+   ```bash
+   git pull
+   docker compose -f docker-compose.prod.yml up -d --build app
+   docker compose -f docker-compose.prod.yml --profile tools run --rm migrate
+   ```
+
+### Avantages / Limites
+- ✅ Aucune dépendance à un service tiers (Vercel/Neon/Railway) — tout est reproductible localement avec le même `Dockerfile`
+- ✅ Pas de cold start, pas de limite de usage commercial
+- ✅ HTTPS géré automatiquement par Caddy (renouvellement inclus)
+- ⚠️ Vous gérez vous-même les sauvegardes de `postgres_data` (volume Docker)
+- ⚠️ Pas de scaling horizontal automatique — un seul VPS
+
+---
+
 ## Seed de démo pour le jury
 
 ```bash
@@ -129,6 +192,6 @@ Le seed crée :
 - [ ] Seed jury lancé (`pnpm db:seed`)
 - [ ] `ANTHROPIC_API_KEY` configurée
 - [ ] `AUTH_URL` et `NEXT_PUBLIC_APP_URL` pointent vers le domaine public
-- [ ] HTTPS actif (automatique sur Vercel/Railway)
+- [ ] HTTPS actif (automatique sur Vercel/Railway, ou via Caddy sur l'option 3)
 - [ ] Test du magic link email fonctionnel
 - [ ] Test de génération d'un article via l'IA

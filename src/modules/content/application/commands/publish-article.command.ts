@@ -14,6 +14,9 @@ export class PublishArticleCommand {
       if (!article) {
         return Result.fail(new NotFoundError("Article", articleId));
       }
+      if (article.status.value === "REVIEW") {
+        article.transitionTo(ContentStatus.VALIDATED);
+      }
       article.transitionTo(ContentStatus.PUBLISHED);
       await this.articleRepository.save(article);
       return Result.ok(toArticleDto(article));

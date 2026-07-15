@@ -3,6 +3,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { auth } from "@/lib/auth";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function InvitePage({ params }: { params: Promise<{ token: string }> }) {
@@ -28,8 +29,8 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
             <Alert variant="destructive">
               <AlertDescription>{result.error}</AlertDescription>
             </Alert>
-            <Button variant="outline" className="w-full" onClick={() => redirect("/content")}>
-              Go to dashboard
+            <Button asChild variant="outline" className="w-full">
+              <Link href="/content">Go to dashboard</Link>
             </Button>
           </CardContent>
         </Card>

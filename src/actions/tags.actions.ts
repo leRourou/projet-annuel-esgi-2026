@@ -74,6 +74,13 @@ export async function assignTagsAction(input: unknown): Promise<ActionResult<voi
   if (!parsed.success) return { error: "Invalid input" };
 
   const container = await buildContainer();
+  const membership = await container.getUserMembership.execute(session.user.id);
+  if (!membership || membership.isPending) return { error: "No active agency membership" };
+
+  const article = await container.getArticle.execute(parsed.data.articleId);
+  if (!article.success) return { error: article.error.message };
+  if (article.value.agencyId !== membership.agencyId) return { error: "Forbidden" };
+
   const result = await container.assignTags.execute({
     articleId: parsed.data.articleId,
     tagIds: parsed.data.tagIds,

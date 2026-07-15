@@ -30,6 +30,56 @@ function extractTitle(properties: Record<string, unknown>): string {
   return titleProp?.title.map((t) => t.plain_text).join("") || "Untitled";
 }
 
+function richText(text: string) {
+  return [{ type: "text" as const, text: { content: text } }];
+}
+
+// Shared by createPage/updatePage/exportPage so all write paths respect Notion's
+// 2000-char rich_text limit and preserve markdown structure (headings, lists),
+// instead of dumping the whole body into a single paragraph block.
+function buildChildrenFromMarkdown(markdown: string): BlockObjectRequest[] {
+  return markdownToNotionBlocks(markdown).map((block): BlockObjectRequest => {
+    switch (block.type) {
+      case "heading_1":
+        return {
+          object: "block",
+          type: "heading_1",
+          heading_1: { rich_text: richText(block.text) },
+        };
+      case "heading_2":
+        return {
+          object: "block",
+          type: "heading_2",
+          heading_2: { rich_text: richText(block.text) },
+        };
+      case "heading_3":
+        return {
+          object: "block",
+          type: "heading_3",
+          heading_3: { rich_text: richText(block.text) },
+        };
+      case "bulleted_list_item":
+        return {
+          object: "block",
+          type: "bulleted_list_item",
+          bulleted_list_item: { rich_text: richText(block.text) },
+        };
+      case "numbered_list_item":
+        return {
+          object: "block",
+          type: "numbered_list_item",
+          numbered_list_item: { rich_text: richText(block.text) },
+        };
+      default:
+        return {
+          object: "block",
+          type: "paragraph",
+          paragraph: { rich_text: richText(block.text) },
+        };
+    }
+  });
+}
+
 export class NotionSdkClientAdapter implements NotionClientPort {
   private getClient(accessToken: string): Client {
     return new Client({ auth: accessToken });
@@ -75,15 +125,7 @@ export class NotionSdkClientAdapter implements NotionClientPort {
           title: [{ text: { content: input.title } }],
         },
       },
-      children: [
-        {
-          object: "block",
-          type: "paragraph",
-          paragraph: {
-            rich_text: [{ type: "text", text: { content: input.content } }],
-          },
-        },
-      ],
+      children: buildChildrenFromMarkdown(input.content),
     });
     return this.getPage(page.id, input.accessToken);
   }
@@ -94,15 +136,7 @@ export class NotionSdkClientAdapter implements NotionClientPort {
     await Promise.all(existing.results.map((b) => client.blocks.delete({ block_id: b.id })));
     await client.blocks.children.append({
       block_id: pageId,
-      children: [
-        {
-          object: "block",
-          type: "paragraph",
-          paragraph: {
-            rich_text: [{ type: "text", text: { content } }],
-          },
-        },
-      ],
+      children: buildChildrenFromMarkdown(content),
     });
   }
 
@@ -134,48 +168,7 @@ export class NotionSdkClientAdapter implements NotionClientPort {
       };
     }
 
-    const blocks = markdownToNotionBlocks(input.body);
-    const richText = (text: string) => [{ type: "text" as const, text: { content: text } }];
-    const children: BlockObjectRequest[] = blocks.map((block) => {
-      switch (block.type) {
-        case "heading_1":
-          return {
-            object: "block",
-            type: "heading_1",
-            heading_1: { rich_text: richText(block.text) },
-          };
-        case "heading_2":
-          return {
-            object: "block",
-            type: "heading_2",
-            heading_2: { rich_text: richText(block.text) },
-          };
-        case "heading_3":
-          return {
-            object: "block",
-            type: "heading_3",
-            heading_3: { rich_text: richText(block.text) },
-          };
-        case "bulleted_list_item":
-          return {
-            object: "block",
-            type: "bulleted_list_item",
-            bulleted_list_item: { rich_text: richText(block.text) },
-          };
-        case "numbered_list_item":
-          return {
-            object: "block",
-            type: "numbered_list_item",
-            numbered_list_item: { rich_text: richText(block.text) },
-          };
-        default:
-          return {
-            object: "block",
-            type: "paragraph",
-            paragraph: { rich_text: richText(block.text) },
-          };
-      }
-    });
+    const children = buildChildrenFromMarkdown(input.body);
 
     const page = await client.pages.create({
       parent: { database_id: input.parentDatabaseId },

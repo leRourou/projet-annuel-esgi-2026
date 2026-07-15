@@ -5,6 +5,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Link from "next/link";
 import { useState, useTransition } from "react";
 
 interface NotionExportProps {
@@ -22,9 +23,9 @@ export function NotionExport({ articleId, notionPageId, hasNotionConfig }: Notio
     return (
       <p className="text-xs text-muted-foreground">
         Connect Notion and configure a database in{" "}
-        <a href="/settings" className="underline">
+        <Link href="/settings" className="underline">
           Settings
-        </a>{" "}
+        </Link>{" "}
         to enable export.
       </p>
     );

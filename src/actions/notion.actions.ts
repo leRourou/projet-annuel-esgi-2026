@@ -18,10 +18,10 @@ export async function getAgencyNotionToken(agencyId: string): Promise<string | n
   const container = await buildContainer();
   const result = await container.getAgency.execute({ agencyId });
   if (!result.success || !result.value.notionConnected) return null;
-  // Access token is held in the domain entity; query exposes notionConnected flag.
-  // We need the raw token — fetch it via the agency repository through a dedicated query.
-  // For now use the container's agency repository indirectly via the raw agency DTO.
-  // The token is not exposed in AgencyDto by design (security) — use a DB-level helper.
+  // AgencyDto intentionally omits the raw access token (security). The container
+  // does not expose a port for fetching it, so it is read directly here.
+  // TODO(architecture): expose an agencyRepository.getNotionAccessToken port so this
+  // can go through the domain layer instead of a raw query.
   return getAgencyNotionTokenFromDb(agencyId);
 }
 

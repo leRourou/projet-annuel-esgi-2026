@@ -21,7 +21,7 @@ export class DeleteTagCommand {
         input.agencyId,
         input.requestingUserId,
       );
-      if (!member || !member.role.canManageMembers()) {
+      if (!member || !member.role.isAdmin()) {
         return Result.fail(
           new DomainError("Only admins can manage tags", "INSUFFICIENT_PERMISSIONS"),
         );

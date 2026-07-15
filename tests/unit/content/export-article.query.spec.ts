@@ -1,6 +1,7 @@
 import { ExportArticleQuery } from "@/modules/content/application/queries/export-article.query";
 import { Article } from "@/modules/content/domain/entities/article.entity";
 import type { ArticleRepositoryPort } from "@/modules/content/domain/ports/article.repository.port";
+import { ContentStatus } from "@/modules/content/domain/value-objects/content-status.vo";
 import { ContentType } from "@/modules/content/domain/value-objects/content-type.vo";
 import { SeoMetadata } from "@/modules/content/domain/value-objects/seo-metadata.vo";
 import { describe, expect, it, vi } from "vitest";
@@ -20,6 +21,30 @@ function makeArticle(): Article {
     }),
     authorId: "author-1",
     agencyId: "agency-1",
+  });
+}
+
+function makePurgedArticle(): Article {
+  const now = new Date();
+  return Article.reconstitute(ARTICLE_ID, {
+    title: "Guide SEO 2025",
+    body: "",
+    contentType: ContentType.create("ARTICLE"),
+    status: ContentStatus.PUBLISHED,
+    seoMetadata: SeoMetadata.create({
+      metaTitle: "SEO 2025",
+      metaDescription: "Guide complet SEO",
+      keywords: ["seo"],
+      slug: "guide-seo-2025",
+    }),
+    authorId: "author-1",
+    agencyId: "agency-1",
+    tagIds: [],
+    sourceIds: [],
+    publishedAt: new Date(now.getTime() - 40 * 24 * 60 * 60 * 1000),
+    bodyPurgedAt: now,
+    createdAt: now,
+    updatedAt: now,
   });
 }
 
@@ -83,6 +108,17 @@ describe("ExportArticleQuery", () => {
     expect(result.success).toBe(false);
     if (!result.success) {
       expect(result.error.code).toBe("NOT_FOUND");
+    }
+  });
+
+  it("returns a domain error when the article body has been purged by the retention policy", async () => {
+    const query = new ExportArticleQuery(makeRepo(makePurgedArticle()));
+
+    const result = await query.execute(ARTICLE_ID, "MARKDOWN");
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.code).toBe("ARTICLE_BODY_PURGED");
     }
   });
 

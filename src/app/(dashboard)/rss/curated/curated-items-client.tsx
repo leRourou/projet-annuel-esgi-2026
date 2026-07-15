@@ -113,19 +113,31 @@ function FeedItemCard({
   onQualify: (id: string, status: CurationStatusValue, tagIds: string[]) => void;
 }) {
   const [tagIds, setTagIds] = useState<string[]>(item.tagIds);
+  const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   function handleStatus(status: CurationStatusValue) {
+    setError(null);
     startTransition(async () => {
-      await qualifyFeedItemAction(item.id, status, tagIds);
+      const result = await qualifyFeedItemAction(item.id, status, tagIds);
+      if (result.error) {
+        setError(result.error);
+        return;
+      }
       onQualify(item.id, status, tagIds);
     });
   }
 
   function handleTagChange(ids: string[]) {
+    const previousTagIds = tagIds;
     setTagIds(ids);
+    setError(null);
     startTransition(async () => {
-      await qualifyFeedItemAction(item.id, item.curationStatus, ids);
+      const result = await qualifyFeedItemAction(item.id, item.curationStatus, ids);
+      if (result.error) {
+        setError(result.error);
+        setTagIds(previousTagIds);
+      }
     });
   }
 
@@ -153,6 +165,7 @@ function FeedItemCard({
               })}
             </p>
             <ItemTagPicker allTags={tags} selectedIds={tagIds} onChange={handleTagChange} />
+            {error && <p className="text-xs text-destructive mt-1">{error}</p>}
           </div>
           <div className="flex flex-col gap-1 shrink-0">
             {CURATION_STATUSES.map((s) => (

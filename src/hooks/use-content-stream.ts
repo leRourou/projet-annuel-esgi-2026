@@ -22,6 +22,18 @@ export interface ParsedGeneratedContent {
   imagePrompt?: string;
 }
 
+/**
+ * Splits a growing SSE buffer into complete "\n\n"-terminated events plus the
+ * trailing partial event (if any) that must be carried over to the next chunk.
+ * A `data: ...` event can be split across two `reader.read()` calls, so the
+ * buffer must be preserved across iterations instead of parsed chunk-by-chunk.
+ */
+export function splitSseEvents(buffer: string): { events: string[]; remainder: string } {
+  const parts = buffer.split("\n\n");
+  const remainder = parts.pop() ?? "";
+  return { events: parts, remainder };
+}
+
 export function useContentStream() {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -57,30 +69,42 @@ export function useContentStream() {
 
       const decoder = new TextDecoder();
       let accumulated = "";
+      let sseBuffer = "";
+
+      const processLine = (line: string) => {
+        if (!line.startsWith("data: ")) return false;
+        const payload = line.slice(6).trim();
+        if (payload === "[DONE]") return true;
+
+        try {
+          const parsed = JSON.parse(payload) as { text?: string; error?: string };
+          if (parsed.error) {
+            setError(parsed.error);
+          } else if (parsed.text) {
+            accumulated += parsed.text;
+            setText(accumulated);
+          }
+        } catch {
+          // skip malformed SSE lines
+        }
+        return false;
+      };
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        const raw = decoder.decode(value, { stream: true });
-        for (const line of raw.split("\n\n")) {
-          if (!line.startsWith("data: ")) continue;
-          const payload = line.slice(6).trim();
-          if (payload === "[DONE]") break;
+        sseBuffer += decoder.decode(value, { stream: true });
+        const { events, remainder } = splitSseEvents(sseBuffer);
+        sseBuffer = remainder;
 
-          try {
-            const parsed = JSON.parse(payload) as { text?: string; error?: string };
-            if (parsed.error) {
-              setError(parsed.error);
-            } else if (parsed.text) {
-              accumulated += parsed.text;
-              setText(accumulated);
-            }
-          } catch {
-            // skip malformed SSE lines
-          }
+        for (const line of events) {
+          if (processLine(line)) break;
         }
       }
+
+      // The stream may end without a trailing blank line — flush whatever's left.
+      if (sseBuffer) processLine(sseBuffer);
 
       // Parse the accumulated JSON once streaming is complete
       try {

@@ -42,6 +42,15 @@ export class ExportArticleQuery {
       return Result.fail(new NotFoundError("Article", articleId));
     }
 
+    if (article.bodyPurgedAt) {
+      return Result.fail(
+        new DomainError(
+          "Article body has been purged under the retention policy and can no longer be exported",
+          "ARTICLE_BODY_PURGED",
+        ),
+      );
+    }
+
     return Result.ok({
       filename: `${article.seoMetadata.slug}.${exportFormat.extension}`,
       mimeType: exportFormat.mimeType,

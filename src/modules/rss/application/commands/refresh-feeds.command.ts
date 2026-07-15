@@ -1,6 +1,15 @@
+import { createHash } from "node:crypto";
 import { FeedItem } from "../../domain/entities/feed-item.entity";
 import type { FeedRepositoryPort } from "../../domain/ports/feed.repository.port";
 import type { RssParserPort } from "../../domain/ports/rss-parser.port";
+
+// RSS guids are only unique within a single feed, not across feeds. Two unrelated
+// feeds can produce the same guid (e.g. sequential numeric ids), so the item's
+// persisted id is namespaced by feedId to avoid the upsert in saveFeedItems
+// silently overwriting an unrelated item from another feed/agency.
+function buildFeedItemId(feedId: string, guid: string): string {
+  return createHash("sha256").update(`${feedId}:${guid}`).digest("hex");
+}
 
 export class RefreshFeedsCommand {
   constructor(
@@ -19,7 +28,7 @@ export class RefreshFeedsCommand {
         try {
           const parsed = await this.rssParser.parse(feed.url.value);
           const items = parsed.items.map((item) =>
-            FeedItem.create(item.guid, {
+            FeedItem.create(buildFeedItemId(feed.id, item.guid), {
               feedId: feed.id,
               title: item.title,
               link: item.link,

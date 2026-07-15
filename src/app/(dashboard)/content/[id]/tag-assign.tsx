@@ -3,6 +3,7 @@
 import { assignTagsAction } from "@/actions/tags.actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -27,9 +28,9 @@ export function TagAssign({ articleId, allTags, currentTagIds }: TagAssignProps)
     return (
       <p className="text-xs text-muted-foreground">
         No tags available. Create tags in{" "}
-        <a href="/settings/tags" className="underline">
+        <Link href="/settings/tags" className="underline">
           Settings → Tags
-        </a>
+        </Link>
         .
       </p>
     );

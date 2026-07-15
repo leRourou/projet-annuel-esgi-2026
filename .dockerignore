@@ -1,0 +1,16 @@
+node_modules
+.next
+.git
+.github
+.env
+.env.local
+.env.*.local
+tests
+playwright-report
+test-results
+coverage
+*.md
+.vscode
+.idea
+.claude
+tsconfig.tsbuildinfo

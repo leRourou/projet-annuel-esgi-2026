@@ -27,7 +27,7 @@ export const GenerateEnrichedArticleInputSchema = z.object({
   context: z.string().optional(),
   language: z.enum(LANGUAGES).optional(),
   authorId: z.string().uuid(),
-  agencyId: z.string().min(1),
+  agencyId: z.string().uuid(),
   sourceIds: z.array(z.string()).optional(),
 });
 

@@ -9,6 +9,7 @@ import type {
   GeneratedContent,
   RegenerateSectionInput,
 } from "../../domain/ports/ai-generator.port";
+import { CONTENT_TYPES } from "../../domain/value-objects/content-type.vo";
 import type { LanguageValue } from "../../domain/value-objects/language.vo";
 
 function languageInstruction(language?: LanguageValue): string {
@@ -418,7 +419,7 @@ Respond with a JSON array of exactly ${count} objects with this structure:
   }
 ]
 
-contentType must be one of: ARTICLE, PRODUCT_SHEET, META.
+contentType must be one of: ${CONTENT_TYPES.join(", ")}.
 Only output the JSON array, nothing else.`;
 
     const message = await this.client.messages.create({

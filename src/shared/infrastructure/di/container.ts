@@ -9,6 +9,7 @@ import { TypeormArticleRepository } from "@/modules/content/infrastructure/adapt
 import { NotionSdkClientAdapter } from "@/modules/notion/infrastructure/adapters/notion-sdk-client.adapter";
 import { RssParserAdapter } from "@/modules/rss/infrastructure/adapters/rss-parser.adapter";
 import { TypeormFeedRepository } from "@/modules/rss/infrastructure/adapters/typeorm-feed.repository";
+import { env } from "../config/env.config";
 import { getDataSource } from "../database/data-source";
 
 import { AcceptInviteCommand } from "@/modules/agency/application/commands/accept-invite.command";
@@ -68,10 +69,7 @@ export async function buildContainer() {
 
   const userRepository = new TypeormUserRepository(dataSource);
   const articleRepository = new TypeormArticleRepository(dataSource);
-  const aiGenerator = new AnthropicAiGeneratorAdapter(
-    process.env.ANTHROPIC_API_KEY ?? "",
-    process.env.ANTHROPIC_MODEL ?? "claude-opus-4-6",
-  );
+  const aiGenerator = new AnthropicAiGeneratorAdapter(env.ANTHROPIC_API_KEY, env.ANTHROPIC_MODEL);
   const notionClient = new NotionSdkClientAdapter();
   const feedRepository = new TypeormFeedRepository(dataSource);
   const rssParser = new RssParserAdapter();

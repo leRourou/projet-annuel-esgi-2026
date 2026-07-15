@@ -4,7 +4,7 @@ import { Result } from "@/shared/domain/types/result.type";
 import { Theme } from "../../domain/entities/theme.entity";
 import type { AgencyMemberRepositoryPort } from "../../domain/ports/agency-member.repository.port";
 import type { ThemeRepositoryPort } from "../../domain/ports/theme.repository.port";
-import type { ThemeDto } from "../dto/theme.dto";
+import { type ThemeDto, toThemeDto } from "../dto/theme.dto";
 
 export interface CreateThemeInput {
   name: string;
@@ -24,7 +24,7 @@ export class CreateThemeCommand {
         input.agencyId,
         input.requestingUserId,
       );
-      if (!member || !member.role.canManageMembers()) {
+      if (!member || !member.role.isAdmin()) {
         return Result.fail(
           new DomainError("Only admins can manage themes", "INSUFFICIENT_PERMISSIONS"),
         );
@@ -36,12 +36,7 @@ export class CreateThemeCommand {
       });
       await this.themeRepository.save(theme);
 
-      return Result.ok({
-        id: theme.id,
-        name: theme.name,
-        agencyId: theme.agencyId,
-        createdAt: theme.createdAt,
-      });
+      return Result.ok(toThemeDto(theme));
     } catch (error) {
       if (error instanceof DomainError) return Result.fail(error);
       throw error;

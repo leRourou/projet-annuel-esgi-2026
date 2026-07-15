@@ -1,8 +1,10 @@
 "use client";
 
 import { updateAgencyContextAction } from "@/actions/agency.actions";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import type { AgencyContextDto } from "@/modules/agency/application/dto/agency-context.dto";
 import { useState, useTransition } from "react";
 
@@ -107,9 +109,9 @@ export function AgencyContextForm({ initial }: Props) {
           Additional Context
           <span className="text-muted-foreground font-normal ml-1">(optional)</span>
         </label>
-        <textarea
+        <Textarea
           id="ctx-additional"
-          className="w-full min-h-[80px] rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-y"
+          className="resize-y"
           placeholder="Any specific brand guidelines, competitor context, or content restrictions…"
           value={additionalContext}
           onChange={(e) => setAdditionalContext(e.target.value)}
@@ -118,7 +120,11 @@ export function AgencyContextForm({ initial }: Props) {
       </div>
 
       {error && <p className="text-sm text-destructive">{error}</p>}
-      {saved && <p className="text-sm text-green-600">Context saved successfully.</p>}
+      {saved && (
+        <Alert variant="success">
+          <AlertDescription>Context saved successfully.</AlertDescription>
+        </Alert>
+      )}
 
       <Button type="submit" disabled={isPending} size="sm">
         {isPending ? "Saving…" : "Save context"}

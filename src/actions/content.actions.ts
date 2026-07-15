@@ -62,7 +62,8 @@ export async function generateArticleAction(input: unknown): Promise<ActionResul
     agencyId: membership.agencyId,
   });
   if (!parsed.success) {
-    return { error: parsed.error.flatten().fieldErrors.toString() };
+    const fieldErrors = parsed.error.flatten().fieldErrors;
+    return { error: Object.values(fieldErrors).flat()[0] ?? "Invalid input" };
   }
 
   const result = await container.generateArticle.execute(parsed.data);
@@ -196,7 +197,8 @@ export async function saveGeneratedArticleAction(
     agencyId: membership.agencyId,
   });
   if (!parsed.success) {
-    return { error: parsed.error.flatten().fieldErrors.toString() };
+    const fieldErrors = parsed.error.flatten().fieldErrors;
+    return { error: Object.values(fieldErrors).flat()[0] ?? "Invalid input" };
   }
 
   const result = await container.createArticle.execute(parsed.data);
@@ -244,7 +246,8 @@ export async function generateEnrichedArticleAction(
     agencyId: membership.agencyId,
   });
   if (!parsed.success) {
-    return { error: parsed.error.flatten().fieldErrors.toString() };
+    const fieldErrors = parsed.error.flatten().fieldErrors;
+    return { error: Object.values(fieldErrors).flat()[0] ?? "Invalid input" };
   }
 
   const result = await container.generateEnrichedArticle.execute(parsed.data);
