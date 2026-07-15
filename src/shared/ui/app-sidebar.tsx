@@ -27,13 +27,13 @@ import { usePathname } from "next/navigation";
 import { AgencySwitcher } from "./agency-switcher";
 
 const NAV_ITEMS = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/ideas", label: "Ideas", icon: Lightbulb },
-  { href: "/content", label: "Content", icon: FileText },
-  { href: "/calendar", label: "Calendar", icon: CalendarDays },
-  { href: "/rss", label: "RSS feeds", icon: Rss },
+  { href: "/", label: "Tableau de bord", icon: LayoutDashboard },
+  { href: "/ideas", label: "Idées", icon: Lightbulb },
+  { href: "/content", label: "Contenu", icon: FileText },
+  { href: "/calendar", label: "Calendrier", icon: CalendarDays },
+  { href: "/rss", label: "Flux RSS", icon: Rss },
   { href: "/rss/curated", label: "Curation", icon: Star },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/settings", label: "Paramètres", icon: Settings },
 ];
 
 interface AppSidebarProps {
@@ -78,7 +78,7 @@ export function AppSidebar({ userEmail, currentAgencyId, agencies }: AppSidebarP
         <form action={signOutAction}>
           <SidebarMenuButton type="submit" className="w-full">
             <LogOut />
-            <span>Sign out</span>
+            <span>Déconnexion</span>
           </SidebarMenuButton>
         </form>
       </SidebarFooter>

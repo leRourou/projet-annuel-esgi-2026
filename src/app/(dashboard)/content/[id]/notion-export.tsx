@@ -22,11 +22,11 @@ export function NotionExport({ articleId, notionPageId, hasNotionConfig }: Notio
   if (!hasNotionConfig) {
     return (
       <p className="text-xs text-muted-foreground">
-        Connect Notion and configure a database in{" "}
+        Connectez Notion et configurez une base de données dans{" "}
         <Link href="/settings" className="underline">
-          Settings
+          Paramètres
         </Link>{" "}
-        to enable export.
+        pour activer l'export.
       </p>
     );
   }
@@ -50,21 +50,21 @@ export function NotionExport({ articleId, notionPageId, hasNotionConfig }: Notio
     <div className="space-y-3">
       {notionPageId && (
         <p className="text-xs text-muted-foreground">
-          Already synced to Notion —{" "}
+          Déjà synchronisé avec Notion —{" "}
           <a
             href={`https://notion.so/${notionPageId.replace(/-/g, "")}`}
             target="_blank"
             rel="noopener noreferrer"
             className="underline"
           >
-            view page
+            voir la page
           </a>
         </p>
       )}
 
       <div className="space-y-1.5">
         <Label htmlFor="scheduled-at" className="text-xs">
-          Publication date (optional)
+          Date de publication (facultatif)
         </Label>
         <Input
           id="scheduled-at"
@@ -82,7 +82,11 @@ export function NotionExport({ articleId, notionPageId, hasNotionConfig }: Notio
         disabled={isPending}
         className="w-full"
       >
-        {isPending ? "Exporting…" : notionPageId ? "Re-export to Notion" : "Export to Notion"}
+        {isPending
+          ? "Exportation…"
+          : notionPageId
+            ? "Réexporter vers Notion"
+            : "Exporter vers Notion"}
       </Button>
 
       {result?.error && (
@@ -93,14 +97,14 @@ export function NotionExport({ articleId, notionPageId, hasNotionConfig }: Notio
       {result?.notionPageId && (
         <Alert className="py-2">
           <AlertDescription className="text-xs">
-            Exported to Notion.{" "}
+            Exporté vers Notion.{" "}
             <a
               href={`https://notion.so/${result.notionPageId.replace(/-/g, "")}`}
               target="_blank"
               rel="noopener noreferrer"
               className="underline"
             >
-              Open page
+              Ouvrir la page
             </a>
           </AlertDescription>
         </Alert>

@@ -69,7 +69,7 @@ export function NotionConfigPanel({ hasNotion, initialDatabaseId }: NotionConfig
     <div className="space-y-3 pt-1">
       <div className="flex items-center justify-between">
         <p className="text-xs text-muted-foreground">
-          {databaseId ? `Target database: ${databaseId}` : "No target database selected"}
+          {databaseId ? `Base cible : ${databaseId}` : "Aucune base cible sélectionnée"}
         </p>
         <Button size="sm" variant="outline" onClick={handleTestConnection} disabled={isPending}>
           Tester la connexion

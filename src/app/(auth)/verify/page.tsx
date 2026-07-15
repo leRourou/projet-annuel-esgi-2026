@@ -10,9 +10,10 @@ export default function VerifyPage() {
             <Mail className="w-6 h-6 text-secondary-foreground" />
           </div>
           <div className="space-y-1">
-            <CardTitle className="text-xl">Check your inbox</CardTitle>
+            <CardTitle className="text-xl">Consultez votre boîte de réception</CardTitle>
             <CardDescription>
-              We sent you a magic link. Click it to sign in to ContentAI Studio.
+              Nous vous avons envoyé un lien de connexion. Cliquez dessus pour accéder à ContentAI
+              Studio.
             </CardDescription>
           </div>
         </CardHeader>

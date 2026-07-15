@@ -15,7 +15,7 @@ import { useState, useTransition } from "react";
 const FORMAT_LABELS = {
   MARKDOWN: "Markdown (.md)",
   HTML: "HTML (.html)",
-  TEXT: "Plain text (.txt)",
+  TEXT: "Texte brut (.txt)",
 } as const;
 
 type ExportFormat = keyof typeof FORMAT_LABELS;
@@ -34,7 +34,7 @@ export function ExportContent({ articleId }: ExportContentProps) {
     startTransition(async () => {
       const res = await exportArticleAction({ articleId, format });
       if (res.error || !res.data) {
-        setError(res.error ?? "Export failed");
+        setError(res.error ?? "Échec de l'export");
         return;
       }
       const blob = new Blob([res.data.content], { type: res.data.mimeType });
@@ -62,7 +62,7 @@ export function ExportContent({ articleId }: ExportContentProps) {
         </SelectContent>
       </Select>
       <Button size="sm" variant="outline" onClick={handleExport} disabled={isPending}>
-        {isPending ? "Exporting…" : "Export"}
+        {isPending ? "Exportation…" : "Exporter"}
       </Button>
       {error && (
         <Alert variant="destructive" className="py-2">

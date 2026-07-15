@@ -27,9 +27,9 @@ export function TagAssign({ articleId, allTags, currentTagIds }: TagAssignProps)
   if (allTags.length === 0) {
     return (
       <p className="text-xs text-muted-foreground">
-        No tags available. Create tags in{" "}
+        Aucun tag disponible. Créez des tags dans{" "}
         <Link href="/settings/tags" className="underline">
-          Settings → Tags
+          Paramètres → Tags
         </Link>
         .
       </p>
@@ -77,7 +77,7 @@ export function TagAssign({ articleId, allTags, currentTagIds }: TagAssignProps)
 
       {hasChanged && (
         <Button size="sm" onClick={handleSave} disabled={isPending}>
-          Save tags
+          Enregistrer les tags
         </Button>
       )}
 

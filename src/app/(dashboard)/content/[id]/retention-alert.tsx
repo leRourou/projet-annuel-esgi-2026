@@ -43,10 +43,11 @@ export function RetentionAlert({
   if (bodyPurgedAt) {
     return (
       <Alert>
-        <AlertTitle>Content purged</AlertTitle>
+        <AlertTitle>Contenu purgé</AlertTitle>
         <AlertDescription>
-          The article body was purged on {bodyPurgedAt.toLocaleDateString()} per the 30-day
-          retention policy. Title, SEO metadata and tags remain available.
+          Le contenu de l'article a été purgé le {bodyPurgedAt.toLocaleDateString("fr-FR")}{" "}
+          conformément à la politique de rétention de 30 jours. Le titre, les métadonnées SEO et les
+          tags restent disponibles.
         </AlertDescription>
       </Alert>
     );
@@ -56,19 +57,19 @@ export function RetentionAlert({
 
   return (
     <Alert variant={isUrgent ? "destructive" : "default"}>
-      <AlertTitle>Retention policy</AlertTitle>
+      <AlertTitle>Politique de rétention</AlertTitle>
       <AlertDescription className="space-y-2">
         <p>
-          The full body of this article will be automatically purged in{" "}
-          <strong>{daysUntilBodyPurge} day(s)</strong>, 30 days after publication. Metadata is kept
-          indefinitely.
+          Le contenu complet de cet article sera automatiquement purgé dans{" "}
+          <strong>{daysUntilBodyPurge} jour(s)</strong>, 30 jours après la publication. Les
+          métadonnées sont conservées indéfiniment.
         </p>
         {hasNotionConfig && !exported && (
           <Button size="sm" variant="outline" onClick={handleExport} disabled={isPending}>
-            {isPending ? "Exporting…" : "Export to Notion before it's purged"}
+            {isPending ? "Exportation…" : "Exporter vers Notion avant la purge"}
           </Button>
         )}
-        {exported && <p className="text-xs text-muted-foreground">Exported to Notion.</p>}
+        {exported && <p className="text-xs text-muted-foreground">Exporté vers Notion.</p>}
         {error && <p className="text-xs text-destructive">{error}</p>}
       </AlertDescription>
     </Alert>

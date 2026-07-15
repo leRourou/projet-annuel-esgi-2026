@@ -58,12 +58,12 @@ export function ThemesClient({ initialThemes, isAdmin }: ThemesClientProps) {
     <div className="space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Agency themes</CardTitle>
+          <CardTitle className="text-base">Thématiques de l&apos;agence</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {themes.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No themes yet. Add one to start generating ideas.
+              Aucune thématique pour le moment. Ajoutez-en une pour commencer à générer des idées.
             </p>
           ) : (
             <div className="flex flex-wrap gap-2">
@@ -78,7 +78,7 @@ export function ThemesClient({ initialThemes, isAdmin }: ThemesClientProps) {
                       onClick={() => handleDelete(theme.id)}
                       disabled={isPending}
                       className="text-muted-foreground hover:text-destructive transition-colors text-xs ml-1"
-                      aria-label={`Remove theme ${theme.name}`}
+                      aria-label={`Supprimer la thématique ${theme.name}`}
                     >
                       ×
                     </button>
@@ -93,7 +93,7 @@ export function ThemesClient({ initialThemes, isAdmin }: ThemesClientProps) {
               <Input
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                placeholder="New theme name…"
+                placeholder="Nom de la nouvelle thématique…"
                 className="max-w-xs"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleAdd();
@@ -101,7 +101,7 @@ export function ThemesClient({ initialThemes, isAdmin }: ThemesClientProps) {
                 disabled={isPending}
               />
               <Button onClick={handleAdd} disabled={isPending || !newName.trim()} size="sm">
-                Add
+                Ajouter
               </Button>
             </div>
           )}
@@ -111,7 +111,9 @@ export function ThemesClient({ initialThemes, isAdmin }: ThemesClientProps) {
       </Card>
 
       {!isAdmin && (
-        <p className="text-xs text-muted-foreground">Only admins can add or remove themes.</p>
+        <p className="text-xs text-muted-foreground">
+          Seuls les administrateurs peuvent ajouter ou supprimer des thématiques.
+        </p>
       )}
     </div>
   );

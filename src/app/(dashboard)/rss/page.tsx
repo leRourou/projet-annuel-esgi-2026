@@ -10,9 +10,9 @@ export default async function RssPage() {
     <div className="max-w-2xl">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">RSS Feeds</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Flux RSS</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Subscribe to content feeds for inspiration
+            Abonnez-vous à des flux de contenu pour vous inspirer
           </p>
         </div>
         <form
@@ -22,7 +22,7 @@ export default async function RssPage() {
           }}
         >
           <Button type="submit" variant="outline">
-            Refresh all
+            Tout actualiser
           </Button>
         </form>
       </div>

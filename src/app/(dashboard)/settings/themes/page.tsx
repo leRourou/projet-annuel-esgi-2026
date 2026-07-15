@@ -20,10 +20,11 @@ export default async function ThemesPage() {
   return (
     <div className="max-w-2xl">
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight">Themes</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Thématiques</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Themes define the content categories your agency focuses on. They guide AI idea generation
-          and help scope content for each collaborator.
+          Les thématiques définissent les catégories de contenu sur lesquelles se concentre votre
+          agence. Elles guident la génération d&apos;idées par l&apos;IA et aident à cadrer le
+          contenu pour chaque collaborateur.
         </p>
       </div>
 

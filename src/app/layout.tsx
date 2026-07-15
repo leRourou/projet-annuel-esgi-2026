@@ -10,7 +10,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "ContentAI Studio",
-  description: "AI-powered SEO content production platform",
+  description: "Plateforme de production de contenu SEO assistée par IA",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

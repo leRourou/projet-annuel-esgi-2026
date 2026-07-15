@@ -54,11 +54,11 @@ export function AgencyContextForm({ initial }: Props) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-1.5">
         <label className="text-sm font-medium" htmlFor="ctx-sector">
-          Industry / Sector
+          Secteur d'activité
         </label>
         <Input
           id="ctx-sector"
-          placeholder="e.g. SaaS, E-commerce, Legal services…"
+          placeholder="ex. SaaS, e-commerce, services juridiques…"
           value={sector}
           onChange={(e) => setSector(e.target.value)}
           required
@@ -67,11 +67,11 @@ export function AgencyContextForm({ initial }: Props) {
 
       <div className="space-y-1.5">
         <label className="text-sm font-medium" htmlFor="ctx-audience">
-          Target Audience
+          Cible
         </label>
         <Input
           id="ctx-audience"
-          placeholder="e.g. SMBs in retail, marketing managers 30–50"
+          placeholder="ex. PME du retail, responsables marketing 30–50 ans"
           value={targetAudience}
           onChange={(e) => setTargetAudience(e.target.value)}
           required
@@ -80,11 +80,11 @@ export function AgencyContextForm({ initial }: Props) {
 
       <div className="space-y-1.5">
         <label className="text-sm font-medium" htmlFor="ctx-tone">
-          Tone of Voice
+          Ton éditorial
         </label>
         <Input
           id="ctx-tone"
-          placeholder="e.g. Professional, empathetic, authoritative"
+          placeholder="ex. Professionnel, empathique, expert"
           value={toneOfVoice}
           onChange={(e) => setToneOfVoice(e.target.value)}
           required
@@ -93,12 +93,12 @@ export function AgencyContextForm({ initial }: Props) {
 
       <div className="space-y-1.5">
         <label className="text-sm font-medium" htmlFor="ctx-keywords">
-          Brand Keywords
-          <span className="text-muted-foreground font-normal ml-1">(comma-separated)</span>
+          Mots-clés de marque
+          <span className="text-muted-foreground font-normal ml-1">(séparés par des virgules)</span>
         </label>
         <Input
           id="ctx-keywords"
-          placeholder="e.g. digital marketing, ROI, growth hacking"
+          placeholder="ex. marketing digital, ROI, growth hacking"
           value={brandKeywordsRaw}
           onChange={(e) => setBrandKeywordsRaw(e.target.value)}
         />
@@ -106,13 +106,13 @@ export function AgencyContextForm({ initial }: Props) {
 
       <div className="space-y-1.5">
         <label className="text-sm font-medium" htmlFor="ctx-additional">
-          Additional Context
-          <span className="text-muted-foreground font-normal ml-1">(optional)</span>
+          Contexte additionnel
+          <span className="text-muted-foreground font-normal ml-1">(optionnel)</span>
         </label>
         <Textarea
           id="ctx-additional"
           className="resize-y"
-          placeholder="Any specific brand guidelines, competitor context, or content restrictions…"
+          placeholder="Charte éditoriale spécifique, contexte concurrentiel, restrictions de contenu…"
           value={additionalContext}
           onChange={(e) => setAdditionalContext(e.target.value)}
           maxLength={2000}
@@ -122,12 +122,12 @@ export function AgencyContextForm({ initial }: Props) {
       {error && <p className="text-sm text-destructive">{error}</p>}
       {saved && (
         <Alert variant="success">
-          <AlertDescription>Context saved successfully.</AlertDescription>
+          <AlertDescription>Contexte enregistré avec succès.</AlertDescription>
         </Alert>
       )}
 
       <Button type="submit" disabled={isPending} size="sm">
-        {isPending ? "Saving…" : "Save context"}
+        {isPending ? "Enregistrement…" : "Enregistrer le contexte"}
       </Button>
     </form>
   );

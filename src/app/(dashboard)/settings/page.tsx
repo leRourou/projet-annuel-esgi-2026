@@ -37,21 +37,21 @@ export default async function SettingsPage() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-2xl font-semibold tracking-tight mb-8">Settings</h1>
+      <h1 className="text-2xl font-semibold tracking-tight mb-8">Paramètres</h1>
 
       <div className="space-y-4">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Account</CardTitle>
+            <CardTitle className="text-base">Compte</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">Email</span>
+              <span className="text-muted-foreground">E-mail</span>
               <span>{session?.user?.email}</span>
             </div>
             <Separator />
             <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">Name</span>
+              <span className="text-muted-foreground">Nom</span>
               <span>{session?.user?.name ?? "—"}</span>
             </div>
           </CardContent>
@@ -59,7 +59,7 @@ export default async function SettingsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Integrations</CardTitle>
+            <CardTitle className="text-base">Intégrations</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
@@ -68,9 +68,9 @@ export default async function SettingsPage() {
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {hasNotion
                     ? notionDatabaseId
-                      ? "Connected · database configured"
-                      : "Connected · no database selected"
-                    : "Not connected"}
+                      ? "Connecté · base de données configurée"
+                      : "Connecté · aucune base de données sélectionnée"
+                    : "Non connecté"}
                 </p>
               </div>
               {!hasNotion ? (
@@ -81,11 +81,11 @@ export default async function SettingsPage() {
                   }}
                 >
                   <Button type="submit" size="sm">
-                    Connect Notion
+                    Connecter Notion
                   </Button>
                 </form>
               ) : (
-                <Badge variant="success">Active</Badge>
+                <Badge variant="success">Actif</Badge>
               )}
             </div>
             <NotionConfigPanel hasNotion={hasNotion} initialDatabaseId={notionDatabaseId} />
@@ -93,10 +93,10 @@ export default async function SettingsPage() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Agency Context</CardTitle>
+            <CardTitle className="text-base">Contexte de l&apos;agence</CardTitle>
             <CardDescription className="text-xs text-muted-foreground">
-              This context is automatically injected into every AI generation prompt to make content
-              relevant to your agency's business.
+              Ce contexte est automatiquement injecté dans chaque prompt de génération IA pour
+              rendre le contenu pertinent pour l&apos;activité de votre agence.
             </CardDescription>
           </CardHeader>
           <CardContent>

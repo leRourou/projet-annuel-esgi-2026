@@ -26,10 +26,10 @@ const STATUS_LABELS: Record<CurationStatusValue, string> = {
 };
 
 const STATUS_TITLES: Record<CurationStatusValue, string> = {
-  UNREAD: "Unread",
-  INTERESTING: "Interesting",
-  IGNORED: "Ignore",
-  TO_USE: "To use",
+  UNREAD: "Non lu",
+  INTERESTING: "Intéressant",
+  IGNORED: "Ignorer",
+  TO_USE: "À utiliser",
 };
 
 interface RssManagerProps {
@@ -120,7 +120,7 @@ function FeedCard({ feed }: { feed: FeedDto }) {
         hour: "2-digit",
         minute: "2-digit",
       })
-    : "Never";
+    : "Jamais";
 
   return (
     <Card>
@@ -141,7 +141,7 @@ function FeedCard({ feed }: { feed: FeedDto }) {
               disabled={isLoading}
               className="text-xs"
             >
-              {isLoading ? "Loading…" : expanded ? "Collapse" : "Show items"}
+              {isLoading ? "Chargement…" : expanded ? "Réduire" : "Afficher les éléments"}
             </Button>
           </div>
         </div>
@@ -150,7 +150,7 @@ function FeedCard({ feed }: { feed: FeedDto }) {
         <CardContent className="pt-0">
           {items.length === 0 ? (
             <p className="text-xs text-muted-foreground py-2">
-              No items yet — try refreshing the feed.
+              Aucun élément pour le moment — essayez d&apos;actualiser le flux.
             </p>
           ) : (
             <ul className="space-y-2">
@@ -183,7 +183,7 @@ export function RssManager({ initialFeeds }: RssManagerProps) {
         setMessage(result.error);
       } else {
         setIsError(false);
-        setMessage("Feed added successfully");
+        setMessage("Flux ajouté avec succès");
         setUrl("");
         setName("");
         router.refresh();
@@ -200,7 +200,7 @@ export function RssManager({ initialFeeds }: RssManagerProps) {
         setMessage(result.error);
       } else {
         setIsError(false);
-        setMessage(`Refreshed: ${result.data?.refreshed} feeds, ${result.data?.failed} failed`);
+        setMessage(`Actualisé : ${result.data?.refreshed} flux, ${result.data?.failed} échec(s)`);
         router.refresh();
       }
     });
@@ -216,34 +216,34 @@ export function RssManager({ initialFeeds }: RssManagerProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Add a feed</CardTitle>
+          <CardTitle className="text-base">Ajouter un flux</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleAddFeed} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="url">Feed URL *</Label>
+              <Label htmlFor="url">URL du flux *</Label>
               <Input
                 id="url"
                 type="url"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 required
-                placeholder="https://example.com/feed.xml"
+                placeholder="https://exemple.com/feed.xml"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="name">Name *</Label>
+              <Label htmlFor="name">Nom *</Label>
               <Input
                 id="name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                placeholder="My favorite blog"
+                placeholder="Mon blog préféré"
               />
             </div>
             <Button type="submit" disabled={isPending} className="w-full">
-              Add feed
+              Ajouter le flux
             </Button>
           </form>
         </CardContent>
@@ -256,7 +256,7 @@ export function RssManager({ initialFeeds }: RssManagerProps) {
               {initialFeeds.length} {initialFeeds.length === 1 ? "source" : "sources"}
             </h2>
             <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isPending}>
-              Refresh all
+              Tout actualiser
             </Button>
           </div>
           {initialFeeds.map((feed) => (
@@ -265,7 +265,7 @@ export function RssManager({ initialFeeds }: RssManagerProps) {
         </div>
       ) : (
         <p className="text-sm text-muted-foreground text-center py-8">
-          No feeds added yet. Add your first RSS source above.
+          Aucun flux ajouté pour le moment. Ajoutez votre première source RSS ci-dessus.
         </p>
       )}
     </div>

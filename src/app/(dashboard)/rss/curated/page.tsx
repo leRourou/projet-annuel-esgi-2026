@@ -13,7 +13,7 @@ export default async function CuratedPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-semibold tracking-tight">Curation</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Qualify articles from your RSS feeds to build your content sources
+          Qualifiez les articles de vos flux RSS pour constituer vos sources de contenu
         </p>
       </div>
       <CuratedItemsClient initialItems={items} tags={tags} />

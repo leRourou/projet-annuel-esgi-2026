@@ -15,8 +15,8 @@ import { Suspense, useEffect, useState, useTransition } from "react";
 type Step = "agency" | "themes" | "notion";
 const STEP_ORDER: Step[] = ["agency", "themes", "notion"];
 const STEP_LABELS: Record<Step, string> = {
-  agency: "Agency",
-  themes: "Themes",
+  agency: "Agence",
+  themes: "Thématiques",
   notion: "Notion",
 };
 
@@ -134,8 +134,8 @@ function OnboardingWizard() {
     <div className="min-h-screen flex items-center justify-center bg-muted/40">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">Welcome to ContentAI</h1>
-          <p className="text-muted-foreground mt-2">Let's get your workspace ready.</p>
+          <h1 className="text-2xl font-semibold tracking-tight">Bienvenue sur ContentAI</h1>
+          <p className="text-muted-foreground mt-2">Préparons votre espace de travail.</p>
         </div>
 
         <StepIndicator current={step} />
@@ -149,26 +149,27 @@ function OnboardingWizard() {
         {step === "agency" && (
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Create your agency</CardTitle>
+              <CardTitle className="text-base">Créez votre agence</CardTitle>
               <CardDescription>
-                You can invite collaborators after setting up your workspace.
+                Vous pourrez inviter des collaborateurs après avoir configuré votre espace de
+                travail.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form action={handleCreateAgency} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Agency name *</Label>
+                  <Label htmlFor="name">Nom de l&apos;agence *</Label>
                   <Input
                     id="name"
                     name="name"
                     required
-                    placeholder="Acme Marketing Agency"
+                    placeholder="Agence Marketing Acme"
                     minLength={2}
                     disabled={isPending}
                   />
                 </div>
                 <Button type="submit" disabled={isPending} className="w-full">
-                  {isPending ? "Creating…" : "Create agency"}
+                  {isPending ? "Création…" : "Créer l'agence"}
                 </Button>
               </form>
             </CardContent>
@@ -178,9 +179,10 @@ function OnboardingWizard() {
         {step === "themes" && (
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Add your first themes</CardTitle>
+              <CardTitle className="text-base">Ajoutez vos premières thématiques</CardTitle>
               <CardDescription>
-                Themes guide the AI when generating content ideas. You can add more later.
+                Les thématiques guident l&apos;IA lors de la génération d&apos;idées de contenu.
+                Vous pourrez en ajouter d&apos;autres plus tard.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -197,7 +199,7 @@ function OnboardingWizard() {
                 <Input
                   value={newTheme}
                   onChange={(e) => setNewTheme(e.target.value)}
-                  placeholder="e.g. Sustainable fashion"
+                  placeholder="ex. Mode durable"
                   disabled={isPending}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
@@ -212,7 +214,7 @@ function OnboardingWizard() {
                   onClick={handleAddTheme}
                   disabled={isPending || !newTheme.trim()}
                 >
-                  Add
+                  Ajouter
                 </Button>
               </div>
               <div className="flex gap-2 pt-2">
@@ -223,7 +225,7 @@ function OnboardingWizard() {
                   onClick={() => setStep("notion")}
                   disabled={isPending}
                 >
-                  Skip
+                  Passer
                 </Button>
                 <Button
                   type="button"
@@ -231,7 +233,7 @@ function OnboardingWizard() {
                   onClick={() => setStep("notion")}
                   disabled={isPending}
                 >
-                  Continue
+                  Continuer
                 </Button>
               </div>
             </CardContent>
@@ -241,19 +243,19 @@ function OnboardingWizard() {
         {step === "notion" && (
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Connect Notion</CardTitle>
+              <CardTitle className="text-base">Connecter Notion</CardTitle>
               <CardDescription>
-                Export your content to Notion and sync your curation database. Optional — you can
-                connect it later in Settings.
+                Exportez votre contenu vers Notion et synchronisez votre base de curation. Optionnel
+                — vous pouvez la connecter plus tard dans les paramètres.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {notionConnected ? (
-                <Badge variant="success">Notion connected</Badge>
+                <Badge variant="success">Notion connecté</Badge>
               ) : (
                 <form action={signInWithNotionForOnboarding}>
                   <Button type="submit" variant="outline" className="w-full" disabled={isPending}>
-                    Connect Notion
+                    Connecter Notion
                   </Button>
                 </form>
               )}
@@ -266,7 +268,7 @@ function OnboardingWizard() {
                     onClick={handleFinish}
                     disabled={isPending}
                   >
-                    Skip
+                    Passer
                   </Button>
                 )}
                 <Button
@@ -275,7 +277,7 @@ function OnboardingWizard() {
                   onClick={handleFinish}
                   disabled={isPending}
                 >
-                  {isPending ? "Finishing…" : "Finish setup"}
+                  {isPending ? "Finalisation…" : "Terminer la configuration"}
                 </Button>
               </div>
             </CardContent>

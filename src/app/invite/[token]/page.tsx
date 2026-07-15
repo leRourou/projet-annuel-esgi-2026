@@ -22,15 +22,15 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
       <div className="w-full max-w-md">
         <Card>
           <CardHeader>
-            <CardTitle>Join agency</CardTitle>
-            <CardDescription>You have been invited to collaborate.</CardDescription>
+            <CardTitle>Rejoindre l&apos;agence</CardTitle>
+            <CardDescription>Vous avez été invité(e) à collaborer.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <Alert variant="destructive">
               <AlertDescription>{result.error}</AlertDescription>
             </Alert>
             <Button asChild variant="outline" className="w-full">
-              <Link href="/content">Go to dashboard</Link>
+              <Link href="/content">Aller au tableau de bord</Link>
             </Button>
           </CardContent>
         </Card>

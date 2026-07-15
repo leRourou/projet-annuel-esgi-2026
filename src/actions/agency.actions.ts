@@ -6,6 +6,7 @@ import type { AgencyContextDto } from "@/modules/agency/application/dto/agency-c
 import type { AgencyDto, AgencyMemberDto } from "@/modules/agency/application/dto/agency.dto";
 import { buildContainer } from "@/shared/infrastructure/di/container";
 import { ACTIVE_AGENCY_COOKIE, getActiveAgencyId } from "@/shared/lib/active-agency";
+import { translateError } from "@/shared/lib/translate-error";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -22,50 +23,50 @@ export async function createAgencyAction(input: {
   slug: string;
 }): Promise<ActionResult<AgencyDto>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const existing = await container.getUserMembership.execute(
     session.user.id,
     await getActiveAgencyId(),
   );
-  if (existing) return { error: "You already belong to an agency" };
+  if (existing) return { error: "Vous appartenez déjà à une agence." };
 
   const result = await container.createAgency.execute({
     name: input.name,
     slug: input.slug,
     creatorUserId: session.user.id,
   });
-  if (!result.success) return { error: result.error.message };
+  if (!result.success) return { error: translateError(result.error) };
   return { data: result.value };
 }
 
 export async function getAgencyAction(): Promise<ActionResult<AgencyDto>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const membership = await container.getUserMembership.execute(
     session.user.id,
     await getActiveAgencyId(),
   );
-  if (!membership || membership.isPending) return { error: "No active agency membership" };
+  if (!membership || membership.isPending) return { error: "Aucune agence active." };
 
   const result = await container.getAgency.execute({ agencyId: membership.agencyId });
-  if (!result.success) return { error: result.error.message };
+  if (!result.success) return { error: translateError(result.error) };
   return { data: result.value };
 }
 
 export async function listMembersAction(): Promise<ActionResult<AgencyMemberDto[]>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const membership = await container.getUserMembership.execute(
     session.user.id,
     await getActiveAgencyId(),
   );
-  if (!membership || membership.isPending) return { error: "No active agency membership" };
+  if (!membership || membership.isPending) return { error: "Aucune agence active." };
 
   const members = await container.listMembers.execute({ agencyId: membership.agencyId });
   return { data: members };
@@ -76,14 +77,14 @@ export async function inviteMemberAction(input: {
   role: string;
 }): Promise<ActionResult<{ inviteToken: string }>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const membership = await container.getUserMembership.execute(
     session.user.id,
     await getActiveAgencyId(),
   );
-  if (!membership || membership.isPending) return { error: "No active agency membership" };
+  if (!membership || membership.isPending) return { error: "Aucune agence active." };
 
   const result = await container.inviteMember.execute({
     agencyId: membership.agencyId,
@@ -92,17 +93,17 @@ export async function inviteMemberAction(input: {
     targetEmail: input.targetEmail,
     role: input.role,
   });
-  if (!result.success) return { error: result.error.message };
+  if (!result.success) return { error: translateError(result.error) };
   return { data: { inviteToken: result.value.inviteToken } };
 }
 
 export async function acceptInviteAction(token: string): Promise<ActionResult<AgencyMemberDto>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const result = await container.acceptInvite.execute({ token, userId: session.user.id });
-  if (!result.success) return { error: result.error.message };
+  if (!result.success) return { error: translateError(result.error) };
   return { data: result.value };
 }
 
@@ -111,14 +112,14 @@ export async function updateMemberRoleAction(input: {
   newRole: string;
 }): Promise<ActionResult<AgencyMemberDto>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const membership = await container.getUserMembership.execute(
     session.user.id,
     await getActiveAgencyId(),
   );
-  if (!membership || membership.isPending) return { error: "No active agency membership" };
+  if (!membership || membership.isPending) return { error: "Aucune agence active." };
 
   const result = await container.updateMemberRole.execute({
     agencyId: membership.agencyId,
@@ -127,20 +128,20 @@ export async function updateMemberRoleAction(input: {
     targetUserId: input.targetUserId,
     newRole: input.newRole,
   });
-  if (!result.success) return { error: result.error.message };
+  if (!result.success) return { error: translateError(result.error) };
   return { data: result.value };
 }
 
 export async function removeMemberAction(targetUserId: string): Promise<ActionResult<void>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const membership = await container.getUserMembership.execute(
     session.user.id,
     await getActiveAgencyId(),
   );
-  if (!membership || membership.isPending) return { error: "No active agency membership" };
+  if (!membership || membership.isPending) return { error: "Aucune agence active." };
 
   const result = await container.removeMember.execute({
     agencyId: membership.agencyId,
@@ -148,20 +149,20 @@ export async function removeMemberAction(targetUserId: string): Promise<ActionRe
     actorRole: membership.role,
     targetUserId,
   });
-  if (!result.success) return { error: result.error.message };
+  if (!result.success) return { error: translateError(result.error) };
   return { data: undefined };
 }
 
 export async function getAgencyContextAction(): Promise<ActionResult<AgencyContextDto | null>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const membership = await container.getUserMembership.execute(
     session.user.id,
     await getActiveAgencyId(),
   );
-  if (!membership || membership.isPending) return { error: "No active agency membership" };
+  if (!membership || membership.isPending) return { error: "Aucune agence active." };
 
   const context = await container.getAgencyContext.execute(membership.agencyId);
   return { data: context };
@@ -171,14 +172,14 @@ export async function updateAgencyContextAction(
   input: unknown,
 ): Promise<ActionResult<AgencyContextDto>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const membership = await container.getUserMembership.execute(
     session.user.id,
     await getActiveAgencyId(),
   );
-  if (!membership || membership.isPending) return { error: "No active agency membership" };
+  if (!membership || membership.isPending) return { error: "Aucune agence active." };
 
   const parsed = UpdateAgencyContextInputSchema.safeParse({
     ...(input as object),
@@ -187,12 +188,12 @@ export async function updateAgencyContextAction(
   });
   if (!parsed.success) {
     const fieldErrors = parsed.error.flatten().fieldErrors;
-    const firstError = Object.values(fieldErrors).flat()[0] ?? "Invalid input";
+    const firstError = Object.values(fieldErrors).flat()[0] ?? "Saisie invalide.";
     return { error: firstError };
   }
 
   const result = await container.updateAgencyContext.execute(parsed.data);
-  if (!result.success) return { error: result.error.message };
+  if (!result.success) return { error: translateError(result.error) };
   return { data: result.value };
 }
 
@@ -200,7 +201,7 @@ export async function listUserAgenciesAction(): Promise<
   ActionResult<{ agencyId: string; agencyName: string; role: string }[]>
 > {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const agencies = await container.listUserAgencies.execute(session.user.id);
@@ -209,12 +210,12 @@ export async function listUserAgenciesAction(): Promise<
 
 export async function switchAgencyAction(agencyId: string): Promise<ActionResult<void>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const agencies = await container.listUserAgencies.execute(session.user.id);
   if (!agencies.some((a) => a.agencyId === agencyId)) {
-    return { error: "You are not a member of this agency" };
+    return { error: "Vous n'êtes pas membre de cette agence." };
   }
 
   const store = await cookies();

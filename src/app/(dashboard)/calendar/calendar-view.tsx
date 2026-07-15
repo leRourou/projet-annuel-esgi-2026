@@ -8,7 +8,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 
-const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const WEEKDAY_LABELS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 
 const CONTENT_TYPE_COLORS: Record<ContentTypeValue, string> = {
   ARTICLE: "bg-blue-100 text-blue-800 border-blue-200",
@@ -20,12 +20,30 @@ const CONTENT_TYPE_COLORS: Record<ContentTypeValue, string> = {
   SUBSTACK_ARTICLE: "bg-orange-100 text-orange-800 border-orange-200",
 };
 
+const CONTENT_TYPE_LABELS: Record<ContentTypeValue, string> = {
+  ARTICLE: "Article",
+  PRODUCT_SHEET: "Fiche produit",
+  META: "Description meta",
+  LINKEDIN_POST: "Post LinkedIn",
+  FACEBOOK_POST: "Post Facebook",
+  INSTAGRAM_POST: "Post Instagram",
+  SUBSTACK_ARTICLE: "Newsletter Substack",
+};
+
 const STATUS_DOT: Record<string, string> = {
   DRAFT: "bg-gray-400",
   REVIEW: "bg-amber-400",
   VALIDATED: "bg-blue-400",
   SCHEDULED: "bg-purple-400",
   PUBLISHED: "bg-green-500",
+};
+
+const STATUS_LABELS: Record<string, string> = {
+  DRAFT: "Brouillon",
+  REVIEW: "Révision",
+  VALIDATED: "Validé",
+  SCHEDULED: "Planifié",
+  PUBLISHED: "Publié",
 };
 
 function dateKey(date: Date): string {
@@ -105,14 +123,14 @@ export function CalendarView({ initialArticles }: CalendarViewProps) {
     <div>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-medium">
-          {cursorDate.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+          {cursorDate.toLocaleDateString("fr-FR", { month: "long", year: "numeric" })}
         </h2>
         <div className="flex gap-2">
           <Button variant="outline" size="icon" onClick={() => goToMonth(-1)} disabled={isPending}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <Button variant="outline" size="sm" onClick={() => setCursorDate(new Date())}>
-            Today
+            Aujourd'hui
           </Button>
           <Button variant="outline" size="icon" onClick={() => goToMonth(1)} disabled={isPending}>
             <ChevronRight className="h-4 w-4" />
@@ -128,7 +146,7 @@ export function CalendarView({ initialArticles }: CalendarViewProps) {
             <span
               className={`inline-block w-2.5 h-2.5 rounded-sm border ${CONTENT_TYPE_COLORS[type]}`}
             />
-            {type.replace("_", " ").toLowerCase()}
+            {CONTENT_TYPE_LABELS[type]}
           </span>
         ))}
       </div>
@@ -200,11 +218,11 @@ export function CalendarView({ initialArticles }: CalendarViewProps) {
       </div>
 
       <div className="flex flex-wrap gap-3 mt-4 text-xs text-muted-foreground">
-        <span className="font-medium">Status:</span>
+        <span className="font-medium">Statut :</span>
         {Object.entries(STATUS_DOT).map(([status, color]) => (
           <span key={status} className="flex items-center gap-1.5">
             <span className={`inline-block w-2 h-2 rounded-full ${color}`} />
-            {status.toLowerCase()}
+            {STATUS_LABELS[status] ?? status.toLowerCase()}
           </span>
         ))}
       </div>

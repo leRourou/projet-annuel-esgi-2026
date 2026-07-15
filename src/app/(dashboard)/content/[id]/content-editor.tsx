@@ -60,11 +60,11 @@ export function ContentEditor({ articleId, initialBody, articleTitle }: ContentE
     <div className="space-y-4">
       <Card>
         <CardHeader className="pb-3 flex flex-row items-center justify-between">
-          <CardTitle className="text-sm font-medium">Content</CardTitle>
+          <CardTitle className="text-sm font-medium">Contenu</CardTitle>
           <div className="flex items-center gap-2">
-            {saved && <span className="text-xs text-green-600">Saved</span>}
+            {saved && <span className="text-xs text-green-600">Enregistré</span>}
             <Button size="sm" onClick={handleSave} disabled={isWorking}>
-              {isSaving ? "Saving…" : "Save"}
+              {isSaving ? "Enregistrement…" : "Enregistrer"}
             </Button>
           </div>
         </CardHeader>
@@ -83,18 +83,19 @@ export function ContentEditor({ articleId, initialBody, articleTitle }: ContentE
             disabled={isWorking}
             rows={30}
             className="w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm font-mono leading-relaxed focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-            aria-label={`Edit body for ${articleTitle}`}
+            aria-label={`Modifier le contenu de ${articleTitle}`}
           />
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium">Regenerate with instruction</CardTitle>
+          <CardTitle className="text-sm font-medium">Régénérer avec une instruction</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-xs text-muted-foreground">
-            Describe what to change — Claude will rewrite the body applying your instruction.
+            Décrivez ce qu'il faut changer — Claude réécrira le contenu en appliquant votre
+            instruction.
           </p>
           {regenError && (
             <Alert variant="destructive">
@@ -107,7 +108,7 @@ export function ContentEditor({ articleId, initialBody, articleTitle }: ContentE
               id="regen-instruction"
               value={instruction}
               onChange={(e) => setInstruction(e.target.value)}
-              placeholder='e.g. "Make the conclusion more actionable" or "Add a comparison table in section 2"'
+              placeholder="ex. « Rendre la conclusion plus actionnable » ou « Ajouter un tableau comparatif dans la section 2 »"
               disabled={isWorking}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
@@ -124,7 +125,7 @@ export function ContentEditor({ articleId, initialBody, articleTitle }: ContentE
             variant="outline"
             className="w-full"
           >
-            {isRegenerating ? "Regenerating…" : "Apply instruction"}
+            {isRegenerating ? "Régénération…" : "Appliquer l'instruction"}
           </Button>
         </CardContent>
       </Card>

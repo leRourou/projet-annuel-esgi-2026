@@ -28,13 +28,13 @@ export default async function MembersPage() {
   return (
     <div className="max-w-3xl space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Team members</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Membres de l&apos;équipe</h1>
         <p className="text-muted-foreground mt-1">{agency.value.name}</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Members ({agency.value.memberCount})</CardTitle>
+          <CardTitle className="text-base">Membres ({agency.value.memberCount})</CardTitle>
         </CardHeader>
         <CardContent className="divide-y">
           {members.map((m) => (
@@ -48,7 +48,7 @@ export default async function MembersPage() {
                   <p className="text-xs text-muted-foreground">{m.userEmail}</p>
                 )}
                 {m.isPending && (
-                  <p className="text-xs text-muted-foreground mt-0.5">Invitation pending</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Invitation en attente</p>
                 )}
               </div>
               <div className="flex items-center gap-3">
@@ -75,5 +75,10 @@ function RoleBadge({ role }: { role: string }) {
     MEMBER: "secondary",
     VIEWER: "outline",
   };
-  return <Badge variant={variants[role] ?? "outline"}>{role}</Badge>;
+  const labels: Record<string, string> = {
+    ADMIN: "Administrateur",
+    MEMBER: "Membre",
+    VIEWER: "Lecteur",
+  };
+  return <Badge variant={variants[role] ?? "outline"}>{labels[role] ?? role}</Badge>;
 }

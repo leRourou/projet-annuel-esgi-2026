@@ -14,6 +14,7 @@ import { EXPORT_FORMATS } from "@/modules/content/domain/value-objects/export-fo
 import type { PaginatedResult } from "@/shared/domain/types/pagination.type";
 import { buildContainer } from "@/shared/infrastructure/di/container";
 import { getActiveAgencyId } from "@/shared/lib/active-agency";
+import { translateError } from "@/shared/lib/translate-error";
 import { z } from "zod";
 
 type ActionResult<T> = { data: T; error?: never } | { data?: never; error: string };
@@ -26,17 +27,16 @@ async function requireSession(): Promise<{ user: { id: string } } | null> {
 
 export async function generateArticleAction(input: unknown): Promise<ActionResult<ArticleDto>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const membership = await container.getUserMembership.execute(
     session.user.id,
     await getActiveAgencyId(),
   );
-  if (!membership || membership.isPending) return { error: "No active agency membership" };
+  if (!membership || membership.isPending) return { error: "Aucune agence active." };
 
-  if (!membership.role || membership.role === "VIEWER")
-    return { error: "Insufficient permissions" };
+  if (!membership.role || membership.role === "VIEWER") return { error: "Accès refusé." };
 
   const agencyContext = await container.getAgencyContext.execute(membership.agencyId);
   const agencyContextString = agencyContext
@@ -67,56 +67,56 @@ export async function generateArticleAction(input: unknown): Promise<ActionResul
   });
   if (!parsed.success) {
     const fieldErrors = parsed.error.flatten().fieldErrors;
-    return { error: Object.values(fieldErrors).flat()[0] ?? "Invalid input" };
+    return { error: Object.values(fieldErrors).flat()[0] ?? "Saisie invalide." };
   }
 
   const result = await container.generateArticle.execute(parsed.data);
-  if (!result.success) return { error: result.error.message };
+  if (!result.success) return { error: translateError(result.error) };
   return { data: result.value };
 }
 
 export async function updateArticleAction(input: unknown): Promise<ActionResult<ArticleDto>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const membership = await container.getUserMembership.execute(
     session.user.id,
     await getActiveAgencyId(),
   );
-  if (!membership || membership.isPending) return { error: "No active agency membership" };
-  if (membership.role === "VIEWER") return { error: "Insufficient permissions" };
+  if (!membership || membership.isPending) return { error: "Aucune agence active." };
+  if (membership.role === "VIEWER") return { error: "Accès refusé." };
 
   const parsed = UpdateArticleInputSchema.safeParse(input);
-  if (!parsed.success) return { error: "Invalid input" };
+  if (!parsed.success) return { error: "Saisie invalide." };
 
   const article = await container.getArticle.execute(parsed.data.id);
-  if (!article.success) return { error: article.error.message };
-  if (article.value.agencyId !== membership.agencyId) return { error: "Forbidden" };
+  if (!article.success) return { error: translateError(article.error) };
+  if (article.value.agencyId !== membership.agencyId) return { error: "Accès refusé." };
 
   const result = await container.updateArticle.execute(parsed.data);
-  if (!result.success) return { error: result.error.message };
+  if (!result.success) return { error: translateError(result.error) };
   return { data: result.value };
 }
 
 export async function publishArticleAction(articleId: string): Promise<ActionResult<ArticleDto>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const membership = await container.getUserMembership.execute(
     session.user.id,
     await getActiveAgencyId(),
   );
-  if (!membership || membership.isPending) return { error: "No active agency membership" };
-  if (membership.role === "VIEWER") return { error: "Insufficient permissions" };
+  if (!membership || membership.isPending) return { error: "Aucune agence active." };
+  if (membership.role === "VIEWER") return { error: "Accès refusé." };
 
   const article = await container.getArticle.execute(articleId);
-  if (!article.success) return { error: article.error.message };
-  if (article.value.agencyId !== membership.agencyId) return { error: "Forbidden" };
+  if (!article.success) return { error: translateError(article.error) };
+  if (article.value.agencyId !== membership.agencyId) return { error: "Accès refusé." };
 
   const result = await container.publishArticle.execute(articleId);
-  if (!result.success) return { error: result.error.message };
+  if (!result.success) return { error: translateError(result.error) };
   return { data: result.value };
 }
 
@@ -124,20 +124,20 @@ export async function listArticlesAction(
   input: unknown,
 ): Promise<ActionResult<PaginatedResult<ArticleDto>>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const membership = await container.getUserMembership.execute(
     session.user.id,
     await getActiveAgencyId(),
   );
-  if (!membership || membership.isPending) return { error: "No active agency membership" };
+  if (!membership || membership.isPending) return { error: "Aucune agence active." };
 
   const parsed = ListArticlesInputSchema.safeParse({
     ...(input as object),
     agencyId: membership.agencyId,
   });
-  if (!parsed.success) return { error: "Invalid input" };
+  if (!parsed.success) return { error: "Saisie invalide." };
 
   const result = await container.listArticles.execute(parsed.data);
   return { data: result };
@@ -145,32 +145,32 @@ export async function listArticlesAction(
 
 export async function getArticleAction(id: string): Promise<ActionResult<ArticleDto>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const membership = await container.getUserMembership.execute(
     session.user.id,
     await getActiveAgencyId(),
   );
-  if (!membership || membership.isPending) return { error: "No active agency membership" };
+  if (!membership || membership.isPending) return { error: "Aucune agence active." };
 
   const result = await container.getArticle.execute(id);
-  if (!result.success) return { error: result.error.message };
-  if (result.value.agencyId !== membership.agencyId) return { error: "Forbidden" };
+  if (!result.success) return { error: translateError(result.error) };
+  if (result.value.agencyId !== membership.agencyId) return { error: "Accès refusé." };
   return { data: result.value };
 }
 
 export async function regenerateSectionAction(input: unknown): Promise<ActionResult<string>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const membership = await container.getUserMembership.execute(
     session.user.id,
     await getActiveAgencyId(),
   );
-  if (!membership || membership.isPending) return { error: "No active agency membership" };
-  if (membership.role === "VIEWER") return { error: "Insufficient permissions" };
+  if (!membership || membership.isPending) return { error: "Aucune agence active." };
+  if (membership.role === "VIEWER") return { error: "Accès refusé." };
 
   const agencyContext = await container.getAgencyContext.execute(membership.agencyId);
   const agencyContextString = agencyContext
@@ -187,14 +187,14 @@ export async function regenerateSectionAction(input: unknown): Promise<ActionRes
     ...(input as object),
     context: agencyContextString,
   });
-  if (!parsed.success) return { error: "Invalid input" };
+  if (!parsed.success) return { error: "Saisie invalide." };
 
   const article = await container.getArticle.execute(parsed.data.articleId);
-  if (!article.success) return { error: article.error.message };
-  if (article.value.agencyId !== membership.agencyId) return { error: "Forbidden" };
+  if (!article.success) return { error: translateError(article.error) };
+  if (article.value.agencyId !== membership.agencyId) return { error: "Accès refusé." };
 
   const result = await container.regenerateSection.execute(parsed.data);
-  if (!result.success) return { error: result.error.message };
+  if (!result.success) return { error: translateError(result.error) };
   return { data: result.value };
 }
 
@@ -202,16 +202,15 @@ export async function saveGeneratedArticleAction(
   input: unknown,
 ): Promise<ActionResult<ArticleDto>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const membership = await container.getUserMembership.execute(
     session.user.id,
     await getActiveAgencyId(),
   );
-  if (!membership || membership.isPending) return { error: "No active agency membership" };
-  if (!membership.role || membership.role === "VIEWER")
-    return { error: "Insufficient permissions" };
+  if (!membership || membership.isPending) return { error: "Aucune agence active." };
+  if (!membership.role || membership.role === "VIEWER") return { error: "Accès refusé." };
 
   const parsed = CreateArticleInputSchema.safeParse({
     ...(input as object),
@@ -220,11 +219,11 @@ export async function saveGeneratedArticleAction(
   });
   if (!parsed.success) {
     const fieldErrors = parsed.error.flatten().fieldErrors;
-    return { error: Object.values(fieldErrors).flat()[0] ?? "Invalid input" };
+    return { error: Object.values(fieldErrors).flat()[0] ?? "Saisie invalide." };
   }
 
   const result = await container.createArticle.execute(parsed.data);
-  if (!result.success) return { error: result.error.message };
+  if (!result.success) return { error: translateError(result.error) };
   return { data: result.value };
 }
 
@@ -232,16 +231,15 @@ export async function generateEnrichedArticleAction(
   input: unknown,
 ): Promise<ActionResult<ArticleDto>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const membership = await container.getUserMembership.execute(
     session.user.id,
     await getActiveAgencyId(),
   );
-  if (!membership || membership.isPending) return { error: "No active agency membership" };
-  if (!membership.role || membership.role === "VIEWER")
-    return { error: "Insufficient permissions" };
+  if (!membership || membership.isPending) return { error: "Aucune agence active." };
+  if (!membership.role || membership.role === "VIEWER") return { error: "Accès refusé." };
 
   const agencyContext = await container.getAgencyContext.execute(membership.agencyId);
   const agencyContextString = agencyContext
@@ -272,24 +270,24 @@ export async function generateEnrichedArticleAction(
   });
   if (!parsed.success) {
     const fieldErrors = parsed.error.flatten().fieldErrors;
-    return { error: Object.values(fieldErrors).flat()[0] ?? "Invalid input" };
+    return { error: Object.values(fieldErrors).flat()[0] ?? "Saisie invalide." };
   }
 
   const result = await container.generateEnrichedArticle.execute(parsed.data);
-  if (!result.success) return { error: result.error.message };
+  if (!result.success) return { error: translateError(result.error) };
   return { data: result.value };
 }
 
 export async function listScheduledArticlesAction(): Promise<ActionResult<ArticleDto[]>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const membership = await container.getUserMembership.execute(
     session.user.id,
     await getActiveAgencyId(),
   );
-  if (!membership || membership.isPending) return { error: "No active agency membership" };
+  if (!membership || membership.isPending) return { error: "Aucune agence active." };
 
   const articles = await container.listScheduledArticles.execute(membership.agencyId);
   return { data: articles };
@@ -300,22 +298,21 @@ export async function rescheduleArticleAction(
   scheduledAt: Date,
 ): Promise<ActionResult<ArticleDto>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const membership = await container.getUserMembership.execute(
     session.user.id,
     await getActiveAgencyId(),
   );
-  if (!membership || membership.isPending) return { error: "No active agency membership" };
-  if (!membership.role || membership.role === "VIEWER")
-    return { error: "Insufficient permissions" };
+  if (!membership || membership.isPending) return { error: "Aucune agence active." };
+  if (!membership.role || membership.role === "VIEWER") return { error: "Accès refusé." };
 
   const parsed = RescheduleArticleInputSchema.safeParse({ articleId, scheduledAt });
-  if (!parsed.success) return { error: "Invalid input" };
+  if (!parsed.success) return { error: "Saisie invalide." };
 
   const result = await container.rescheduleArticle.execute(parsed.data);
-  if (!result.success) return { error: result.error.message };
+  if (!result.success) return { error: translateError(result.error) };
 
   // Best-effort push of the new date to Notion for already-exported articles.
   const notionToken = await getAgencyNotionToken(membership.agencyId);
@@ -337,23 +334,23 @@ export async function exportArticleAction(
   input: unknown,
 ): Promise<ActionResult<ExportedArticleDto>> {
   const session = await requireSession();
-  if (!session) return { error: "Unauthorized" };
+  if (!session) return { error: "Vous devez être connecté." };
 
   const container = await buildContainer();
   const membership = await container.getUserMembership.execute(
     session.user.id,
     await getActiveAgencyId(),
   );
-  if (!membership || membership.isPending) return { error: "No active agency membership" };
+  if (!membership || membership.isPending) return { error: "Aucune agence active." };
 
   const parsed = ExportArticleInputSchema.safeParse(input);
-  if (!parsed.success) return { error: "Invalid input" };
+  if (!parsed.success) return { error: "Saisie invalide." };
 
   const article = await container.getArticle.execute(parsed.data.articleId);
-  if (!article.success) return { error: article.error.message };
-  if (article.value.agencyId !== membership.agencyId) return { error: "Forbidden" };
+  if (!article.success) return { error: translateError(article.error) };
+  if (article.value.agencyId !== membership.agencyId) return { error: "Accès refusé." };
 
   const result = await container.exportArticle.execute(parsed.data.articleId, parsed.data.format);
-  if (!result.success) return { error: result.error.message };
+  if (!result.success) return { error: translateError(result.error) };
   return { data: result.value };
 }

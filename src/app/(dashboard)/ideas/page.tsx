@@ -19,10 +19,10 @@ export default async function IdeasPage() {
   return (
     <div className="max-w-4xl">
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight">Ideas</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Idées</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Generate content ideas tailored to your agency themes. Select the themes you want to
-          explore and let AI suggest unique angles.
+          Générez des idées de contenu adaptées aux thématiques de votre agence. Sélectionnez les
+          thématiques à explorer et laissez l&apos;IA suggérer des angles uniques.
         </p>
       </div>
 

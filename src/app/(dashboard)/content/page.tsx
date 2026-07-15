@@ -15,6 +15,12 @@ function statusVariant(status: string) {
   return "secondary" as const;
 }
 
+const STATUS_LABELS: Record<string, string> = {
+  DRAFT: "Brouillon",
+  REVIEW: "Révision",
+  PUBLISHED: "Publié",
+};
+
 interface Props {
   searchParams: Promise<{ tagId?: string; status?: string }>;
 }
@@ -36,13 +42,13 @@ export default async function ContentPage({ searchParams }: Props) {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Content</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Contenu</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {total} {total === 1 ? "article" : "articles"} in your agency
+            {total} {total === 1 ? "article" : "articles"} dans votre agence
           </p>
         </div>
         <Button asChild>
-          <Link href="/content/new">Generate content</Link>
+          <Link href="/content/new">Générer du contenu</Link>
         </Button>
       </div>
 
@@ -55,14 +61,14 @@ export default async function ContentPage({ searchParams }: Props) {
 
       {articles.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground">
-          <p className="text-base font-medium mb-1">No content found</p>
+          <p className="text-base font-medium mb-1">Aucun contenu trouvé</p>
           <p className="text-sm">
             {validStatus || tagId
-              ? "Try removing filters or"
-              : "Generate your first article to get started."}
+              ? "Essayez de supprimer les filtres ou"
+              : "Générez votre premier article pour commencer."}
             {(validStatus || tagId) && (
               <Link href="/content" className="underline underline-offset-4 ml-1">
-                clear filters
+                effacer les filtres
               </Link>
             )}
           </p>
@@ -95,7 +101,7 @@ export default async function ContentPage({ searchParams }: Props) {
                     </div>
                     <div className="flex flex-col items-end gap-1.5 shrink-0">
                       <Badge variant={statusVariant(article.status)} className="capitalize">
-                        {article.status.toLowerCase()}
+                        {STATUS_LABELS[article.status] ?? article.status.toLowerCase()}
                       </Badge>
                       <SeoScoreBadge score={article.seoScore.overall} />
                     </div>

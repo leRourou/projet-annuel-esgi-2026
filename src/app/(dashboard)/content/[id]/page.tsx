@@ -20,6 +20,12 @@ function statusVariant(status: string) {
   return "secondary" as const;
 }
 
+const STATUS_LABELS: Record<string, string> = {
+  DRAFT: "Brouillon",
+  REVIEW: "Révision",
+  PUBLISHED: "Publié",
+};
+
 const SCORE_TEXT_COLOR: Record<ReturnType<typeof seoScoreVariant>, string> = {
   success: "text-green-600",
   warning: "text-amber-500",
@@ -31,9 +37,9 @@ function seoScoreColor(score: number): string {
 }
 
 function seoScoreLabel(score: number): string {
-  if (score >= 80) return "Good";
-  if (score >= 50) return "Needs improvement";
-  return "Poor";
+  if (score >= 80) return "Bon";
+  if (score >= 50) return "À améliorer";
+  return "Insuffisant";
 }
 
 interface Props {
@@ -62,15 +68,15 @@ export default async function ArticlePage({ params }: Props) {
   const seoScore = article.seoScore;
 
   const scoreBreakdownItems = [
-    { label: "H1 heading", pts: seoScore.breakdown.h1, max: 15 },
-    { label: "H2 headings (×2 min)", pts: seoScore.breakdown.h2, max: 15 },
-    { label: "H3 headings", pts: seoScore.breakdown.h3, max: 10 },
-    { label: "Meta title", pts: seoScore.breakdown.metaTitle, max: 15 },
-    { label: "Meta description", pts: seoScore.breakdown.metaDescription, max: 10 },
-    { label: "Keyword in title", pts: seoScore.breakdown.keywordInTitle, max: 15 },
-    { label: "Keyword density", pts: seoScore.breakdown.keywordInBody, max: 10 },
-    { label: "Content length", pts: seoScore.breakdown.wordCount, max: 5 },
-    { label: "Excerpt", pts: seoScore.breakdown.excerpt, max: 5 },
+    { label: "Titre H1", pts: seoScore.breakdown.h1, max: 15 },
+    { label: "Titres H2 (×2 min)", pts: seoScore.breakdown.h2, max: 15 },
+    { label: "Titres H3", pts: seoScore.breakdown.h3, max: 10 },
+    { label: "Titre meta", pts: seoScore.breakdown.metaTitle, max: 15 },
+    { label: "Description meta", pts: seoScore.breakdown.metaDescription, max: 10 },
+    { label: "Mot-clé dans le titre", pts: seoScore.breakdown.keywordInTitle, max: 15 },
+    { label: "Densité du mot-clé", pts: seoScore.breakdown.keywordInBody, max: 10 },
+    { label: "Longueur du contenu", pts: seoScore.breakdown.wordCount, max: 5 },
+    { label: "Extrait", pts: seoScore.breakdown.excerpt, max: 5 },
   ];
 
   return (
@@ -81,7 +87,9 @@ export default async function ArticlePage({ params }: Props) {
           <p className="text-sm text-muted-foreground mt-1">{article.seoMetadata.slug}</p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <Badge variant={statusVariant(article.status)}>{article.status}</Badge>
+          <Badge variant={statusVariant(article.status)}>
+            {STATUS_LABELS[article.status] ?? article.status}
+          </Badge>
           {article.status === "REVIEW" && (
             <form
               action={async () => {
@@ -90,7 +98,7 @@ export default async function ArticlePage({ params }: Props) {
               }}
             >
               <Button type="submit" size="sm">
-                Publish
+                Publier
               </Button>
             </form>
           )}
@@ -109,7 +117,7 @@ export default async function ArticlePage({ params }: Props) {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center justify-between">
-              <span>SEO Score</span>
+              <span>Score SEO</span>
               <span className={`text-2xl font-bold ${seoScoreColor(seoScore.overall)}`}>
                 {seoScore.overall}
                 <span className="text-sm font-normal text-muted-foreground">/100</span>
@@ -136,32 +144,32 @@ export default async function ArticlePage({ params }: Props) {
               ))}
             </div>
             <p className="text-xs text-muted-foreground mt-3">
-              Keyword density: {seoScore.details.keywordDensityPercent}% (target 1–3%)
+              Densité du mot-clé : {seoScore.details.keywordDensityPercent}% (cible 1 à 3%)
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">SEO Metadata</CardTitle>
+            <CardTitle className="text-sm font-medium">Métadonnées SEO</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div>
-              <p className="text-muted-foreground text-xs mb-0.5">Meta title</p>
+              <p className="text-muted-foreground text-xs mb-0.5">Titre meta</p>
               <p>{article.seoMetadata.metaTitle}</p>
             </div>
             <div>
-              <p className="text-muted-foreground text-xs mb-0.5">Meta description</p>
+              <p className="text-muted-foreground text-xs mb-0.5">Description meta</p>
               <p>{article.seoMetadata.metaDescription}</p>
             </div>
             {article.seoMetadata.excerpt && (
               <div>
-                <p className="text-muted-foreground text-xs mb-0.5">Excerpt</p>
+                <p className="text-muted-foreground text-xs mb-0.5">Extrait</p>
                 <p className="italic">{article.seoMetadata.excerpt}</p>
               </div>
             )}
             <div>
-              <p className="text-muted-foreground text-xs mb-1">Keywords</p>
+              <p className="text-muted-foreground text-xs mb-1">Mots-clés</p>
               <div className="flex flex-wrap gap-1">
                 {article.seoMetadata.keywords.map((kw) => (
                   <Badge key={kw} variant="secondary" className="text-xs font-normal">
@@ -188,7 +196,7 @@ export default async function ArticlePage({ params }: Props) {
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium">
-                Curated sources used ({sourceItems.length})
+                Sources curatées utilisées ({sourceItems.length})
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
@@ -215,7 +223,7 @@ export default async function ArticlePage({ params }: Props) {
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Export to Notion</CardTitle>
+            <CardTitle className="text-sm font-medium">Exporter vers Notion</CardTitle>
           </CardHeader>
           <CardContent>
             <NotionExport
@@ -228,7 +236,7 @@ export default async function ArticlePage({ params }: Props) {
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Download</CardTitle>
+            <CardTitle className="text-sm font-medium">Télécharger</CardTitle>
           </CardHeader>
           <CardContent>
             <ExportContent articleId={article.id} />

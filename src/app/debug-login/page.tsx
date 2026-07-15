@@ -18,7 +18,7 @@ export default async function DebugLoginPage(props: {
 
   return (
     <form action={debugSignIn.bind(null, target)}>
-      <button type="submit">Debug sign in</button>
+      <button type="submit">Connexion de débogage</button>
     </form>
   );
 }

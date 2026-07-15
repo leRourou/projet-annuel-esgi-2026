@@ -12,10 +12,10 @@ import {
 import { useState, useTransition } from "react";
 
 const STATUS_LABELS: Record<CurationStatusValue, string> = {
-  UNREAD: "Unread",
-  INTERESTING: "Interesting",
-  IGNORED: "Ignored",
-  TO_USE: "To use",
+  UNREAD: "Non lu",
+  INTERESTING: "Intéressant",
+  IGNORED: "Ignoré",
+  TO_USE: "À utiliser",
 };
 
 const STATUS_VARIANTS: Record<
@@ -52,7 +52,7 @@ function StatusFilter({
         variant={current === "ALL" ? "default" : "outline"}
         onClick={() => onChange("ALL")}
       >
-        All
+        Tous
       </Button>
       {CURATION_STATUSES.map((s) => (
         <Button
@@ -228,13 +228,13 @@ export function CuratedItemsClient({ initialItems, tags }: CuratedItemsClientPro
 
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-2 items-center">
-            <span className="text-xs text-muted-foreground">Filter by tag:</span>
+            <span className="text-xs text-muted-foreground">Filtrer par tag :</span>
             <button type="button" onClick={() => handleTagFilterChange(null)}>
               <Badge
                 variant={tagFilter === null ? "default" : "outline"}
                 className="cursor-pointer"
               >
-                All tags
+                Tous les tags
               </Badge>
             </button>
             {tags.map((tag) => (
@@ -258,7 +258,7 @@ export function CuratedItemsClient({ initialItems, tags }: CuratedItemsClientPro
       <div className={`space-y-3 ${isLoading ? "opacity-70" : ""}`}>
         {items.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-12">
-            No articles found. Add RSS feeds and refresh them to start curating.
+            Aucun article trouvé. Ajoutez des flux RSS et actualisez-les pour commencer la curation.
           </p>
         ) : (
           <>

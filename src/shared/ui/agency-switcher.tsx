@@ -31,7 +31,7 @@ export function AgencySwitcher({ currentAgencyId, agencies }: AgencySwitcherProp
       }}
     >
       <SelectTrigger className="w-full h-8 text-xs">
-        <SelectValue placeholder="Select agency" />
+        <SelectValue placeholder="Sélectionner une agence" />
       </SelectTrigger>
       <SelectContent>
         {agencies.map((a) => (

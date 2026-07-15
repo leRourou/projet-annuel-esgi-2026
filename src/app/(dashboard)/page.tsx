@@ -30,9 +30,9 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Tableau de bord</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Overview of your agency&apos;s content activity
+          Vue d&apos;ensemble de l&apos;activité de contenu de votre agence
         </p>
       </div>
 
@@ -42,7 +42,7 @@ export default async function DashboardPage() {
           <Card className="hover:border-foreground/20 transition-colors">
             <CardContent className="p-4">
               <p className="text-3xl font-bold tabular-nums">{totalArticles}</p>
-              <p className="text-xs text-muted-foreground mt-1">Total articles</p>
+              <p className="text-xs text-muted-foreground mt-1">Articles au total</p>
             </CardContent>
           </Card>
         </Link>
@@ -50,7 +50,7 @@ export default async function DashboardPage() {
           <Card className="hover:border-foreground/20 transition-colors">
             <CardContent className="p-4">
               <p className="text-3xl font-bold tabular-nums">{draftCount}</p>
-              <p className="text-xs text-muted-foreground mt-1">Drafts</p>
+              <p className="text-xs text-muted-foreground mt-1">Brouillons</p>
             </CardContent>
           </Card>
         </Link>
@@ -58,7 +58,7 @@ export default async function DashboardPage() {
           <Card className="hover:border-foreground/20 transition-colors">
             <CardContent className="p-4">
               <p className="text-3xl font-bold tabular-nums">{reviewCount}</p>
-              <p className="text-xs text-muted-foreground mt-1">In review</p>
+              <p className="text-xs text-muted-foreground mt-1">En révision</p>
             </CardContent>
           </Card>
         </Link>
@@ -66,7 +66,7 @@ export default async function DashboardPage() {
           <Card className="hover:border-foreground/20 transition-colors">
             <CardContent className="p-4">
               <p className="text-3xl font-bold tabular-nums">{publishedCount}</p>
-              <p className="text-xs text-muted-foreground mt-1">Published</p>
+              <p className="text-xs text-muted-foreground mt-1">Publiés</p>
             </CardContent>
           </Card>
         </Link>
@@ -75,34 +75,34 @@ export default async function DashboardPage() {
       {/* Quick actions */}
       <div className="flex flex-wrap gap-3">
         <Button asChild>
-          <Link href="/content/new">Generate content</Link>
+          <Link href="/content/new">Générer du contenu</Link>
         </Button>
         <Button asChild variant="outline">
-          <Link href="/ideas">Generate ideas</Link>
+          <Link href="/ideas">Générer des idées</Link>
         </Button>
         <Button asChild variant="outline">
-          <Link href="/rss">Manage RSS feeds</Link>
+          <Link href="/rss">Gérer les flux RSS</Link>
         </Button>
       </div>
 
       {/* Recent articles */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-medium">Recent articles</h2>
+          <h2 className="text-sm font-medium">Articles récents</h2>
           <Link
             href="/content"
             className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-4"
           >
-            View all
+            Voir tout
           </Link>
         </div>
 
         {recentArticles.length === 0 ? (
           <Card>
             <CardContent className="py-8 text-center">
-              <p className="text-sm text-muted-foreground">No articles yet.</p>
+              <p className="text-sm text-muted-foreground">Aucun article pour le moment.</p>
               <Button asChild className="mt-4" size="sm">
-                <Link href="/content/new">Generate your first article</Link>
+                <Link href="/content/new">Générer votre premier article</Link>
               </Button>
             </CardContent>
           </Card>
@@ -133,13 +133,13 @@ export default async function DashboardPage() {
       {feedCount > 0 && (
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">RSS Sources</CardTitle>
+            <CardTitle className="text-sm font-medium">Sources RSS</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              {feedCount} {feedCount === 1 ? "source" : "sources"} configured.{" "}
+              {feedCount} {feedCount === 1 ? "source configurée" : "sources configurées"}.{" "}
               <Link href="/rss" className="underline underline-offset-4">
-                Manage feeds →
+                Gérer les flux →
               </Link>
             </p>
           </CardContent>

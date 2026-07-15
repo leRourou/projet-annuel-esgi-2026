@@ -59,12 +59,12 @@ export function TagsClient({ initialTags, isAdmin }: TagsClientProps) {
     <div className="space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Agency tags</CardTitle>
+          <CardTitle className="text-base">Tags de l&apos;agence</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {tags.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No tags yet. Add some to classify your content.
+              Aucun tag pour le moment. Ajoutez-en pour classer votre contenu.
             </p>
           ) : (
             <div className="flex flex-wrap gap-2">
@@ -79,7 +79,7 @@ export function TagsClient({ initialTags, isAdmin }: TagsClientProps) {
                       onClick={() => handleDelete(tag.id)}
                       disabled={isPending}
                       className="text-muted-foreground hover:text-destructive transition-colors text-xs ml-1"
-                      aria-label={`Remove tag ${tag.name}`}
+                      aria-label={`Supprimer le tag ${tag.name}`}
                     >
                       ×
                     </button>
@@ -94,7 +94,7 @@ export function TagsClient({ initialTags, isAdmin }: TagsClientProps) {
               <Input
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                placeholder="New tag name…"
+                placeholder="Nom du nouveau tag…"
                 className="max-w-xs"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleAdd();
@@ -102,7 +102,7 @@ export function TagsClient({ initialTags, isAdmin }: TagsClientProps) {
                 disabled={isPending}
               />
               <Button onClick={handleAdd} disabled={isPending || !newName.trim()} size="sm">
-                Add
+                Ajouter
               </Button>
             </div>
           )}
@@ -112,7 +112,9 @@ export function TagsClient({ initialTags, isAdmin }: TagsClientProps) {
       </Card>
 
       {!isAdmin && (
-        <p className="text-xs text-muted-foreground">Only admins can add or remove tags.</p>
+        <p className="text-xs text-muted-foreground">
+          Seuls les administrateurs peuvent ajouter ou supprimer des tags.
+        </p>
       )}
     </div>
   );

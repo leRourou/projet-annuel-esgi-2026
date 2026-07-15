@@ -42,19 +42,20 @@ function CurationSyncPanel() {
   return (
     <Card className="mb-6">
       <CardHeader>
-        <CardTitle className="text-base">Curation database sync</CardTitle>
+        <CardTitle className="text-base">Synchronisation de la base de curation</CardTitle>
         <CardDescription className="text-xs">
-          Imports new pages from the configured Notion database as curation sources.
+          Importe les nouvelles pages de la base de données Notion configurée comme sources de
+          curation.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         {!databaseId ? (
           <p className="text-xs text-muted-foreground">
-            No Notion database configured. Choose one in Settings.
+            Aucune base de données Notion configurée. Choisissez-en une dans les paramètres.
           </p>
         ) : (
           <Button size="sm" onClick={handleSync} disabled={isPending}>
-            Import new entries
+            Importer les nouvelles entrées
           </Button>
         )}
         {error && (
@@ -64,7 +65,7 @@ function CurationSyncPanel() {
         )}
         {stats && (
           <p className="text-xs text-muted-foreground">
-            {stats.imported} new entry(ies) imported, {stats.skipped} already known.
+            {stats.imported} nouvelle(s) entrée(s) importée(s), {stats.skipped} déjà connue(s).
           </p>
         )}
       </CardContent>
@@ -97,7 +98,7 @@ export default function NotionPage() {
       if (result.error) {
         setError(result.error);
       } else {
-        alert(`Imported as article: ${result.data?.title}`);
+        alert(`Importé en tant qu'article : ${result.data?.title}`);
       }
     });
   }
@@ -107,7 +108,7 @@ export default function NotionPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-semibold tracking-tight">Notion</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Search and import pages from your Notion workspace
+          Recherchez et importez des pages depuis votre espace de travail Notion
         </p>
       </div>
 
@@ -118,11 +119,11 @@ export default function NotionPage() {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search Notion pages..."
+          placeholder="Rechercher des pages Notion..."
           className="flex-1"
         />
         <Button type="submit" disabled={isPending || !query.trim()}>
-          Search
+          Rechercher
         </Button>
       </form>
 
@@ -140,7 +141,8 @@ export default function NotionPage() {
                 <div className="min-w-0">
                   <p className="text-sm font-medium truncate">{page.title}</p>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Last edited: {new Date(page.lastEditedAt).toLocaleDateString("fr-FR")}
+                    Dernière modification :{" "}
+                    {new Date(page.lastEditedAt).toLocaleDateString("fr-FR")}
                   </p>
                 </div>
                 <Button
@@ -150,7 +152,7 @@ export default function NotionPage() {
                   disabled={isPending}
                   className="shrink-0"
                 >
-                  Import
+                  Importer
                 </Button>
               </div>
             </CardContent>

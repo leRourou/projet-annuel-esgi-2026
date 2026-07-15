@@ -40,9 +40,9 @@ export function ImagePromptCard({ articleId, initialPrompt }: ImagePromptCardPro
   return (
     <Card>
       <CardHeader className="pb-3 flex flex-row items-center justify-between">
-        <CardTitle className="text-sm font-medium">AI Image Prompt</CardTitle>
+        <CardTitle className="text-sm font-medium">Prompt d'image IA</CardTitle>
         <Button variant="ghost" size="sm" onClick={handleCopy} className="h-6 px-2 text-xs">
-          {copied ? "Copied!" : "Copy"}
+          {copied ? "Copié !" : "Copier"}
         </Button>
       </CardHeader>
       <CardContent className="space-y-2">
@@ -60,7 +60,7 @@ export function ImagePromptCard({ articleId, initialPrompt }: ImagePromptCardPro
           onClick={handleSave}
           disabled={isPending || prompt === (initialPrompt ?? "")}
         >
-          {isPending ? "Saving…" : "Save prompt"}
+          {isPending ? "Enregistrement…" : "Enregistrer le prompt"}
         </Button>
       </CardContent>
     </Card>

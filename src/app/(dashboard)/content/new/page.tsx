@@ -24,29 +24,29 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 
 const CONTENT_TYPE_LABELS: Record<string, string> = {
-  ARTICLE: "Blog article",
-  PRODUCT_SHEET: "Product sheet",
-  META: "Meta description",
-  LINKEDIN_POST: "LinkedIn post",
-  FACEBOOK_POST: "Facebook post",
-  INSTAGRAM_POST: "Instagram post",
-  SUBSTACK_ARTICLE: "Substack newsletter",
+  ARTICLE: "Article de blog",
+  PRODUCT_SHEET: "Fiche produit",
+  META: "Description meta",
+  LINKEDIN_POST: "Post LinkedIn",
+  FACEBOOK_POST: "Post Facebook",
+  INSTAGRAM_POST: "Post Instagram",
+  SUBSTACK_ARTICLE: "Newsletter Substack",
 };
 
 const SOCIAL_CONTENT_TYPES = ["LINKEDIN_POST", "FACEBOOK_POST", "INSTAGRAM_POST"];
 
 const LANGUAGE_LABELS: Record<string, string> = {
   FR: "Français",
-  EN: "English",
+  EN: "Anglais",
 };
 
 const ARTICLE_TYPE_OPTIONS = [
-  { value: "HOW_TO", label: "How-to guide" },
-  { value: "LISTICLE", label: "Listicle" },
-  { value: "COMPARISON", label: "Comparison" },
-  { value: "CASE_STUDY", label: "Case study" },
+  { value: "HOW_TO", label: "Guide pratique" },
+  { value: "LISTICLE", label: "Liste" },
+  { value: "COMPARISON", label: "Comparatif" },
+  { value: "CASE_STUDY", label: "Étude de cas" },
   { value: "OPINION", label: "Opinion" },
-  { value: "NEWS", label: "News" },
+  { value: "NEWS", label: "Actualité" },
 ] as const;
 
 const DEFAULT_WORD_COUNT = 1200;
@@ -134,7 +134,7 @@ function NewContentForm() {
     const result = await generateEnrichedArticleAction(input);
     setEnrichedLoading(false);
     if (result.error || !result.data) {
-      setSaveError(result.error ?? "Generation failed");
+      setSaveError(result.error ?? "Échec de la génération");
       return;
     }
     router.push(`/content/${result.data.id}`);
@@ -156,7 +156,7 @@ function NewContentForm() {
     });
     setSaving(false);
     if (result.error || !result.data) {
-      setSaveError(result.error ?? "Unknown error");
+      setSaveError(result.error ?? "Erreur inconnue");
       return;
     }
     router.push(`/content/${result.data.id}`);
@@ -169,11 +169,11 @@ function NewContentForm() {
 
   return (
     <div className="max-w-2xl space-y-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Generate content</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">Générer du contenu</h1>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Article details</CardTitle>
+          <CardTitle className="text-base">Détails de l'article</CardTitle>
         </CardHeader>
         <CardContent>
           <form ref={formRef} className="space-y-5">
@@ -184,12 +184,12 @@ function NewContentForm() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="topic">Topic *</Label>
+              <Label htmlFor="topic">Sujet *</Label>
               <Input
                 id="topic"
                 name="topic"
                 required
-                placeholder="e.g. Best practices for TypeScript in 2025"
+                placeholder="ex. Bonnes pratiques TypeScript en 2025"
                 defaultValue={prefilledTopic}
                 disabled={isGenerating}
               />
@@ -197,21 +197,23 @@ function NewContentForm() {
 
             <div className="space-y-2">
               <Label htmlFor="keywords">
-                Keywords *{" "}
-                <span className="text-muted-foreground font-normal">(comma-separated)</span>
+                Mots-clés *{" "}
+                <span className="text-muted-foreground font-normal">
+                  (séparés par des virgules)
+                </span>
               </Label>
               <Input
                 id="keywords"
                 name="keywords"
                 required
-                placeholder="typescript, clean code, developer tools"
+                placeholder="typescript, code propre, outils développeur"
                 defaultValue={prefilledKeywords}
                 disabled={isGenerating}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="contentType">Content type *</Label>
+              <Label htmlFor="contentType">Type de contenu *</Label>
               <Select
                 value={contentType}
                 onValueChange={(v) => {
@@ -234,7 +236,7 @@ function NewContentForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="language">Language *</Label>
+              <Label htmlFor="language">Langue *</Label>
               <Select value={language} onValueChange={setLanguage} disabled={isGenerating}>
                 <SelectTrigger id="language">
                   <SelectValue />
@@ -251,7 +253,7 @@ function NewContentForm() {
 
             {isArticle && (
               <div className="space-y-3">
-                <Label>Article type</Label>
+                <Label>Type d'article</Label>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                   {ARTICLE_TYPE_OPTIONS.map((option) => {
                     const selected = articleType === option.value;
@@ -275,16 +277,16 @@ function NewContentForm() {
                   })}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Optional — shapes the structure of the generated article.
+                  Facultatif — détermine la structure de l'article généré.
                 </p>
               </div>
             )}
 
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label>Length</Label>
+                <Label>Longueur</Label>
                 <span className="text-sm text-muted-foreground tabular-nums">
-                  {wordCount.toLocaleString()} words
+                  {wordCount.toLocaleString("fr-FR")} mots
                 </span>
               </div>
               <Slider
@@ -304,11 +306,11 @@ function NewContentForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="tone">Tone</Label>
+              <Label htmlFor="tone">Ton</Label>
               <Input
                 id="tone"
                 name="tone"
-                placeholder="e.g. professional, friendly, technical"
+                placeholder="ex. professionnel, convivial, technique"
                 disabled={isGenerating}
               />
             </div>
@@ -316,9 +318,10 @@ function NewContentForm() {
             <div className="rounded-lg border border-input p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium">Enrich with curated sources</p>
+                  <p className="text-sm font-medium">Enrichir avec des sources curatées</p>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Automatically injects your "To use" RSS articles as research context
+                    Injecte automatiquement vos articles RSS marqués « À utiliser » en tant que
+                    contexte de recherche
                   </p>
                 </div>
                 <button
@@ -342,8 +345,9 @@ function NewContentForm() {
               </div>
               {enriched && (
                 <p className="text-xs text-muted-foreground bg-muted rounded px-3 py-2">
-                  The article will be generated and saved immediately — no streaming preview. Make
-                  sure you have articles marked as "To use" in the RSS curation feed.
+                  L'article sera généré et enregistré immédiatement — pas d'aperçu en streaming.
+                  Assurez-vous d'avoir des articles marqués « À utiliser » dans le flux de curation
+                  RSS.
                 </p>
               )}
             </div>
@@ -355,12 +359,12 @@ function NewContentForm() {
               className="w-full"
             >
               {enrichedLoading
-                ? "Generating enriched article…"
+                ? "Génération de l'article enrichi…"
                 : isGenerating
-                  ? "Writing your content…"
+                  ? "Rédaction de votre contenu…"
                   : enriched
-                    ? "Generate enriched article"
-                    : "Generate"}
+                    ? "Générer l'article enrichi"
+                    : "Générer"}
             </Button>
           </form>
         </CardContent>
@@ -371,7 +375,7 @@ function NewContentForm() {
           <CardContent className="pt-6">
             <div className="flex items-center gap-3 text-muted-foreground">
               <span className="animate-pulse">●</span>
-              <span className="text-sm">Claude is writing your content…</span>
+              <span className="text-sm">Claude rédige votre contenu…</span>
             </div>
           </CardContent>
         </Card>
@@ -380,14 +384,14 @@ function NewContentForm() {
       {showPreview && (
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-base">Generated content</CardTitle>
+            <CardTitle className="text-base">Contenu généré</CardTitle>
             <Badge variant="outline">{CONTENT_TYPE_LABELS[contentType]}</Badge>
           </CardHeader>
           <CardContent className="space-y-4">
             {SOCIAL_CONTENT_TYPES.includes(contentType) ? (
               <div className="rounded-lg border bg-muted/30 p-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <Badge variant="outline">{CONTENT_TYPE_LABELS[contentType]} preview</Badge>
+                  <Badge variant="outline">Aperçu — {CONTENT_TYPE_LABELS[contentType]}</Badge>
                 </div>
                 <p className="whitespace-pre-wrap text-sm leading-relaxed font-sans">
                   {parsedContent.body}
@@ -397,7 +401,7 @@ function NewContentForm() {
               <>
                 <div>
                   <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
-                    {contentType === "SUBSTACK_ARTICLE" ? "Subject line" : "Title"}
+                    {contentType === "SUBSTACK_ARTICLE" ? "Objet" : "Titre"}
                   </p>
                   <p className="font-semibold">{parsedContent.title}</p>
                 </div>
@@ -406,7 +410,7 @@ function NewContentForm() {
 
                 <div>
                   <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
-                    Content
+                    Contenu
                   </p>
                   <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans">
                     {parsedContent.body}
@@ -418,13 +422,13 @@ function NewContentForm() {
                 <div className="grid grid-cols-1 gap-3">
                   <div>
                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
-                      Meta title
+                      Titre meta
                     </p>
                     <p className="text-sm">{parsedContent.metaTitle}</p>
                   </div>
                   <div>
                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
-                      Meta description
+                      Description meta
                     </p>
                     <p className="text-sm text-muted-foreground">{parsedContent.metaDescription}</p>
                   </div>
@@ -434,7 +438,7 @@ function NewContentForm() {
 
             <div>
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
-                {SOCIAL_CONTENT_TYPES.includes(contentType) ? "Hashtags" : "Keywords"}
+                {SOCIAL_CONTENT_TYPES.includes(contentType) ? "Hashtags" : "Mots-clés"}
               </p>
               <div className="flex flex-wrap gap-1">
                 {parsedContent.suggestedKeywords.map((kw) => (
@@ -451,7 +455,7 @@ function NewContentForm() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                      AI image prompt
+                      Prompt d'image IA
                     </p>
                     <Button
                       type="button"
@@ -460,7 +464,7 @@ function NewContentForm() {
                       onClick={handleCopyImagePrompt}
                       className="h-6 px-2 text-xs"
                     >
-                      {imagePromptCopied ? "Copied!" : "Copy"}
+                      {imagePromptCopied ? "Copié !" : "Copier"}
                     </Button>
                   </div>
                   <Input
@@ -481,10 +485,10 @@ function NewContentForm() {
 
             <div className="flex gap-3 pt-2">
               <Button variant="outline" onClick={handleGenerate} disabled={saving}>
-                Regenerate
+                Régénérer
               </Button>
               <Button onClick={handleSave} disabled={saving} className="flex-1">
-                {saving ? "Saving…" : "Save article"}
+                {saving ? "Enregistrement…" : "Enregistrer l'article"}
               </Button>
             </div>
           </CardContent>
@@ -494,12 +498,12 @@ function NewContentForm() {
       {isDone && !parsedContent && text && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Raw output</CardTitle>
+            <CardTitle className="text-base">Sortie brute</CardTitle>
           </CardHeader>
           <CardContent>
             <pre className="whitespace-pre-wrap text-sm font-mono leading-relaxed">{text}</pre>
             <Button variant="outline" onClick={handleGenerate} className="mt-4">
-              Retry
+              Réessayer
             </Button>
           </CardContent>
         </Card>

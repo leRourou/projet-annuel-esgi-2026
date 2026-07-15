@@ -22,7 +22,7 @@ export default async function TagsPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-semibold tracking-tight">Tags</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Tags help you classify your content across articles, ideas and curated sources.
+          Les tags vous aident à classer votre contenu entre articles, idées et sources curatées.
         </p>
       </div>
 

@@ -26,7 +26,7 @@ export function MembersClient({ actorRole }: { actorRole: string }) {
       const email = formData.get("email") as string;
       const result = await inviteMemberAction({ targetEmail: email, role: inviteRole });
       if (result.error) return { error: result.error };
-      return { success: `Invitation sent to ${email}` };
+      return { success: `Invitation envoyée à ${email}` };
     },
     {},
   );
@@ -36,7 +36,7 @@ export function MembersClient({ actorRole }: { actorRole: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Invite a collaborator</CardTitle>
+        <CardTitle className="text-base">Inviter un collaborateur</CardTitle>
       </CardHeader>
       <CardContent>
         <form action={formAction} className="space-y-4">
@@ -52,31 +52,31 @@ export function MembersClient({ actorRole }: { actorRole: string }) {
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email address *</Label>
+            <Label htmlFor="email">Adresse e-mail *</Label>
             <Input
               id="email"
               name="email"
               type="email"
               required
-              placeholder="colleague@example.com"
+              placeholder="collegue@exemple.com"
             />
           </div>
 
           <div className="space-y-2">
-            <Label>Role</Label>
+            <Label>Rôle</Label>
             <Select value={inviteRole} onValueChange={setInviteRole}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="MEMBER">Member</SelectItem>
-                <SelectItem value="VIEWER">Viewer</SelectItem>
+                <SelectItem value="MEMBER">Membre</SelectItem>
+                <SelectItem value="VIEWER">Lecteur</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <Button type="submit" disabled={isPending}>
-            {isPending ? "Sending…" : "Send invitation"}
+            {isPending ? "Envoi…" : "Envoyer l'invitation"}
           </Button>
         </form>
       </CardContent>

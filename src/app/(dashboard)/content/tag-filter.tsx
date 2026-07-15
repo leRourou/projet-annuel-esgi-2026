@@ -23,13 +23,13 @@ export function TagFilter({ tags, activeTagId }: TagFilterProps) {
 
   return (
     <div className="flex flex-wrap gap-2 items-center">
-      <span className="text-xs text-muted-foreground">Filter:</span>
+      <span className="text-xs text-muted-foreground">Filtrer :</span>
       <button
         type="button"
         onClick={() => select(undefined)}
         className="text-xs text-muted-foreground hover:text-foreground transition-colors"
       >
-        All
+        Tous
       </button>
       {tags.map((tag) => (
         <button key={tag.id} type="button" onClick={() => select(tag.id)}>

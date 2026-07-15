@@ -19,7 +19,7 @@ interface IdeasClientProps {
 
 const CONTENT_TYPE_LABELS: Record<string, string> = {
   ARTICLE: "Article",
-  PRODUCT_SHEET: "Product Sheet",
+  PRODUCT_SHEET: "Fiche produit",
   META: "Meta",
 };
 
@@ -54,11 +54,11 @@ export function IdeasClient({ themes }: IdeasClientProps) {
       <Card>
         <CardContent className="py-12 text-center">
           <p className="text-muted-foreground text-sm">
-            No themes configured for your agency yet.{" "}
+            Aucune thématique configurée pour votre agence pour le moment.{" "}
             <Link href="/settings/themes" className="underline underline-offset-4">
-              Add themes in Settings
+              Ajoutez des thématiques dans les paramètres
             </Link>{" "}
-            to start generating ideas.
+            pour commencer à générer des idées.
           </p>
         </CardContent>
       </Card>
@@ -69,7 +69,7 @@ export function IdeasClient({ themes }: IdeasClientProps) {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Select themes</CardTitle>
+          <CardTitle className="text-base">Sélectionner des thématiques</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex flex-wrap gap-2">
@@ -91,7 +91,7 @@ export function IdeasClient({ themes }: IdeasClientProps) {
           </div>
 
           <Button onClick={handleGenerate} disabled={isPending || selectedThemes.length === 0}>
-            {isPending ? "Generating…" : "Generate ideas"}
+            {isPending ? "Génération…" : "Générer des idées"}
           </Button>
 
           {error && <p className="text-sm text-destructive">{error}</p>}
@@ -101,7 +101,7 @@ export function IdeasClient({ themes }: IdeasClientProps) {
       {ideas.length > 0 && (
         <div className="space-y-3">
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-            {ideas.length} ideas generated
+            {ideas.length} idées générées
           </h2>
           {ideas.map((idea) => (
             <Card key={idea.title}>
@@ -126,7 +126,7 @@ export function IdeasClient({ themes }: IdeasClientProps) {
                       href={`/content/new?topic=${encodeURIComponent(idea.title)}&keywords=${encodeURIComponent(idea.keywords.join(","))}&contentType=${encodeURIComponent(idea.contentType)}`}
                     >
                       <Button size="sm" variant="outline">
-                        Write →
+                        Rédiger →
                       </Button>
                     </Link>
                   </div>

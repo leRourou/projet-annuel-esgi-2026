@@ -8,9 +8,9 @@ export default async function CalendarPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">Calendar</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Calendrier</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Drag content between days to reschedule its publication date.
+          Faites glisser un contenu d'un jour à l'autre pour reprogrammer sa date de publication.
         </p>
       </div>
       <CalendarView initialArticles={articles} />
