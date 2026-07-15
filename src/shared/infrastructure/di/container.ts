@@ -29,6 +29,7 @@ import { GetUserMembershipQuery } from "@/modules/agency/application/queries/get
 import { ListMembersQuery } from "@/modules/agency/application/queries/list-members.query";
 import { ListTagsQuery } from "@/modules/agency/application/queries/list-tags.query";
 import { ListThemesQuery } from "@/modules/agency/application/queries/list-themes.query";
+import { ListUserAgenciesQuery } from "@/modules/agency/application/queries/list-user-agencies.query";
 import { CompleteOnboardingCommand } from "@/modules/auth/application/commands/complete-onboarding.command";
 import { CreateUserCommand } from "@/modules/auth/application/commands/create-user.command";
 import { GetUserByEmailQuery } from "@/modules/auth/application/queries/get-user-by-email.query";
@@ -156,8 +157,9 @@ export async function buildContainer() {
     updateMemberRole: new UpdateMemberRoleCommand(agencyMemberRepository),
     removeMember: new RemoveMemberCommand(agencyMemberRepository),
     getAgency: new GetAgencyQuery(agencyRepository, agencyMemberRepository),
-    listMembers: new ListMembersQuery(agencyMemberRepository),
+    listMembers: new ListMembersQuery(agencyMemberRepository, userRepository),
     getUserMembership: new GetUserMembershipQuery(agencyMemberRepository),
+    listUserAgencies: new ListUserAgenciesQuery(agencyMemberRepository, agencyRepository),
     updateAgencyNotionConfig: new UpdateAgencyNotionConfigCommand(
       agencyRepository,
       agencyMemberRepository,

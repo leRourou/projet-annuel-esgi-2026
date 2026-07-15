@@ -5,6 +5,9 @@ import { UpdateAgencyContextInputSchema } from "@/modules/agency/application/com
 import type { AgencyContextDto } from "@/modules/agency/application/dto/agency-context.dto";
 import type { AgencyDto, AgencyMemberDto } from "@/modules/agency/application/dto/agency.dto";
 import { buildContainer } from "@/shared/infrastructure/di/container";
+import { ACTIVE_AGENCY_COOKIE, getActiveAgencyId } from "@/shared/lib/active-agency";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 type ActionResult<T> = { data: T; error?: never } | { data?: never; error: string };
 
@@ -22,7 +25,7 @@ export async function createAgencyAction(input: {
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const existing = await container.getUserMembership.execute(session.user.id);
+  const existing = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (existing) return { error: "You already belong to an agency" };
 
   const result = await container.createAgency.execute({
@@ -39,7 +42,7 @@ export async function getAgencyAction(): Promise<ActionResult<AgencyDto>> {
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const result = await container.getAgency.execute({ agencyId: membership.agencyId });
@@ -52,7 +55,7 @@ export async function listMembersAction(): Promise<ActionResult<AgencyMemberDto[
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const members = await container.listMembers.execute({ agencyId: membership.agencyId });
@@ -67,7 +70,7 @@ export async function inviteMemberAction(input: {
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const result = await container.inviteMember.execute({
@@ -99,7 +102,7 @@ export async function updateMemberRoleAction(input: {
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const result = await container.updateMemberRole.execute({
@@ -118,7 +121,7 @@ export async function removeMemberAction(targetUserId: string): Promise<ActionRe
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const result = await container.removeMember.execute({
@@ -136,7 +139,7 @@ export async function getAgencyContextAction(): Promise<ActionResult<AgencyConte
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const context = await container.getAgencyContext.execute(membership.agencyId);
@@ -150,7 +153,7 @@ export async function updateAgencyContextAction(
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const parsed = UpdateAgencyContextInputSchema.safeParse({
@@ -167,4 +170,36 @@ export async function updateAgencyContextAction(
   const result = await container.updateAgencyContext.execute(parsed.data);
   if (!result.success) return { error: result.error.message };
   return { data: result.value };
+}
+
+export async function listUserAgenciesAction(): Promise<
+  ActionResult<{ agencyId: string; agencyName: string; role: string }[]>
+> {
+  const session = await requireSession();
+  if (!session) return { error: "Unauthorized" };
+
+  const container = await buildContainer();
+  const agencies = await container.listUserAgencies.execute(session.user.id);
+  return { data: agencies };
+}
+
+export async function switchAgencyAction(agencyId: string): Promise<ActionResult<void>> {
+  const session = await requireSession();
+  if (!session) return { error: "Unauthorized" };
+
+  const container = await buildContainer();
+  const agencies = await container.listUserAgencies.execute(session.user.id);
+  if (!agencies.some((a) => a.agencyId === agencyId)) {
+    return { error: "You are not a member of this agency" };
+  }
+
+  const store = await cookies();
+  store.set(ACTIVE_AGENCY_COOKIE, agencyId, {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365,
+  });
+
+  redirect("/content");
 }

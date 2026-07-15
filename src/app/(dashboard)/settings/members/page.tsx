@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { auth } from "@/lib/auth";
 import { buildContainer } from "@/shared/infrastructure/di/container";
+import { getActiveAgencyId } from "@/shared/lib/active-agency";
 import { redirect } from "next/navigation";
 import { MembersClient } from "./members-client";
 
@@ -11,7 +12,7 @@ export default async function MembersPage() {
   if (!session?.user?.id) redirect("/login");
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) redirect("/onboarding");
 
   const [agency, members] = await Promise.all([
@@ -39,7 +40,10 @@ export default async function MembersPage() {
               className="flex items-center justify-between py-3 first:pt-0 last:pb-0"
             >
               <div className="text-sm">
-                <p className="font-medium">{m.userId}</p>
+                <p className="font-medium">{m.userName ?? m.userEmail ?? m.userId}</p>
+                {m.userName && m.userEmail && (
+                  <p className="text-xs text-muted-foreground">{m.userEmail}</p>
+                )}
                 {m.isPending && (
                   <p className="text-xs text-muted-foreground mt-0.5">Invitation pending</p>
                 )}

@@ -1,3 +1,4 @@
+import { In } from "typeorm";
 import type { DataSource, Repository } from "typeorm";
 import type { Agency } from "../../domain/entities/agency.entity";
 import type { AgencyRepositoryPort } from "../../domain/ports/agency.repository.port";
@@ -14,6 +15,12 @@ export class TypeormAgencyRepository implements AgencyRepositoryPort {
   async findById(id: string): Promise<Agency | null> {
     const entity = await this.repo.findOneBy({ id });
     return entity ? AgencyMapper.toDomain(entity) : null;
+  }
+
+  async findByIds(ids: string[]): Promise<Agency[]> {
+    if (ids.length === 0) return [];
+    const entities = await this.repo.findBy({ id: In(ids) });
+    return entities.map(AgencyMapper.toDomain);
   }
 
   async findBySlug(slug: string): Promise<Agency | null> {

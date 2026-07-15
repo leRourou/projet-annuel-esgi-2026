@@ -1,3 +1,4 @@
+import { In } from "typeorm";
 import type { DataSource, Repository } from "typeorm";
 import type { User } from "../../domain/entities/user.entity";
 import type { UserRepositoryPort } from "../../domain/ports/user.repository.port";
@@ -14,6 +15,12 @@ export class TypeormUserRepository implements UserRepositoryPort {
   async findById(id: string): Promise<User | null> {
     const entity = await this.repo.findOneBy({ id });
     return entity ? UserMapper.toDomain(entity) : null;
+  }
+
+  async findByIds(ids: string[]): Promise<User[]> {
+    if (ids.length === 0) return [];
+    const entities = await this.repo.findBy({ id: In(ids) });
+    return entities.map(UserMapper.toDomain);
   }
 
   async findByEmail(email: string): Promise<User | null> {

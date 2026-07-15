@@ -45,6 +45,8 @@ export class UpdateMemberRoleCommand {
       return Result.ok({
         id: member.id,
         userId: member.userId,
+        userEmail: null,
+        userName: null,
         agencyId: member.agencyId,
         role: member.role.value,
         joinedAt: member.joinedAt,

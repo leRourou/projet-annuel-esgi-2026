@@ -31,6 +31,11 @@ export class TypeormAgencyMemberRepository implements AgencyMemberRepositoryPort
     return entity ? AgencyMemberMapper.toDomain(entity) : null;
   }
 
+  async findAllByUser(userId: string): Promise<AgencyMember[]> {
+    const entities = await this.repo.findBy({ userId });
+    return entities.map(AgencyMemberMapper.toDomain);
+  }
+
   async save(member: AgencyMember): Promise<void> {
     await this.repo.save(AgencyMemberMapper.toPersistence(member));
   }

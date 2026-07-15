@@ -11,6 +11,8 @@ export interface AgencyDto {
 export interface AgencyMemberDto {
   id: string;
   userId: string;
+  userEmail: string | null;
+  userName: string | null;
   agencyId: string;
   role: "ADMIN" | "MEMBER" | "VIEWER";
   joinedAt: Date | null;

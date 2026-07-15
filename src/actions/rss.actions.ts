@@ -10,6 +10,7 @@ import { ListCuratedItemsInputSchema } from "@/modules/rss/application/queries/l
 import { ListFeedItemsInputSchema } from "@/modules/rss/application/queries/list-feed-items.query";
 import type { CurationStatusValue } from "@/modules/rss/domain/value-objects/curation-status.vo";
 import { buildContainer } from "@/shared/infrastructure/di/container";
+import { getActiveAgencyId } from "@/shared/lib/active-agency";
 
 type ActionResult<T> = { data: T; error?: never } | { data?: never; error: string };
 
@@ -24,7 +25,7 @@ export async function addFeedAction(input: unknown): Promise<ActionResult<{ id: 
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
   if (membership.role === "VIEWER") return { error: "Insufficient permissions" };
 
@@ -47,7 +48,7 @@ export async function refreshFeedsAction(): Promise<
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const stats = await container.refreshFeeds.execute();
@@ -59,7 +60,7 @@ export async function listFeedsAction(): Promise<ActionResult<FeedDto[]>> {
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const feeds = await container.listFeeds.execute(membership.agencyId);
@@ -90,7 +91,7 @@ export async function listCuratedItemsAction(filters?: {
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const parsed = ListCuratedItemsInputSchema.safeParse({
@@ -120,7 +121,7 @@ export async function qualifyFeedItemAction(
 
   // Best-effort push of the curation status back to Notion for Notion-sourced items.
   // Never blocks or fails the qualification itself.
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (membership && !membership.isPending) {
     const notionToken = await getAgencyNotionToken(membership.agencyId);
     if (notionToken) {
@@ -142,7 +143,7 @@ export async function getSourceItemsAction(
   if (sourceIds.length === 0) return { data: [] };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const items = await container.getSourceItems.execute(sourceIds);

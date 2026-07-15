@@ -1,5 +1,6 @@
 "use client";
 
+import { signOutAction } from "@/actions/auth.actions";
 import {
   Sidebar,
   SidebarContent,
@@ -16,12 +17,14 @@ import {
   FileText,
   LayoutDashboard,
   Lightbulb,
+  LogOut,
   Rss,
   Settings,
   Star,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AgencySwitcher } from "./agency-switcher";
 
 const NAV_ITEMS = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -35,16 +38,21 @@ const NAV_ITEMS = [
 
 interface AppSidebarProps {
   userEmail: string;
+  currentAgencyId?: string;
+  agencies?: { agencyId: string; agencyName: string }[];
 }
 
-export function AppSidebar({ userEmail }: AppSidebarProps) {
+export function AppSidebar({ userEmail, currentAgencyId, agencies }: AppSidebarProps) {
   const pathname = usePathname();
 
   return (
     <Sidebar>
       <SidebarHeader>
-        <div className="px-2 py-2">
+        <div className="px-2 py-2 space-y-2">
           <span className="text-lg font-semibold tracking-tight">ContentAI</span>
+          {currentAgencyId && agencies && (
+            <AgencySwitcher currentAgencyId={currentAgencyId} agencies={agencies} />
+          )}
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -67,6 +75,12 @@ export function AppSidebar({ userEmail }: AppSidebarProps) {
       </SidebarContent>
       <SidebarFooter>
         <p className="text-xs text-muted-foreground px-2 truncate">{userEmail}</p>
+        <form action={signOutAction}>
+          <SidebarMenuButton type="submit" className="w-full">
+            <LogOut />
+            <span>Sign out</span>
+          </SidebarMenuButton>
+        </form>
       </SidebarFooter>
     </Sidebar>
   );

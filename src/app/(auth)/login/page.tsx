@@ -4,8 +4,26 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
-export default function LoginPage() {
+function isSafeCallbackUrl(url: string | undefined): url is string {
+  return !!url && url.startsWith("/") && !url.startsWith("//");
+}
+
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string }>;
+}) {
+  const session = await auth();
+  const { callbackUrl } = await searchParams;
+  const safeCallbackUrl = isSafeCallbackUrl(callbackUrl) ? callbackUrl : "/content";
+
+  if (session?.user?.id) {
+    redirect(safeCallbackUrl);
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-muted/40">
       <Card className="w-full max-w-md">
@@ -42,6 +60,7 @@ export default function LoginPage() {
             }}
           >
             <div className="space-y-4">
+              <input type="hidden" name="callbackUrl" value={safeCallbackUrl} />
               <div className="space-y-2">
                 <Label htmlFor="email">Email address</Label>
                 <Input

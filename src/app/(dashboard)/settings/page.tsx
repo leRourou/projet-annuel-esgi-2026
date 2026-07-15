@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { auth, signIn } from "@/lib/auth";
 import type { AgencyContextDto } from "@/modules/agency/application/dto/agency-context.dto";
 import { buildContainer } from "@/shared/infrastructure/di/container";
+import { getActiveAgencyId } from "@/shared/lib/active-agency";
 import { AgencyContextForm } from "@/shared/ui/agency-context-form";
 import { NotionConfigPanel } from "@/shared/ui/notion-config-panel";
 
@@ -17,7 +18,7 @@ export default async function SettingsPage() {
 
   if (session?.user?.id) {
     const container = await buildContainer();
-    const membership = await container.getUserMembership.execute(session.user.id);
+    const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
     if (membership && !membership.isPending) {
       const [agency, context] = await Promise.all([
         container.getAgency.execute({ agencyId: membership.agencyId }),

@@ -8,7 +8,12 @@ type ActionResult<T> = { data: T; error?: never } | { data?: never; error: strin
 
 const SignInInputSchema = z.object({
   email: z.string().email(),
+  callbackUrl: z.string().optional(),
 });
+
+function isSafeCallbackUrl(url: string | undefined): url is string {
+  return !!url && url.startsWith("/") && !url.startsWith("//");
+}
 
 export async function signInWithEmail(
   _prevState: unknown,
@@ -20,8 +25,12 @@ export async function signInWithEmail(
     return { error: parsed.error.flatten().fieldErrors.email?.[0] ?? "Invalid email" };
   }
 
+  const redirectTo = isSafeCallbackUrl(parsed.data.callbackUrl)
+    ? parsed.data.callbackUrl
+    : "/content";
+
   try {
-    await signIn("resend", { email: parsed.data.email, redirectTo: "/content" });
+    await signIn("resend", { email: parsed.data.email, redirectTo });
     return {};
   } catch {
     return { error: "Failed to send magic link. Please try again." };

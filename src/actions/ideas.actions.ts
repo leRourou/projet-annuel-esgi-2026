@@ -3,6 +3,7 @@
 import { auth } from "@/lib/auth";
 import type { ContentIdea } from "@/modules/content/domain/ports/ai-generator.port";
 import { buildContainer } from "@/shared/infrastructure/di/container";
+import { getActiveAgencyId } from "@/shared/lib/active-agency";
 import { z } from "zod";
 
 type ActionResult<T> = { data: T; error?: never } | { data?: never; error: string };
@@ -20,7 +21,7 @@ export async function generateIdeasAction(input: unknown): Promise<ActionResult<
   if (!parsed.success) return { error: parsed.error.errors[0]?.message ?? "Invalid input" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const agencyContext = await container.getAgencyContext.execute(membership.agencyId);

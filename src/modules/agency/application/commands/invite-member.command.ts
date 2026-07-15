@@ -1,5 +1,7 @@
 import { randomUUID } from "node:crypto";
+import { User } from "@/modules/auth/domain/entities/user.entity";
 import type { UserRepositoryPort } from "@/modules/auth/domain/ports/user.repository.port";
+import { Email } from "@/modules/auth/domain/value-objects/email.vo";
 import { DomainError } from "@/shared/domain/errors/domain.error";
 import { Result } from "@/shared/domain/types/result.type";
 import { AgencyMember } from "../../domain/entities/agency-member.entity";
@@ -39,11 +41,16 @@ export class InviteMemberCommand {
 
       const role = AgencyMemberRole.create(input.role);
 
-      const targetUser = await this.userRepository.findByEmail(input.targetEmail);
+      let targetUser = await this.userRepository.findByEmail(input.targetEmail);
       if (!targetUser) {
-        return Result.fail(
-          new DomainError(`No user found with email "${input.targetEmail}"`, "USER_NOT_FOUND"),
-        );
+        // No account yet for this email — create a placeholder user so the invite
+        // can be issued now; they'll use it as-is once they sign in via magic link.
+        const email = Email.create(input.targetEmail);
+        targetUser = User.create(randomUUID(), {
+          email,
+          name: input.targetEmail.split("@")[0] || input.targetEmail,
+        });
+        await this.userRepository.save(targetUser);
       }
 
       const existing = await this.memberRepository.findByAgencyAndUser(
@@ -72,6 +79,8 @@ export class InviteMemberCommand {
         member: {
           id: member.id,
           userId: member.userId,
+          userEmail: targetUser.email.value,
+          userName: targetUser.name,
           agencyId: member.agencyId,
           role: member.role.value,
           joinedAt: member.joinedAt,

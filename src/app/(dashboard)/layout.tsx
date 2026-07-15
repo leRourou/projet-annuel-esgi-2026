@@ -2,6 +2,7 @@ import { Input } from "@/components/ui/input";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { auth } from "@/lib/auth";
 import { buildContainer } from "@/shared/infrastructure/di/container";
+import { getActiveAgencyId } from "@/shared/lib/active-agency";
 import { AppSidebar } from "@/shared/ui/app-sidebar";
 import { Search } from "lucide-react";
 import { redirect } from "next/navigation";
@@ -11,7 +12,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (!session?.user?.id) redirect("/login");
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) {
     redirect("/onboarding");
   }
@@ -21,9 +22,15 @@ export default async function DashboardLayout({ children }: { children: React.Re
     redirect("/onboarding");
   }
 
+  const agencies = await container.listUserAgencies.execute(session.user.id);
+
   return (
     <SidebarProvider>
-      <AppSidebar userEmail={session.user.email ?? ""} />
+      <AppSidebar
+        userEmail={session.user.email ?? ""}
+        currentAgencyId={membership.agencyId}
+        agencies={agencies}
+      />
       <SidebarInset>
         <header className="flex items-center gap-3 border-b px-3 py-3 sm:px-4">
           <SidebarTrigger />

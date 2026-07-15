@@ -11,6 +11,7 @@ import type { NotionPageDto } from "@/modules/notion/application/dto/notion-page
 import { SearchNotionPagesInputSchema } from "@/modules/notion/application/queries/search-notion-pages.query";
 import type { NotionDatabaseSummary } from "@/modules/notion/domain/ports/notion-client.port";
 import { buildContainer } from "@/shared/infrastructure/di/container";
+import { getActiveAgencyId } from "@/shared/lib/active-agency";
 
 type ActionResult<T> = { data: T; error?: never } | { data?: never; error: string };
 
@@ -41,7 +42,7 @@ export async function exportToNotionAction(
   if (!session?.user?.id) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const notionToken = await getAgencyNotionToken(membership.agencyId);
@@ -71,7 +72,7 @@ export async function syncToNotionAction(
   if (!session?.user?.id) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const notionToken = await getAgencyNotionToken(membership.agencyId);
@@ -93,7 +94,7 @@ export async function importFromNotionAction(input: unknown): Promise<ActionResu
   if (!session?.user?.id) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const notionToken = await getAgencyNotionToken(membership.agencyId);
@@ -119,7 +120,7 @@ export async function searchNotionPagesAction(
   if (!session?.user?.id) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const notionToken = await getAgencyNotionToken(membership.agencyId);
@@ -139,7 +140,7 @@ export async function searchNotionDatabasesAction(
   if (!session?.user?.id) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const notionToken = await getAgencyNotionToken(membership.agencyId);
@@ -159,7 +160,7 @@ export async function testNotionConnectionAction(): Promise<
   if (!session?.user?.id) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const notionToken = await getAgencyNotionToken(membership.agencyId);
@@ -176,7 +177,7 @@ export async function updateAgencyNotionConfigAction(
   if (!session?.user?.id) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
   if (membership.role === "VIEWER") return { error: "Insufficient permissions" };
 
@@ -195,7 +196,7 @@ export async function importNotionEntriesAction(
   if (!session?.user?.id) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id);
+  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const notionToken = await getAgencyNotionToken(membership.agencyId);
