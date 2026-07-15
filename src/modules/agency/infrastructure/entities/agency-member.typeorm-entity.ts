@@ -1,5 +1,5 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { preserveEntityName } from "@/shared/infrastructure/database/preserve-entity-name";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import type { AgencyTypeormEntity } from "./agency.typeorm-entity";
 
 @Entity("agency_members")

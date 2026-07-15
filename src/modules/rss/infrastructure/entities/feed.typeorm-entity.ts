@@ -1,5 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { preserveEntityName } from "@/shared/infrastructure/database/preserve-entity-name";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("feeds")
 export class FeedTypeormEntity {

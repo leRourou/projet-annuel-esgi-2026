@@ -1,5 +1,5 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
 import { preserveEntityName } from "@/shared/infrastructure/database/preserve-entity-name";
+import { Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity("feed_items")
 export class FeedItemTypeormEntity {

@@ -1,5 +1,5 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
 import { preserveEntityName } from "@/shared/infrastructure/database/preserve-entity-name";
+import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("accounts")
 @Index(["provider", "providerAccountId"], { unique: true })

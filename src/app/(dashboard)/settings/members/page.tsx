@@ -12,7 +12,10 @@ export default async function MembersPage() {
   if (!session?.user?.id) redirect("/login");
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) redirect("/onboarding");
 
   const [agency, members] = await Promise.all([

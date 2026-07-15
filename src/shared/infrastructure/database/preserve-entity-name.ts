@@ -22,6 +22,9 @@
  * `targetName` can never collide between entities regardless of how the
  * bundler renames local bindings.
  */
-export function preserveEntityName(target: Function, name: string): void {
+export function preserveEntityName(
+  target: new (...args: unknown[]) => unknown,
+  name: string,
+): void {
   Object.defineProperty(target, "name", { value: name, configurable: true });
 }

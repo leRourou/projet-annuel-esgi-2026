@@ -1,3 +1,4 @@
+import { preserveEntityName } from "@/shared/infrastructure/database/preserve-entity-name";
 import {
   Column,
   Entity,
@@ -6,7 +7,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { preserveEntityName } from "@/shared/infrastructure/database/preserve-entity-name";
 import { AgencyTypeormEntity } from "./agency.typeorm-entity";
 
 @Entity("agency_contexts")

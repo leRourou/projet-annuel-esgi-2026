@@ -1,3 +1,4 @@
+import { preserveEntityName } from "@/shared/infrastructure/database/preserve-entity-name";
 import {
   Column,
   CreateDateColumn,
@@ -5,7 +6,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { preserveEntityName } from "@/shared/infrastructure/database/preserve-entity-name";
 
 @Entity("articles")
 export class ArticleTypeormEntity {

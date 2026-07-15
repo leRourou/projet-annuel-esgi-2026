@@ -1,3 +1,4 @@
+import { preserveEntityName } from "@/shared/infrastructure/database/preserve-entity-name";
 import {
   Column,
   CreateDateColumn,
@@ -6,7 +7,6 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { preserveEntityName } from "@/shared/infrastructure/database/preserve-entity-name";
 import { AgencyTypeormEntity } from "./agency.typeorm-entity";
 
 @Entity("tags")

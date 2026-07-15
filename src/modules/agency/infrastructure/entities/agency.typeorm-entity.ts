@@ -1,5 +1,5 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { preserveEntityName } from "@/shared/infrastructure/database/preserve-entity-name";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { AgencyMemberTypeormEntity } from "./agency-member.typeorm-entity";
 
 @Entity("agencies")

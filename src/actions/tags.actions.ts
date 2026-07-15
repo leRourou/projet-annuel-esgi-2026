@@ -26,7 +26,10 @@ export async function createTagAction(
   if (!parsed.success) return { error: "Invalid tag name" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const result = await container.createTag.execute({
@@ -43,7 +46,10 @@ export async function deleteTagAction(tagId: string): Promise<ActionResult<void>
   if (!session?.user?.id) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const result = await container.deleteTag.execute({
@@ -60,7 +66,10 @@ export async function listTagsAction(): Promise<ActionResult<Array<{ id: string;
   if (!session?.user?.id) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const tags = await container.listTags.execute(membership.agencyId);
@@ -75,7 +84,10 @@ export async function assignTagsAction(input: unknown): Promise<ActionResult<voi
   if (!parsed.success) return { error: "Invalid input" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const article = await container.getArticle.execute(parsed.data.articleId);

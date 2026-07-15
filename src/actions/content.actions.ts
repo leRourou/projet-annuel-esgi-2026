@@ -29,7 +29,10 @@ export async function generateArticleAction(input: unknown): Promise<ActionResul
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   if (!membership.role || membership.role === "VIEWER")
@@ -77,7 +80,10 @@ export async function updateArticleAction(input: unknown): Promise<ActionResult<
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
   if (membership.role === "VIEWER") return { error: "Insufficient permissions" };
 
@@ -98,7 +104,10 @@ export async function publishArticleAction(articleId: string): Promise<ActionRes
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
   if (membership.role === "VIEWER") return { error: "Insufficient permissions" };
 
@@ -118,7 +127,10 @@ export async function listArticlesAction(
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const parsed = ListArticlesInputSchema.safeParse({
@@ -136,7 +148,10 @@ export async function getArticleAction(id: string): Promise<ActionResult<Article
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const result = await container.getArticle.execute(id);
@@ -150,7 +165,10 @@ export async function regenerateSectionAction(input: unknown): Promise<ActionRes
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
   if (membership.role === "VIEWER") return { error: "Insufficient permissions" };
 
@@ -187,7 +205,10 @@ export async function saveGeneratedArticleAction(
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
   if (!membership.role || membership.role === "VIEWER")
     return { error: "Insufficient permissions" };
@@ -214,7 +235,10 @@ export async function generateEnrichedArticleAction(
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
   if (!membership.role || membership.role === "VIEWER")
     return { error: "Insufficient permissions" };
@@ -261,7 +285,10 @@ export async function listScheduledArticlesAction(): Promise<ActionResult<Articl
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const articles = await container.listScheduledArticles.execute(membership.agencyId);
@@ -276,7 +303,10 @@ export async function rescheduleArticleAction(
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
   if (!membership.role || membership.role === "VIEWER")
     return { error: "Insufficient permissions" };
@@ -310,7 +340,10 @@ export async function exportArticleAction(
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const parsed = ExportArticleInputSchema.safeParse(input);

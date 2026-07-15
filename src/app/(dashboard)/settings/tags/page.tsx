@@ -8,7 +8,10 @@ export default async function TagsPage() {
   if (!session?.user?.id) return null;
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return null;
 
   const isAdmin = membership.role === "ADMIN";

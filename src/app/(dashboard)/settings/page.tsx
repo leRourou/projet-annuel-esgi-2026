@@ -18,7 +18,10 @@ export default async function SettingsPage() {
 
   if (session?.user?.id) {
     const container = await buildContainer();
-    const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+    const membership = await container.getUserMembership.execute(
+      session.user.id,
+      await getActiveAgencyId(),
+    );
     if (membership && !membership.isPending) {
       const [agency, context] = await Promise.all([
         container.getAgency.execute({ agencyId: membership.agencyId }),

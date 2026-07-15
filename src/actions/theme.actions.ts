@@ -21,7 +21,10 @@ export async function createThemeAction(
   if (!parsed.success) return { error: "Invalid theme name" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const result = await container.createTheme.execute({
@@ -38,7 +41,10 @@ export async function deleteThemeAction(themeId: string): Promise<ActionResult<v
   if (!session?.user?.id) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const result = await container.deleteTheme.execute({
@@ -57,7 +63,10 @@ export async function listThemesAction(): Promise<
   if (!session?.user?.id) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const themes = await container.listThemes.execute(membership.agencyId);

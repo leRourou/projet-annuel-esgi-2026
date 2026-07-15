@@ -25,7 +25,10 @@ export async function createAgencyAction(input: {
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const existing = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const existing = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (existing) return { error: "You already belong to an agency" };
 
   const result = await container.createAgency.execute({
@@ -42,7 +45,10 @@ export async function getAgencyAction(): Promise<ActionResult<AgencyDto>> {
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const result = await container.getAgency.execute({ agencyId: membership.agencyId });
@@ -55,7 +61,10 @@ export async function listMembersAction(): Promise<ActionResult<AgencyMemberDto[
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const members = await container.listMembers.execute({ agencyId: membership.agencyId });
@@ -70,7 +79,10 @@ export async function inviteMemberAction(input: {
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const result = await container.inviteMember.execute({
@@ -102,7 +114,10 @@ export async function updateMemberRoleAction(input: {
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const result = await container.updateMemberRole.execute({
@@ -121,7 +136,10 @@ export async function removeMemberAction(targetUserId: string): Promise<ActionRe
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const result = await container.removeMember.execute({
@@ -139,7 +157,10 @@ export async function getAgencyContextAction(): Promise<ActionResult<AgencyConte
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const context = await container.getAgencyContext.execute(membership.agencyId);
@@ -153,7 +174,10 @@ export async function updateAgencyContextAction(
   if (!session) return { error: "Unauthorized" };
 
   const container = await buildContainer();
-  const membership = await container.getUserMembership.execute(session.user.id, await getActiveAgencyId());
+  const membership = await container.getUserMembership.execute(
+    session.user.id,
+    await getActiveAgencyId(),
+  );
   if (!membership || membership.isPending) return { error: "No active agency membership" };
 
   const parsed = UpdateAgencyContextInputSchema.safeParse({
