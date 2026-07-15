@@ -26,6 +26,37 @@ text/words to appear in the image.`;
 
 const IMAGE_PROMPT_FIELD = `  "imagePrompt": "Vivid AI image generation prompt, 1-2 sentences",\n`;
 
+/**
+ * Claude sometimes wraps JSON responses in a markdown code fence (```json ... ```)
+ * or adds a short preamble/trailing note even when explicitly instructed to reply
+ * with raw JSON only. This extracts the JSON payload robustly before parsing:
+ *  1. Strip a leading/trailing ``` or ```json fence if present.
+ *  2. Otherwise, fall back to slicing between the first { or [ and the matching last } or ].
+ */
+function extractJsonPayload(rawText: string): string {
+  const text = rawText.trim();
+
+  const fenceMatch = text.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
+  if (fenceMatch?.[1] !== undefined) {
+    return fenceMatch[1].trim();
+  }
+
+  const firstBrace = text.indexOf("{");
+  const firstBracket = text.indexOf("[");
+  const starters = [firstBrace, firstBracket].filter((i) => i !== -1);
+  if (starters.length === 0) {
+    return text;
+  }
+  const start = Math.min(...starters);
+  const startChar = text[start];
+  const endChar = startChar === "{" ? "}" : "]";
+  const end = text.lastIndexOf(endChar);
+  if (end === -1 || end < start) {
+    return text;
+  }
+  return text.slice(start, end + 1).trim();
+}
+
 function slugify(text: string): string {
   return text
     .toLowerCase()
@@ -368,6 +399,14 @@ function buildPrompt(input: GenerateContentInput): string {
   }
 }
 
+// The Anthropic SDK's default request timeout is 10 minutes — if the outbound
+// connection to api.anthropic.com stalls (e.g. no egress from the container,
+// a proxy silently dropping the connection), `for await` on the stream just
+// sits there with nothing ever rejecting, no error, no log — the client is
+// left on "Writing your content…" indefinitely. Bound it to something sane
+// for an interactive request so a stalled call fails fast and visibly instead.
+const STREAM_TIMEOUT_MS = 120_000;
+
 export class AnthropicAiGeneratorAdapter implements AiGeneratorPort {
   private readonly client: Anthropic;
   private readonly model: string;
@@ -378,15 +417,24 @@ export class AnthropicAiGeneratorAdapter implements AiGeneratorPort {
   }
 
   async *generateStream(input: GenerateContentInput): AsyncIterable<string> {
-    const stream = this.client.messages.stream({
-      model: this.model,
-      max_tokens: 4096,
-      messages: [{ role: "user", content: buildPrompt(input) }],
-    });
-    for await (const event of stream) {
-      if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
-        yield event.delta.text;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), STREAM_TIMEOUT_MS);
+    try {
+      const stream = this.client.messages.stream(
+        {
+          model: this.model,
+          max_tokens: 4096,
+          messages: [{ role: "user", content: buildPrompt(input) }],
+        },
+        { signal: controller.signal },
+      );
+      for await (const event of stream) {
+        if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
+          yield event.delta.text;
+        }
       }
+    } finally {
+      clearTimeout(timeoutId);
     }
   }
 
@@ -420,11 +468,14 @@ Respond with a JSON array of exactly ${count} objects with this structure:
 ]
 
 contentType must be one of: ${CONTENT_TYPES.join(", ")}.
-Only output the JSON array, nothing else.`;
+
+OUTPUT FORMAT — respond with ONLY the raw JSON array above, no markdown wrapper, no code fences
+(no \`\`\`), no preamble, no explanation, and no trailing commentary. The response must start with
+"[" and end with "]".`;
 
     const message = await this.client.messages.create({
       model: this.model,
-      max_tokens: 2048,
+      max_tokens: 4096,
       messages: [{ role: "user", content: prompt }],
     });
 
@@ -434,7 +485,7 @@ Only output the JSON array, nothing else.`;
     }
 
     try {
-      const parsed = JSON.parse(textBlock.text) as ContentIdea[];
+      const parsed = JSON.parse(extractJsonPayload(textBlock.text)) as ContentIdea[];
       return Array.isArray(parsed) ? parsed : [];
     } catch {
       throw new Error("Failed to parse AI ideas response as JSON");
@@ -481,7 +532,7 @@ Rewrite the article applying this instruction precisely. Return ONLY the updated
     }
 
     try {
-      const parsed = JSON.parse(textBlock.text) as GeneratedContent;
+      const parsed = JSON.parse(extractJsonPayload(textBlock.text)) as GeneratedContent;
       return {
         ...parsed,
         slug: parsed.slug ?? slugify(parsed.title),
@@ -504,7 +555,7 @@ Rewrite the article applying this instruction precisely. Return ONLY the updated
     }
 
     try {
-      const parsed = JSON.parse(textBlock.text) as GeneratedContent;
+      const parsed = JSON.parse(extractJsonPayload(textBlock.text)) as GeneratedContent;
       return {
         ...parsed,
         slug: parsed.slug ?? slugify(parsed.title),

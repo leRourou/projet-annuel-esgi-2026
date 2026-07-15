@@ -71,6 +71,13 @@ export function useContentStream() {
       let accumulated = "";
       let sseBuffer = "";
 
+      // Returns true when the event is terminal — either the server's [DONE]
+      // sentinel or an error. Previously an "error" event only set the error
+      // state and returned false, so the read loop kept waiting for the
+      // socket to close on its own instead of stopping as soon as the
+      // terminal signal arrived; if the connection lingered even briefly,
+      // the UI stayed stuck on "Writing your content…" despite the error
+      // already being known.
       const processLine = (line: string) => {
         if (!line.startsWith("data: ")) return false;
         const payload = line.slice(6).trim();
@@ -80,7 +87,9 @@ export function useContentStream() {
           const parsed = JSON.parse(payload) as { text?: string; error?: string };
           if (parsed.error) {
             setError(parsed.error);
-          } else if (parsed.text) {
+            return true;
+          }
+          if (parsed.text) {
             accumulated += parsed.text;
             setText(accumulated);
           }
@@ -90,7 +99,8 @@ export function useContentStream() {
         return false;
       };
 
-      while (true) {
+      let terminal = false;
+      while (!terminal) {
         const { done, value } = await reader.read();
         if (done) break;
 
@@ -99,12 +109,21 @@ export function useContentStream() {
         sseBuffer = remainder;
 
         for (const line of events) {
-          if (processLine(line)) break;
+          if (processLine(line)) {
+            terminal = true;
+            break;
+          }
         }
       }
 
-      // The stream may end without a trailing blank line — flush whatever's left.
-      if (sseBuffer) processLine(sseBuffer);
+      // Stop consuming the response as soon as we've seen the terminal
+      // signal — don't wait on the underlying connection to close by itself.
+      if (terminal) {
+        await reader.cancel().catch(() => undefined);
+      } else if (sseBuffer) {
+        // The stream may end without a trailing blank line — flush whatever's left.
+        processLine(sseBuffer);
+      }
 
       // Parse the accumulated JSON once streaming is complete
       try {

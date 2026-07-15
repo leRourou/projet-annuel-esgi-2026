@@ -45,7 +45,15 @@ export async function POST(req: Request): Promise<Response> {
         controller.enqueue(encoder.encode("data: [DONE]\n\n"));
       } catch (err) {
         const message = err instanceof Error ? err.message : "Stream error";
+        // Previously swallowed silently — nothing was ever logged server-side,
+        // so a failing generation (bad API key, network stall, Anthropic error)
+        // was invisible in the logs even though the client got stuck waiting.
+        console.error("[api/content/generate] streaming failed:", err);
         controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: message })}\n\n`));
+        // Always send the terminal sentinel too, even on error, so the client
+        // doesn't depend solely on the underlying connection closing promptly
+        // to know the stream is over.
+        controller.enqueue(encoder.encode("data: [DONE]\n\n"));
       } finally {
         controller.close();
       }
