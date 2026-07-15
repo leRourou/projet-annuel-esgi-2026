@@ -76,7 +76,7 @@ describe("InviteMemberCommand", () => {
     }
   });
 
-  it("fails when target user does not exist", async () => {
+  it("creates a placeholder user and invites them when the target email has no account yet", async () => {
     vi.mocked(userRepo.findByEmail).mockResolvedValueOnce(null);
     const result = await command.execute({
       agencyId: "agency-1",
@@ -86,9 +86,11 @@ describe("InviteMemberCommand", () => {
       role: "MEMBER",
     });
 
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(result.error.code).toBe("USER_NOT_FOUND");
+    expect(userRepo.save).toHaveBeenCalledOnce();
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.value.member.userEmail).toBe("unknown@test.com");
+      expect(result.value.member.isPending).toBe(true);
     }
   });
 
